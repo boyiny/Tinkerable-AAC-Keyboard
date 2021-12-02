@@ -16,33 +16,75 @@ def select(value,entry):
         entry.insert(tk.END,value)
 
 
-def create_letterpad(f_frame, entry):
+def create_letterpad(root_frame, entry):
 
-    btn_list = [['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '<-'], 
+    keyList = [['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '<-'], 
     ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l'],  
     ['z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.'],
     ['Space']]
 
     row1, row2, row3, row4 = None, None, None, None
-    row_frame_list = [row1, row2, row3, row4]
-    for i in range(len(row_frame_list)):
-        row_frame_list[i] = tk.Frame(f_frame)
-        row_frame_list[i].grid(row=i+1) # row 0 is for the textbox
-
-        for b in btn_list[i]:
-            column = btn_list[i].index(b)
-            command = lambda value=b: select(value,entry)
-            if b == "Space":
-                b = tk.Button(row_frame_list[i], text=b, width=12, height=2, command=command, bg='#C0C0C0', fg='black',
-                          font=('Calibri', 27)).grid(
-                row=i,
-                column=column,
-                padx=6,
-                pady=13)
+    rowFrameList = [row1, row2, row3, row4]
+    keyIndex = 0
+    keyFrameList = []
+    for i in range(len(rowFrameList)):
+        rowFrameList[i] = DnDFrame(root_frame)
+        # wordPred = tk.Text(rowFrameList[i], 'pred', bd=4, bg="grey", )
+        # wordPred.grid(row=i+1) # row 0 is for the textbox
+        
+        for keyChar in keyList[i]:
+            column = keyList[i].index(keyChar)
+            command = lambda value=keyChar: select(value,entry)
+            keyFrameList.append(DnDFrame(root_frame))
+            if (i<1):
+                keyFrameList[keyIndex].grid(row=i+1, column=column)
             else:
-                b = tk.Button(row_frame_list[i], text=b, width=3, height=2, command=command, bg='#C0C0C0', fg='black',
+                keyFrameList[keyIndex].grid(row=i+1, column=column+1)
+            
+            if keyChar == "Space":
+                
+                keyBtn = tk.Button(keyFrameList[keyIndex], text=keyChar, width=12, height=2, command=command, bg='#C0C0C0', fg='black',
+                          font=('Calibri', 26)).grid(
+                row=i,
+                column=column+3,
+                padx=10,
+                pady=10)
+                # keyChar.grid_rowconfigure(1, weight=1)
+                
+            else:
+                keyBtn = tk.Button(keyFrameList[keyIndex], text=keyChar, width=3, height=2, command=command, bg='#C0C0C0', fg='black',
                           font=('Calibri', 26)).grid(
                 row=i,
                 column=column,
-                padx=6,
-                pady=13)
+                padx=10,
+                pady=10)
+
+            keyBtn
+
+            keyIndex+=1
+         
+
+# Make the widget draggable
+def make_draggable(widget):
+    widget.bind("<Button-1>", on_drag_start)
+    widget.bind("<B1-Motion>", on_drag_motion)
+
+def on_drag_start(event):
+    widget = event.widget
+    widget._drag_start_x = event.x
+    widget._drag_start_y = event.y
+
+def on_drag_motion(event):
+    widget = event.widget
+    x = widget.winfo_x() - widget._drag_start_x + event.x
+    y = widget.winfo_y() - widget._drag_start_y + event.y
+    widget.place(x=x, y=y)
+
+class DragDropMixin:
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        make_draggable(self)
+
+class DnDFrame(DragDropMixin, tk.Frame):
+    pass
