@@ -44,22 +44,16 @@ def create_letterpad(root_frame, entry):
             if keyChar == "Space":
                 
                 keyBtn = tk.Button(keyFrameList[keyIndex], text=keyChar, width=12, height=2, command=command, bg='#C0C0C0', fg='black',
-                          font=('Calibri', 26)).grid(
-                row=i,
-                column=column+3,
-                padx=10,
-                pady=10)
+                          font=('Calibri', 26))
+                keyBtn.grid(row=i, column=column+1, padx=10, pady=10)
                 # keyChar.grid_rowconfigure(1, weight=1)
                 
             else:
                 keyBtn = tk.Button(keyFrameList[keyIndex], text=keyChar, width=3, height=2, command=command, bg='#C0C0C0', fg='black',
-                          font=('Calibri', 26)).grid(
-                row=i,
-                column=column,
-                padx=10,
-                pady=10)
+                          font=('Calibri', 26))
+                keyBtn.grid(row=i, column=column, padx=10, pady=10)
 
-            keyBtn
+            
 
             keyIndex+=1
          
@@ -88,3 +82,39 @@ class DragDropMixin:
 
 class DnDFrame(DragDropMixin, tk.Frame):
     pass
+
+
+
+def donothing():
+   x = 0
+
+def create_menu(root_frame):
+    menuBar = Menu(root_frame)
+    root_frame.config(menu=menuBar)
+
+
+    predSettingMenu = Menu(menuBar)
+    menuBar.add_cascade(label="Prediction Settings", menu=predSettingMenu)
+
+    predSettingMenu.add_command(label="Save Current Settings", command=donothing)
+    predSettingMenu.add_command(label="Load Previous Settings", command=donothing)
+    predSettingMenu.add_separator()
+
+
+    maxWordPredNumMenu = Menu(predSettingMenu)
+    autoCapMenu = Menu(predSettingMenu)
+    wordPredPlaceMenu = Menu(predSettingMenu)
+
+    predSettingMenu.add_cascade(label="Max Word Prediction Number", menu=maxWordPredNumMenu)
+    maxWordPredNumMenu.add_command(label="1", command=donothing)
+    maxWordPredNumMenu.add_command(label="2", command=donothing)
+    maxWordPredNumMenu.add_command(label="3", command=donothing)
+    maxWordPredNumMenu.add_command(label="4", command=donothing)
+
+    predSettingMenu.add_cascade(label="Auto-capitalisation", menu=autoCapMenu)
+    autoCapMenu.add_command(label="On", command=donothing)
+    autoCapMenu.add_command(label="Off", command=donothing)
+
+    predSettingMenu.add_cascade(label="Word Predictions Place on Last-pressed Key", menu=wordPredPlaceMenu)
+    wordPredPlaceMenu.add_command(label="On", command=donothing)
+    wordPredPlaceMenu.add_command(label="Off", command=donothing)
