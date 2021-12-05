@@ -18,13 +18,17 @@ def select(value,entry):
 
 def create_letterpad(root_frame, entry):
 
-    keyList = [['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '<-'], 
-    ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l'],  
+    keyList = [['  '],
+    ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '<-'],
+    ['  '], 
+    ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l'], 
+    ['  '],
     ['z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.'],
+    ['  '],
     ['Space']]
 
-    row1, row2, row3, row4 = None, None, None, None
-    rowFrameList = [row1, row2, row3, row4]
+    row1, row2, row3, row4, row5, row6, row7, row8 = None, None, None, None, None, None, None, None
+    rowFrameList = [row1, row2, row3, row4, row5, row6, row7, row8]
     keyIndex = 0
     keyFrameList = []
     for i in range(len(rowFrameList)):
@@ -45,9 +49,11 @@ def create_letterpad(root_frame, entry):
                 
                 keyBtn = tk.Button(keyFrameList[keyIndex], text=keyChar, width=12, height=2, command=command, bg='#C0C0C0', fg='black',
                           font=('Calibri', 26))
-                keyBtn.grid(row=i, column=column+1, padx=10, pady=10)
+                keyBtn.grid(row=i, column=column+2, padx=10, pady=10)
                 # keyChar.grid_rowconfigure(1, weight=1)
-                
+            elif keyChar == '  ':
+                predLabel = tk.Label(keyFrameList[keyIndex], text=keyChar)
+                predLabel.grid(row=i, column=column, padx=10, pady=10)    
             else:
                 keyBtn = tk.Button(keyFrameList[keyIndex], text=keyChar, width=3, height=2, command=command, bg='#C0C0C0', fg='black',
                           font=('Calibri', 26))
@@ -84,6 +90,7 @@ class DnDFrame(DragDropMixin, tk.Frame):
     pass
 
 
+ 
 
 def donothing():
    x = 0
@@ -92,29 +99,96 @@ def create_menu(root_frame):
     menuBar = Menu(root_frame)
     root_frame.config(menu=menuBar)
 
+    fileMenu = Menu(menuBar)
+    menuBar.add_cascade(label="File", menu=fileMenu)
+    fileMenu.add_command(label="Save Current Settings", command=donothing)
+    fileMenu.add_command(label="Load Previous Settings...", command=donothing)
 
-    predSettingMenu = Menu(menuBar)
-    menuBar.add_cascade(label="Prediction Settings", menu=predSettingMenu)
+    predMethodMenu = Menu(menuBar)
+    menuBar.add_cascade(label="Prediction Methods", menu=predMethodMenu)
+    predMethodMenu.add_command(label="RoBERTa", command=donothing)
+    predMethodMenu.add_command(label="GPT-2", command=donothing)
 
-    predSettingMenu.add_command(label="Save Current Settings", command=donothing)
-    predSettingMenu.add_command(label="Load Previous Settings", command=donothing)
-    predSettingMenu.add_separator()
+    bm25Menu = Menu(predMethodMenu)
+    predMethodMenu.add_cascade(label="BM25", menu=bm25Menu)
+    bm25Menu.add_command(label="Original", command=donothing)
+    
+    bm25StoryTellingMenu = Menu(bm25Menu)
+    bm25Menu.add_cascade(label="Story Telling", menu=bm25StoryTellingMenu)
+    bm25StoryTellingMenu.add_command(label="Context Aware On", command=donothing)
+    bm25StoryTellingMenu.add_command(label="Context Aware Off", command=donothing)
 
+    bm25RoutineConvMenu = Menu(bm25Menu)
+    bm25Menu.add_cascade(label="Routine Conversation", menu=bm25RoutineConvMenu)
+    bm25RoutineConvMenu.add_command(label="Context Aware On", command=donothing)
+    bm25RoutineConvMenu.add_command(label="Context Aware Off", command=donothing)
+    
 
-    maxWordPredNumMenu = Menu(predSettingMenu)
-    autoCapMenu = Menu(predSettingMenu)
-    wordPredPlaceMenu = Menu(predSettingMenu)
+    wordPredSettingMenu = Menu(menuBar)
+    menuBar.add_cascade(label="Word Prediction", menu=wordPredSettingMenu)
 
-    predSettingMenu.add_cascade(label="Max Word Prediction Number", menu=maxWordPredNumMenu)
+    maxWordPredNumMenu = Menu(wordPredSettingMenu)
+    wordPredSettingMenu.add_cascade(label="Max Word Prediction Number", menu=maxWordPredNumMenu)
     maxWordPredNumMenu.add_command(label="1", command=donothing)
     maxWordPredNumMenu.add_command(label="2", command=donothing)
     maxWordPredNumMenu.add_command(label="3", command=donothing)
     maxWordPredNumMenu.add_command(label="4", command=donothing)
 
-    predSettingMenu.add_cascade(label="Auto-capitalisation", menu=autoCapMenu)
+    autoCapMenu = Menu(wordPredSettingMenu)
+    wordPredSettingMenu.add_cascade(label="Auto-capitalisation", menu=autoCapMenu)
     autoCapMenu.add_command(label="On", command=donothing)
     autoCapMenu.add_command(label="Off", command=donothing)
 
-    predSettingMenu.add_cascade(label="Word Predictions Place on Last-pressed Key", menu=wordPredPlaceMenu)
+    wordPredPlaceMenu = Menu(wordPredSettingMenu)
+    wordPredSettingMenu.add_cascade(label="Word Predictions Place on Last-pressed Key", menu=wordPredPlaceMenu)
     wordPredPlaceMenu.add_command(label="On", command=donothing)
     wordPredPlaceMenu.add_command(label="Off", command=donothing)
+
+
+    sentencePredSettingMenu = Menu(menuBar)
+    menuBar.add_cascade(label="Sentence Prediction", menu=sentencePredSettingMenu)
+    
+    displayMenu = Menu(sentencePredSettingMenu)
+    sentencePredSettingMenu.add_cascade(label="Display", menu=displayMenu)
+    displayMenu.add_command(label="On", command=donothing)
+    displayMenu.add_command(label="Off", command=donothing)
+
+    startWithKeywordMenu = Menu(sentencePredSettingMenu) # Bag of key words
+    sentencePredSettingMenu.add_cascade(label="Start with Keyword", menu=startWithKeywordMenu)
+    startWithKeywordMenu.add_command(label="On", command=donothing)
+    startWithKeywordMenu.add_command(label="Off", command=donothing)
+
+    chooseCorpusMenu = Menu(sentencePredSettingMenu)
+    sentencePredSettingMenu.add_cascade(label="Choose Corpus", menu=chooseCorpusMenu)
+    chooseCorpusMenu.add_command(label="Mechanical Turk Dataset (Default)", command=donothing)
+    chooseCorpusMenu.add_command(label="Collection from Previous CHI Paper", command=donothing)
+    chooseCorpusMenu.add_command(label="Choose from File...", command=donothing)
+    
+    numOfSentenceMenu = Menu(sentencePredSettingMenu)
+    sentencePredSettingMenu.add_cascade(label="Number of Sentences", menu=numOfSentenceMenu)
+    numOfSentenceMenu.add_command(label="1", command=donothing)
+    numOfSentenceMenu.add_command(label="2", command=donothing)
+    numOfSentenceMenu.add_command(label="3", command=donothing)
+    numOfSentenceMenu.add_command(label="4", command=donothing)
+
+    adaptiveLearnMenu = Menu(sentencePredSettingMenu)
+    sentencePredSettingMenu.add_cascade(label="Adaptive Learning", menu=adaptiveLearnMenu)
+
+    adaptiveLearnOnMenu = Menu(adaptiveLearnMenu)
+    adaptiveLearnMenu.add_cascade(label="On", menu=adaptiveLearnOnMenu)
+    adaptiveLearnOnMenu.add_command(label="Combine with Current Corpus", command=donothing)
+    adaptiveLearnOnMenu.add_command(label="Use Text Entered in This Session Only", command=donothing)
+
+    adaptiveLearnMenu.add_command(label="Off", command=donothing)
+
+
+
+    uiControlMenu = Menu(menuBar)
+    menuBar.add_cascade(label="UI Control", menu=uiControlMenu)
+
+    moveElementMenu = Menu(uiControlMenu)
+    uiControlMenu.add_cascade(label="Move Elements", menu=moveElementMenu)
+    moveElementMenu.add_command(label="On", command=donothing)
+    moveElementMenu.add_command(label="Off", command=donothing)
+    moveElementMenu.add_command(label="Window Size", command=donothing)
+
