@@ -2,17 +2,18 @@
 # sg.Window(title="Hello World", layout=[[]], margins=(100, 50)).read()
 from tkinter import *
 import tkinter as tk
-
 from tkinter.dnd import Tester as DragWindow, Icon as Dragable
 
-from generate_keyboard import *
+
+from generate_keyboard import Generate_key, Generate_menu
 
 
 
 Keyboard_App = tk.Tk()
+
 Keyboard_App.title("Tkinter Onscreen Keyboard")
 Keyboard_App.resizable()
-Keyboard_App.geometry("1500x800")
+Keyboard_App.geometry("1500x1000")
 # Keyboard_App.grid_rowconfigure(0, weight=1)
 # Keyboard_App.grid_columnconfigure(0, weight=1)
 
@@ -26,15 +27,16 @@ Keyboard_App.geometry("1500x800")
 # textFrame = DnDFrame(Keyboard_App, bd=4)
 
 
-create_menu(Keyboard_App)
+Generate_menu.create_menu(Keyboard_App)
 
 
+# createTextbox()
 
+entry = Entry(Keyboard_App, font=('Calibri', 18))
+entry.place(height=50, width=1100, x=20, y=10)
 
-entry = Entry(Keyboard_App, width=110, font=('Calibri', 18))
-entry.grid(row=0, columnspan=15)
-
-create_letterpad(Keyboard_App,entry)
+letterPad = Generate_key()
+letterPad.create_letterpad(Keyboard_App,entry)
 
 
 
