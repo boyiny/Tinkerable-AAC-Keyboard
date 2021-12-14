@@ -4,7 +4,6 @@ class Model_main:
     def __init__(self):
         self.previousEntry = ''
         self.entry = ''
-        self.prediction = ''
         
 
     def edit_text(self, caption):
@@ -24,9 +23,7 @@ class Model_main:
             self.entry = self.entry + caption
 
         return self.entry
-    
-    def set_drag(self, boolDrag):
-        return boolDrag
+
 
 
 # def _on_button_click(self, button, entry):
