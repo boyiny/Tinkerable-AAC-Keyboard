@@ -1,8 +1,5 @@
-from os import pread
 import tkinter as tk
 from tkinter import ttk
-from tkinter.constants import BOTTOM
-
 
 class View_main(tk.Tk):
     
@@ -10,23 +7,37 @@ class View_main(tk.Tk):
 
     def __init__(self, controller):
         super().__init__()
+        # self.application = tk.Tk()
         self.controller = controller
         self.title("Tinkerable Keyboard")
         self.resizable()
         self.geometry("1500x1000")
         self.textBox = tk.StringVar()
+        self.mainView = self._make_main_view(self)
+        
+        
+
+    def _make_main_view(self, frame):
+        # self.rootFrame = tk.Frame(frame)
+        # self.rootFrame.pack(padx=self.PAD, pady=self.PAD)
+
+        self.viewMenu = View_menu(frame)
+        self.viewEntry = View_entry(frame, self.textBox)
+        self.viewKeypad = View_keypad(self.controller, frame, self.viewEntry, self.textBox)
+
+        
 
 class View_entry:
 
-    def __init__(self, controller, rootFrame): # textBox
-        self.controller = controller
-        self.entry = tk.Entry(rootFrame, textvariable=rootFrame.textBox, font=('Calibri', 18))
+    def __init__(self, rootFrame, textBox):
+        self.entry = tk.Entry(rootFrame, textvariable=textBox, font=('Calibri', 18))
         self.entry.place(height=50, width=1100, x=20, y=10)
         
 
-   
 
-class View_keypad():
+    
+
+class View_keypad:
 
     KEY_SIZE_X = 80
     KEY_SIZE_Y = 80
@@ -34,88 +45,39 @@ class View_keypad():
     KEY_SPEAK_SIZE_Y = 80
     KEY_CLEAR_SIZE_X = 120
     KEY_CLEAR_SIZE_Y = 80
-    KEY_SPACE_SIZE_X = 300
+    KEY_SPACE_SIZE_X = 260
     KEY_SPACE_SIZE_Y = 80
 
-    KEY_INIT_LOC_X = 15
-    KEY_INIT_LOC_Y = 140
+    KEY_ROW_LOC_X = 20
+    KEY_ROW_LOC_Y = 200
 
-    KEY_COL_GAP = 15
+    KEY_COL_GAP = 5
     KEY_ROW_GAP = 120
     KEY_INDENT = 70
 
     KEY_DRAGABLE = False
-
-    buttons = []
-    buttonsAttributes = []
-
-    newKeyPositionX = 0
-    newKeyPositionY = 0
 
     keyList = [['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '<-'], 
         ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'Speak'], 
         ['z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', 'Clear All'],
         ['Space']]
 
-    def __init__(self, controller, rootFrame, entry): 
-        self.keypadFrame = tk.Frame(rootFrame, width=1300, height=940)
-        self.keypadFrame.place(x=0, y=60)
-        self.controller = controller
+    def __init__(self, controller, rootFrame, entry, textBox):
+        self.rootFrame = rootFrame
         self.entry = entry
-        self.textBox = rootFrame.textBox
+        self.controller = controller
+        self.textBox = textBox
         
-        if len(self.buttons) == 0:
-            self._make_letterpad()
-        else:
-            self._refresh_letterpad()
-
-    def _refresh_letterpad(self):
-        
-        self.buttons = []
-        for btn in self.buttonsAttributes:
-            index = int(btn[0])
-            placeX = btn[1]
-            placeY = btn[2]
-            sizeX = btn[3]
-            sizeY = btn[4]
-
-            
-            if int(index/len(self.keyList[0])) == 0:
-                caption = self.keyList[0][index]
-            elif int(index/len(self.keyList[0]) > 0 and index/(len(self.keyList[0])+len(self.keyList[1]))) == 0:
-                caption = self.keyList[1][index%len(self.keyList[0])]
-            elif int(index/(len(self.keyList[0])+len(self.keyList[1])) > 0 and index/(len(self.keyList[0])+len(self.keyList[1])+len(self.keyList[2]))) == 0:
-                caption = self.keyList[2][index%(len(self.keyList[0])+len(self.keyList[1]))]
-            else:
-                caption = self.keyList[3][index%(len(self.keyList[0])+len(self.keyList[1])+len(self.keyList[2]))]
-
-            self.buttons.append(self._make_button(self.keypadFrame, caption, placeX, placeY, sizeX, sizeY, index))
-        self.buttonsAttributes = []
-
-
-    
-    def refresh(self, controller, rootFrame, entry):
-        self.keypadFrame.destroy()
-        self.__init__(controller, rootFrame, entry)
-
-    def record_button_position(self):
-        shiftCompensationX = 5 # by calculating the shift for each shift when click On/Off of Dragable function
-        shiftCompensationY = 118
-
-        for button in self.buttons:
-            self.buttonsAttributes.append([button.winfo_name(), button.winfo_rootx()-shiftCompensationX, button.winfo_rooty()-shiftCompensationY, button.winfo_width(), button.winfo_height()])
-
-        # print(f'In record_button_position, buttonsAttributes: {self.buttonsAttributes}')
-
+        self._make_letterpad()
 
     def _make_letterpad(self):
         
         keyIndex = 0
 
-        for row in range(len(self.keyList)):
+        for i in range(len(self.keyList)):
             
-            for keyChar in self.keyList[row]:
-                column = self.keyList[row].index(keyChar)
+            for keyChar in self.keyList[i]:
+                column = self.keyList[i].index(keyChar)
 
                 placeX = 0
                 placeY = 0
@@ -123,49 +85,40 @@ class View_keypad():
                 sizeY = 0
                 indent = 0
 
-                if row>0:
+                if i>0:
                     indent = self.KEY_INDENT
                 
                 if keyChar == "Space":
-                    indent += self.KEY_SPACE_SIZE_X
-                    placeX = indent + self.KEY_INIT_LOC_X + column * (self.KEY_SIZE_X + self.KEY_COL_GAP)
-                    placeY = self.KEY_INIT_LOC_Y + row * (self.KEY_SIZE_Y + self.KEY_COL_GAP)
+                    placeX = column*self.KEY_ROW_LOC_X+(column+5)*(self.KEY_COL_GAP+self.KEY_SIZE_X)+indent
+                    placeY = (i+1)*self.KEY_ROW_LOC_Y
                     sizeX = self.KEY_SPACE_SIZE_X
                     sizeY = self.KEY_SPACE_SIZE_Y
 
                 elif keyChar == "Speak":
-                    placeX = indent + self.KEY_INIT_LOC_X + column * (self.KEY_SIZE_X + self.KEY_COL_GAP)
-                    placeY = self.KEY_INIT_LOC_Y + row * (self.KEY_SIZE_Y + self.KEY_COL_GAP)
+                    placeX = column*self.KEY_ROW_LOC_X+(column+1)*(self.KEY_COL_GAP+self.KEY_SIZE_X)+indent
+                    placeY = (i+1)*self.KEY_ROW_LOC_Y
                     sizeX = self.KEY_SPEAK_SIZE_X
                     sizeY = self.KEY_SPEAK_SIZE_Y
 
                 elif keyChar == "Clear All":
-                    placeX = indent + self.KEY_INIT_LOC_X + column * (self.KEY_SIZE_X + self.KEY_COL_GAP)
-                    placeY = self.KEY_INIT_LOC_Y + row * (self.KEY_SIZE_Y + self.KEY_COL_GAP)
+                    placeX = column*self.KEY_ROW_LOC_X+(column+1)*(self.KEY_COL_GAP+self.KEY_SIZE_X)+indent
+                    placeY = (i+1)*self.KEY_ROW_LOC_Y 
                     sizeX = self.KEY_CLEAR_SIZE_X
                     sizeY = self.KEY_CLEAR_SIZE_Y
 
                 else:
-                    placeX = indent + self.KEY_INIT_LOC_X + column * (self.KEY_SIZE_X + self.KEY_COL_GAP)
-                    placeY = self.KEY_INIT_LOC_Y + row * (self.KEY_SIZE_Y + self.KEY_COL_GAP)
+                    placeX = column*self.KEY_ROW_LOC_X+(column+1)*(self.KEY_COL_GAP+self.KEY_SIZE_X)+indent
+                    placeY = (i+1)*self.KEY_ROW_LOC_Y
                     sizeX = self.KEY_SIZE_X
                     sizeY = self.KEY_SIZE_Y
                 
-                self.buttons.append(self._make_button(self.keypadFrame, keyChar, placeX, placeY, sizeX, sizeY, keyIndex))
+                self._make_button(self.rootFrame, keyChar, placeX, placeY, sizeX, sizeY)
                 keyIndex+=1
-                self.buttonsAttributes = []
 
 
-
-
-
-    def _make_dragable(self,widget,caption,sizeX,sizeY):
+    def _make_dragable(self,widget):
         widget.bind("<Button-1>", self._on_drag_start)
         widget.bind("<B1-Motion>", self._on_drag_motion)
-        widget.caption = caption
-        widget.sizeX = sizeX
-        widget.sizeY = sizeY
-        
 
     def _on_drag_start(self, event):
         widget = event.widget
@@ -178,26 +131,21 @@ class View_keypad():
         y = widget.winfo_y() - widget._drag_start_y + event.y
         widget.place(x=x, y=y)
 
-    def _make_button(self, frame, caption, placeX, placeY, sizeX, sizeY, index):
+    def _make_button(self, frame, caption, placeX, placeY, sizeX, sizeY):
         command = (lambda button=caption: self.controller.on_button_click(button))
 
-        keyBtn = tk.Button(frame, name=str(index), text=caption, command=command, bg='#C0C0C0', fg='black', font=('Calibri', 26))
-        keyBtn.place(x=placeX, y=placeY, width=sizeX, height=sizeY)
-        
+        keyBtn = tk.Button(frame, text=caption, command=command, bg='#C0C0C0', fg='black', font=('Calibri', 26))
+
         if self.KEY_DRAGABLE:
-            self._make_dragable(keyBtn, caption, sizeX, sizeY)
-        return keyBtn
-
-
-    
-
+            self._make_dragable(keyBtn)
+        
+        keyBtn.place(x=placeX, y=placeY, width=sizeX, height=sizeY)
 
 
 class View_menu:
     
-    def __init__(self, controller, rootFrame):
+    def __init__(self, rootFrame):
         self.rootFrame = rootFrame
-        self.controller = controller
         self._make_menu()
 
     def _make_menu(self):
@@ -296,6 +244,6 @@ class View_menu:
 
         moveElementMenu = tk.Menu(uiControlMenu)
         uiControlMenu.add_cascade(label="Move Elements", menu=moveElementMenu)
-        moveElementMenu.add_command(label="On", command=lambda:self.controller.set_drag(True))
-        moveElementMenu.add_command(label="Off", command=lambda:self.controller.set_drag(False))
+        moveElementMenu.add_command(label="On", command=lambda:self.set_drag(True))
+        moveElementMenu.add_command(label="Off", command=lambda:self.set_drag(False))
         moveElementMenu.add_command(label="Window Size", command=donothing)
