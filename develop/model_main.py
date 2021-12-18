@@ -1,6 +1,8 @@
-import tkinter as tk
+# import tkinter as tk
 
 class Model_main:
+    wordPredTest = ['hey', 'hello', 'have', 'has', 'happy', 'happen']
+
     def __init__(self):
         self.previousEntry = ''
         self.entry = ''
@@ -28,6 +30,8 @@ class Model_main:
     def set_drag(self, boolDrag):
         return boolDrag
 
+    def make_word_prediction(self, entry):
+        return self.wordPredTest
 
 # def _on_button_click(self, button, entry):
 #         # result = self.modelMain
