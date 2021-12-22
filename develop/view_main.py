@@ -1,6 +1,7 @@
 from os import pread
 import tkinter as tk
 from tkinter import ttk
+from typing import Sized
 # from tkinter.constants import BOTTOM
 
 
@@ -50,17 +51,26 @@ class View_keypad:
     PRED_WORD_ROW_GAP = 30
 
     PRED_WORD_INIT_LOC_X = 15
-    PRED_WORD_INIT_LOC_Y = 100
+    PRED_WORD_INIT_LOC_Y = 110
 
     buttons = []
     buttonsAttributes = []
 
     currentPressedKey = []
     
+    predictedWordButtons = []
     predictedSentenceButtons = []
 
     newKeyPositionX = 0
     newKeyPositionY = 0
+
+    lastPressedKeyIndex = 0
+
+    BOOL_WORD_PRED_DISPLAY = True
+    BOOL_WORD_PRED_PRESSED_KEY = False
+    WORD_PRED_NUM = 4
+
+
 
     keyList = [['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '<-'], 
         ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'Speak'], 
@@ -85,13 +95,17 @@ class View_keypad:
 
     def _get_index_in_keyList(self, caption):
         index = 0
-        for i in range(len(self.keyList)):
-            for key in self.keyList[i]:
-                if caption == key:
-                    return index
-                else:
-                    index += 1
-        print(f"Error: caption ({caption}) is not in the keyList.")
+        if caption and (len(caption)==1 or caption == "Space" or caption == "Clear" or caption == "Clear All" or caption == "<-"):
+            for i in range(len(self.keyList)):
+                for key in self.keyList[i]:
+                    if caption == key:
+                        self.lastPressedKeyIndex = index
+                        return index
+                    else:
+                        index += 1
+        else:
+            index = self.lastPressedKeyIndex
+        print(f"caption ({caption}) is not in the keyList, index = {index}.")
         return index
 
 
@@ -99,7 +113,11 @@ class View_keypad:
         self.record_button_position()
         index = self._get_index_in_keyList(caption)
         # print(f'index = {index}, \ncurrentBtnAttr = {self.buttonsAttributes}')
-        currentBtnAttr = self.buttonsAttributes[index]
+        if index < len(self.buttonsAttributes):
+            currentBtnAttr = self.buttonsAttributes[index]
+        else:
+            # currentBtnAttr = get previous key press
+            pass
         
         return currentBtnAttr
 
@@ -116,14 +134,14 @@ class View_keypad:
 
     """ word prediction below """
 
-    def _make_word_prediction_button(self, frame, predWord, currentBtnPlaceX, currentBtnPlaceY, index, previousX, boolOnTopOfPressedKey):
+    def _make_word_prediction_button(self, frame, predWord, currentBtnPlaceX, currentBtnPlaceY, previousX):
         command = (lambda button=predWord: self.controller.on_key_button_click(button+' '))
         x = 0
         y = 0
-        
+
         predWordBtn = tk.Button(frame, text=predWord, command=command, pady=5, bg='#C0C0C0', fg='black', font=('Calibri', 22))
 
-        if boolOnTopOfPressedKey:
+        if self.BOOL_WORD_PRED_PRESSED_KEY:
             x = currentBtnPlaceX + previousX
             y = currentBtnPlaceY - predWordBtn.winfo_reqheight() - self.PRED_WORD_ROW_GAP
         else:
@@ -141,29 +159,31 @@ class View_keypad:
 
         return predWordBtn, previousX
 
+    def clear_placed_words(self):
+        if self.predictedWordButtons:
+            for predWordBtn in self.predictedWordButtons:
+                predWordBtn.destroy()
+            self.predictedWordButtons = []
 
-
-    def place_predicted_words(self, caption, predWords, predNum, boolOnTopOfPressedKey):
-        
-        predictedWordButtons = []
+    def place_predicted_words(self, caption, predWords):
 
         currentBtnAttr = self._get_current_button_attribute(caption)
         
         previousX = 0
-        if len(predWords) < predNum:
+        if len(predWords) < self.WORD_PRED_NUM:
             index = 0 
             for word in predWords: 
-                predictedWordBtn, previousX = self._make_word_prediction_button(frame=self.keypadFrame, predWord=word, currentBtnPlaceX=currentBtnAttr[1], currentBtnPlaceY=currentBtnAttr[2], index=index, previousX=previousX, boolOnTopOfPressedKey=boolOnTopOfPressedKey)
+                predictedWordBtn, previousX = self._make_word_prediction_button(frame=self.keypadFrame, predWord=word, currentBtnPlaceX=currentBtnAttr[1], currentBtnPlaceY=currentBtnAttr[2], previousX=previousX)
 
-                predictedWordButtons.append(predictedWordBtn)
+                self.predictedWordButtons.append(predictedWordBtn)
                 index += 1
         else:
-            for i in range(predNum):
-                predictedWordBtn, previousX = self._make_word_prediction_button(frame=self.keypadFrame, predWord=predWords[i], currentBtnPlaceX=currentBtnAttr[1], currentBtnPlaceY=currentBtnAttr[2], index=i, previousX=previousX, boolOnTopOfPressedKey=boolOnTopOfPressedKey) # self.wordPred
+            for i in range(self.WORD_PRED_NUM):
+                predictedWordBtn, previousX = self._make_word_prediction_button(frame=self.keypadFrame, predWord=predWords[i], currentBtnPlaceX=currentBtnAttr[1], currentBtnPlaceY=currentBtnAttr[2], previousX=previousX) # self.wordPred
                 
-                predictedWordButtons.append(predictedWordBtn)
+                self.predictedWordButtons.append(predictedWordBtn)
 
-        return predictedWordButtons
+        # return predictedWordButtons
 
     """ word prediction above """
 
@@ -350,10 +370,10 @@ class View_menu:
 
         maxWordPredNumMenu = tk.Menu(wordPredSettingOnMenu)
         wordPredSettingOnMenu.add_cascade(label="Max Word Prediction Number", menu=maxWordPredNumMenu)
-        maxWordPredNumMenu.add_command(label="1", command=donothing)
-        maxWordPredNumMenu.add_command(label="2", command=donothing)
-        maxWordPredNumMenu.add_command(label="3", command=donothing)
-        maxWordPredNumMenu.add_command(label="4", command=donothing)
+        maxWordPredNumMenu.add_command(label="1", command=lambda:self.controller.set_word_pred_num(1))
+        maxWordPredNumMenu.add_command(label="2", command=lambda:self.controller.set_word_pred_num(2))
+        maxWordPredNumMenu.add_command(label="3", command=lambda:self.controller.set_word_pred_num(3))
+        maxWordPredNumMenu.add_command(label="4", command=lambda:self.controller.set_word_pred_num(4))
 
         wordPredPlaceMenu = tk.Menu(wordPredSettingOnMenu)
         wordPredSettingOnMenu.add_cascade(label="Word Predictions Place on Last-pressed Key", menu=wordPredPlaceMenu)
