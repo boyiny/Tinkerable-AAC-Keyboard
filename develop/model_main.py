@@ -29,6 +29,17 @@ class Model_main:
     
     def set_drag(self, boolDrag):
         return boolDrag
+    
+    """ Word prediction below """
+    def set_bool_word_pred(self, bool):
+        return bool
+        
+    def set_word_pred_num(self, num):
+        return num
+
+    def set_word_pred_on_last_pressed_key(self, bool):
+        return bool
+
 
     def make_word_prediction(self, entry):
         return self.wordPredTest
