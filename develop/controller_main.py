@@ -23,53 +23,52 @@ class Controller_main():
         #     entry = self.viewEntry.entry.get()
         self.currentPressedKey = caption
 
-
         text = self.modelMain.edit_text(caption)
         self.viewMain.textBox.set(text)
+
+        self.set_word_pred_display(self.viewKeypad.BOOL_WORD_PRED_DISPLAY)
+
         # print(f'button in lambda is: {caption}')
         # if boolWordPred:
         #     self.viewKeypad.make_word_prediction()
 
     """ Word Prediction Below """
 
+    def set_word_pred_num(self, num):
+        self.viewKeypad.WORD_PRED_NUM = self.modelMain.set_word_pred_num(num)
+
     def set_word_pred_display(self, bool):
+        self.viewKeypad.BOOL_WORD_PRED_DISPLAY = self.modelMain.set_bool_word_pred(bool)
         if bool:
             # turn on the display
-            print(f"Set word prediction display: On")
-            self.set_word_pred_on_last_pressed_key(True)
+            # print(f"Set word prediction display: On")
+            self.set_word_pred_on_last_pressed_key(self.viewKeypad.BOOL_WORD_PRED_PRESSED_KEY)
         else:
             # turn off the display
-            print(f"Set word prediction display: Off")
+            self.viewKeypad.clear_placed_words()
+            # print(f"Set word prediction display: Off")
 
-
-
+    
     def set_word_pred_on_last_pressed_key(self, bool):
         entry = self.viewEntry.entry.get()
         predictedWord = self._make_word_prediction(entry)
-        self.currentPressedKey= "h"
+        # self.currentPressedKey= "h"
+        self.viewKeypad.BOOL_WORD_PRED_PRESSED_KEY = self.modelMain.set_word_pred_on_last_pressed_key(bool)
+        self.viewKeypad.clear_placed_words()
 
-        
-        if bool and self.currentPressedKey != "" :
+        if bool:
             # on_last_pressed_key
-            # clear fixed word pred
-            self.viewKeypad.place_predicted_words(self.currentPressedKey, predWords=predictedWord, predNum=40, boolOnTopOfPressedKey=bool)
+            self.viewKeypad.place_predicted_words(self.currentPressedKey, predWords=predictedWord)
         else:
             # on fixed location
-            # clear last pressed 
-            self.viewKeypad.place_predicted_words(self.currentPressedKey, predWords=predictedWord, predNum=40, boolOnTopOfPressedKey=bool)
+            self.viewKeypad.place_predicted_words(self.currentPressedKey, predWords=predictedWord)
     
     def _make_word_prediction(self, entry):
         predictedWord = self.modelMain.make_word_prediction(entry)
         return predictedWord
         # show word pred
 
-    def _present_location_word_prediction(self, bool, predWord):
-        if bool:
-
-            # get pressed key location
-            pass
-        else:
-            pass
+   
 
     def on_word_prediction_click(self, entry, boolOnTopOfPressedKey):
         # predictedWord = self.modelMain.edit_text(entry)
@@ -78,11 +77,15 @@ class Controller_main():
         self.viewMain.textBox.set(text)
 
     """ Word Prediction Above """
+
+    """ Set dragable keys below """
     
     def set_drag(self, boolDrag):
         self.viewKeypad.KEY_DRAGABLE = self.modelMain.set_drag(boolDrag)
         self.viewKeypad.record_button_position()
         self.viewKeypad.refresh(self, self.viewMain, self.viewEntry)
+
+    """ Set dragable keys above """
 
 
 if __name__ == '__main__':
