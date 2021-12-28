@@ -95,7 +95,7 @@ class View_keypad:
 
     def _get_index_in_keyList(self, caption):
         index = 0
-        if caption and (len(caption)==1 or caption == "Space" or caption == "Clear" or caption == "Clear All" or caption == "<-"):
+        if caption and (len(caption)==1 or caption == "Space" or caption == "Clear" or caption == "Clear All" or caption == "Speak" or caption == "<-"):
             for i in range(len(self.keyList)):
                 for key in self.keyList[i]:
                     if caption == key:
@@ -329,12 +329,12 @@ class View_menu:
 
         predMethodMenu = tk.Menu(menuBar)
         menuBar.add_cascade(label="Prediction Methods", menu=predMethodMenu)
-        predMethodMenu.add_command(label="RoBERTa", command=donothing)
-        predMethodMenu.add_command(label="GPT-2", command=donothing)
+        predMethodMenu.add_command(label="RoBERTa", command=lambda:self.controller.set_word_pred_method(method="RoBERTa"))
+        predMethodMenu.add_command(label="GPT-2", command=lambda:self.controller.set_word_pred_method(method="GPT-2"))
 
         bm25Menu = tk.Menu(predMethodMenu)
         predMethodMenu.add_cascade(label="BM25", menu=bm25Menu)
-        bm25Menu.add_command(label="Original", command=donothing)
+        bm25Menu.add_command(label="Original", command=lambda:self.controller.set_word_pred_method(method="BM25"))
         
         bm25StoryTellingMenu = tk.Menu(bm25Menu)
         bm25Menu.add_cascade(label="Story Telling", menu=bm25StoryTellingMenu)

@@ -2,7 +2,9 @@ from model_main import Model_main
 from view_main import View_main, View_menu, View_entry, View_keypad
 
 
+
 class Controller_main():
+    
     def __init__(self):
         self.modelMain = Model_main()
         self.viewMain = View_main(self)
@@ -12,7 +14,10 @@ class Controller_main():
         self.viewMenu = View_menu(self, self.viewMain)
 
         self.currentPressedKey = ""
-
+        
+        self.boolBm25 = False
+        self.boolRoberta = False
+        self.boolGpt2 = False
 
     def main(self):
         self.viewMain.mainloop()
@@ -23,7 +28,7 @@ class Controller_main():
         #     entry = self.viewEntry.entry.get()
         self.currentPressedKey = caption
 
-        text = self.modelMain.edit_text(caption)
+        text = self.modelMain.edit_text(caption) 
         self.viewMain.textBox.set(text)
 
         self.set_word_pred_display(self.viewKeypad.BOOL_WORD_PRED_DISPLAY)
@@ -63,6 +68,24 @@ class Controller_main():
             # on fixed location
             self.viewKeypad.place_predicted_words(self.currentPressedKey, predWords=predictedWord)
     
+    def set_word_pred_method(self, method):
+        if method == "BM25":
+            self.modelMain.load_bm25()
+        elif method == "RoBERTa":
+            self.boolBm25 = False
+            self.boolRoberta = True
+            self.boolGpt2 = False
+            self.modelMain.load_roberta()
+        elif method == "GPT-2":
+            self.boolBm25 = False
+            self.boolRoberta = False
+            self.boolGpt2 = True
+            self.modelMain.load_gpt2()
+        else:
+            self.boolBm25 = False
+            self.boolRoberta = False
+            self.boolGpt2 = False
+
     def _make_word_prediction(self, entry):
         predictedWord = self.modelMain.make_word_prediction(entry)
         return predictedWord
@@ -71,7 +94,7 @@ class Controller_main():
    
 
     def on_word_prediction_click(self, entry, boolOnTopOfPressedKey):
-        # predictedWord = self.modelMain.edit_text(entry)
+        predictedWord = self.modelMain.edit_text(entry)
         
         text = self.viewKeypad.make_word_prediction(predictedWord, boolOnTopOfPressedKey)
         self.viewMain.textBox.set(text)
