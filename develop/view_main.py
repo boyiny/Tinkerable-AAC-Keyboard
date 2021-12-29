@@ -135,7 +135,8 @@ class View_keypad:
     """ word prediction below """
 
     def _make_word_prediction_button(self, frame, predWord, currentBtnPlaceX, currentBtnPlaceY, previousX):
-        command = (lambda button=predWord: self.controller.on_key_button_click(button+' '))
+        # command = (lambda button=predWord: self.controller.on_key_button_click(button+' '))
+        command = (lambda button=predWord: self.controller.on_predicted_word_button_click(button+' '))
         x = 0
         y = 0
 
@@ -186,6 +187,19 @@ class View_keypad:
         # return predictedWordButtons
 
     """ word prediction above """
+
+    """ sentence prediction below """  
+
+    def make_sentence_prediction_button(self):
+        pass
+
+    def clear_placed_sentence(self):
+        pass
+
+    def place_predicted_sentences(self):
+        pass  
+
+    """ sentence prediction above """
 
     """ refresh letterpad below """
 
