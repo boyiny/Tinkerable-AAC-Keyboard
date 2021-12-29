@@ -22,29 +22,37 @@ class Controller_main():
     def main(self):
         self.viewMain.mainloop()
 
+    """ On button click below """
+
     def on_key_button_click(self, caption): # , boolWordPred, boolSenPred
-        # if boolWordPred:
-        # # get current entry
-        #     entry = self.viewEntry.entry.get()
+
         self.currentPressedKey = caption
-
-        text = self.modelMain.edit_text(caption) 
+        text = self.modelMain.edit_text_letter(caption) 
         self.viewMain.textBox.set(text)
+        self._set_word_pred_display()
 
-        self.set_word_pred_display(self.viewKeypad.BOOL_WORD_PRED_DISPLAY)
+    
+    def on_predicted_word_button_click(self, entry):
+        """ Present selected pred word on textbox """
+        predictedWord = self.modelMain.edit_text_word(entry)
+        self._set_word_pred_display()
+        self.viewMain.textBox.set(predictedWord)
 
-        # print(f'button in lambda is: {caption}')
-        # if boolWordPred:
-        #     self.viewKeypad.make_word_prediction()
+        """ Update the word prediction """
+        self._set_word_pred_display()
+
+
+    """ On button click above """
 
     """ Word Prediction Below """
 
     def set_word_pred_num(self, num):
         self.viewKeypad.WORD_PRED_NUM = self.modelMain.set_word_pred_num(num)
 
-    def set_word_pred_display(self, bool):
-        self.viewKeypad.BOOL_WORD_PRED_DISPLAY = self.modelMain.set_bool_word_pred(bool)
-        if bool:
+    def _set_word_pred_display(self):
+        boolWordDisplay = self.modelMain.set_bool_word_pred(self.viewKeypad.BOOL_WORD_PRED_DISPLAY)
+
+        if boolWordDisplay:
             # turn on the display
             # print(f"Set word prediction display: On")
             self.set_word_pred_on_last_pressed_key(self.viewKeypad.BOOL_WORD_PRED_PRESSED_KEY)
@@ -55,6 +63,7 @@ class Controller_main():
 
     
     def set_word_pred_on_last_pressed_key(self, bool):
+        """ Called in viewMenu """
         entry = self.viewEntry.entry.get()
         predictedWord = self._make_word_prediction(entry)
         # self.currentPressedKey= "h"
@@ -91,13 +100,6 @@ class Controller_main():
         return predictedWord
         # show word pred
 
-   
-
-    def on_word_prediction_click(self, entry, boolOnTopOfPressedKey):
-        predictedWord = self.modelMain.edit_text(entry)
-        
-        text = self.viewKeypad.make_word_prediction(predictedWord, boolOnTopOfPressedKey)
-        self.viewMain.textBox.set(text)
 
     """ Word Prediction Above """
 

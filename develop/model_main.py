@@ -26,7 +26,7 @@ class Model_main:
 
     """ Textbox below"""
 
-    def edit_text(self, caption):
+    def edit_text_letter(self, caption):
         if caption == "<-":
             self.previousEntry = self.entry
             self.entry = self.entry[:-1]
@@ -36,45 +36,45 @@ class Model_main:
             self.entry = self.entry + '    '
         elif caption == "Speak":
             system(f'say {self.entry}')
-            # self._speak_text(self.entry)
-            # self.speachEngine.stop()
-            # self.entry = ""
         elif caption == "Clear All":
             self.entry = ''
             self.previousEntry = ''
         else:
-            if caption[-1] == " " and len(caption) > 1:
-                """ Caption is a word prediction """
-                # print(f"Caption is a word: {caption}")
-                if self.entry == "":
-                    """ Blank textbox """
-                    self.entry = self.entry + caption[0].upper() + caption[1:]
-                else:
-                    """ Textbox has content """
-                    if self.entry[-1] == " ":
-                        """ A word is finished """
-                        self.entry = self.entry + caption
-                    else:
-                        """ A word is not finished """
-                        wordList = self.entry.split()
-                        lastWord = wordList[-1]
-                        indexOfLastWord = self.entry.find(lastWord)
-                        self.entry = self.entry[0:indexOfLastWord] + caption
-                        
+            """ Caption is a letter """
+            if self.entry == "":
+                """ Blank textbox """
+                self.entry = self.entry + caption.upper()
+                    # self.entry = self.entry + caption[0].upper() + caption[1:]
             else:
-                """ Caption is a letter """
-                if self.entry == "":
-                    """ Blank textbox """
-                    self.entry = self.entry + caption.upper()
-                        # self.entry = self.entry + caption[0].upper() + caption[1:]
-                else:
-                    """ Textbox has content """
-                    if caption == "," or caption == "." or caption == "?" or caption == "!":
+                """ Textbox has content """
+                if caption == "," or caption == "." or caption == "?" or caption == "!":
+                    if self.entry[-1] == " ":
                         self.entry = self.entry[0:-1] + caption
                     else:
                         self.entry = self.entry + caption
+                else:
+                    self.entry = self.entry + caption
+
+        return self.entry
 
 
+    def edit_text_word(self, caption):
+        """ Caption is a word prediction """
+        if self.entry == "":
+            """ Blank textbox """
+            self.entry = self.entry + caption[0].upper() + caption[1:]
+        else:
+            """ Textbox has content """
+            if self.entry[-1] == " ":
+                """ A word is finished """
+                self.entry = self.entry + caption
+            else:
+                """ A word is not finished """
+                wordList = self.entry.split()
+                lastWord = wordList[-1]
+                indexOfLastWord = self.entry.rfind(lastWord) 
+                self.entry = self.entry[0:indexOfLastWord] + caption
+        
         return self.entry
 
     """ Textbox above"""

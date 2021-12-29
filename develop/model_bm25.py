@@ -1,13 +1,18 @@
 from rank_bm25 import BM25Okapi
 from data_types import Word_importance
+import os
 
 class Model_Bm25:
     WORD_PRED_NUM = 10
     SENT_PRED_NUM = 10
 
     def __init__(self):
-        file = open('./Dataset/sent_dev_aac.txt', 'r')
-        self.lines = file.readlines()
+
+        txt_path = './Dataset/sent_dev_aac.txt'
+        print(f"{os.path.dirname(__file__)}")
+        txt_path = os.path.join(os.path.dirname(__file__), txt_path)
+        with open(txt_path, 'r') as file:
+            self.lines = file.readlines()
         self.corpus = []
         
         for sentence in self.lines:
@@ -45,7 +50,7 @@ class Model_Bm25:
         for i in range(len(topNSen)):
             sentence = topNSen[i].rstrip("\n")
             self.predSentences.append(sentence)
-            print(f'sentence: {sentence}')
+            # print(f'sentence: {sentence}')
         self.predSentences = list(dict.fromkeys(self.predSentences))
 
         self.predWords = self._get_pred_words(wordPredNum)
