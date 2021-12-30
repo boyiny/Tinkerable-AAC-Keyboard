@@ -7,6 +7,7 @@ from model_roberta import Model_Roberta
 
 class Model_main:
     wordPredTest = ['hey', 'hello', 'have', 'has', 'happy', 'happen']
+    sentencePredTest = ["Jingyi, I miss you", "How is your day?", "When can I see you?", "Let's dance."]
 
     def __init__(self):
         self.previousEntry = ''
@@ -16,13 +17,8 @@ class Model_main:
         self.boolRoberta = False
         self.boolGpt2 = False
         self.wordPredNum = 4
-        # self.speachEngine = pyttsx.init()
+        self.sentencePredNum = 4
         
-    # """ Speak below """
-    # def _speak_text(self, text):
-    #     self.speachEngine.say(text)
-    #     self.speachEngine.runAndWait()
-    # """ Speak above """
 
     """ Textbox below"""
 
@@ -77,23 +73,34 @@ class Model_main:
         
         return self.entry
 
+    def edit_text_sentence(self, caption):
+        self.entry = self.entry + caption
+        return self.entry
+
     """ Textbox above"""
-    """ Word prediction below """
+    """ Word abd sentence prediction below """
 
     def set_drag(self, boolDrag):
         return boolDrag
 
     def set_bool_word_pred(self, bool):
         return bool
+
+    def set_bool_sentence_pred(self, bool):
+        return bool
         
     def set_word_pred_num(self, num):
         self.wordPredNum = num
         return num
 
+    def set_sentence_pred_num(self, num):
+        self.sentencePredNum = num
+        return num
+
     def set_word_pred_on_last_pressed_key(self, bool):
         return bool
     
-    """ Word prediction above """
+    """ Word and sentence prediction above """
     """ Word prediction method below """
 
     def load_bm25(self):
@@ -115,7 +122,7 @@ class Model_main:
         self.boolRoberta = False
         self.boolGpt2 = True
 
-    def make_word_prediction(self, entry):
+    def make_word_sentence_prediction(self, entry):
         predWords = []
         predSentences = []
         if self.boolBm25:
@@ -124,26 +131,15 @@ class Model_main:
             pass
         elif self.boolRoberta:
             pass
+
+        predSentences = self.sentencePredTest
         
-        return predWords
+        return predWords, predSentences
 
     """ Word prediction method above """
 
-# def _on_button_click(self, button, entry):
-#         # result = self.modelMain
-#         if button == "<-":
-#             entry2 = entry.get()
-#             pos = entry2[:-1]
-#             entry.delete(0 ,tk.END)
-#             entry.insert(0, pos)
-#         elif button == "Space":
-#             entry.insert(tk.END, ' ')
-#         elif button == "Tab ":
-#             entry.insert(tk.END, '    ')
-#         elif button == "Speak":
-#             pass
-#         elif button == "Clear All":
-#             entry.delete(0,tk.END)
-#         else:
-#             entry.insert(tk.END,button)
-#         # print(f'Button {caption} is clicked')
+    """ Sentence prediction method above """
+
+    # def make_sentence_prediction(self, entry):
+
+

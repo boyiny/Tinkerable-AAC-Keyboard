@@ -19,6 +19,9 @@ class Controller_main():
         self.boolRoberta = False
         self.boolGpt2 = False
 
+        self.boolWordPredOnPressedKey = False
+        self.boolSentencePredShow = True
+
     def main(self):
         self.viewMain.mainloop()
 
@@ -29,55 +32,52 @@ class Controller_main():
         self.currentPressedKey = caption
         text = self.modelMain.edit_text_letter(caption) 
         self.viewMain.textBox.set(text)
-        self._set_word_pred_display()
+        self._set_word_sentence_pred_display()
 
     
     def on_predicted_word_button_click(self, entry):
         """ Present selected pred word on textbox """
         predictedWord = self.modelMain.edit_text_word(entry)
-        self._set_word_pred_display()
+        self._set_word_sentence_pred_display()
         self.viewMain.textBox.set(predictedWord)
-
         """ Update the word prediction """
-        self._set_word_pred_display()
+        self._set_word_sentence_pred_display()
 
+
+    def on_predicted_sentence_button_click(self, entry):
+        predictedSentence = self.modelMain.edit_text_sentence(entry)
+        print(f"In controller_main: on_predicted_sentence_button_click()")
+        self._set_word_sentence_pred_display()
+        self.viewMain.textBox.set(predictedSentence)
+        
 
     """ On button click above """
 
-    """ Word Prediction Below """
+    """ Word and Sentence Prediction Below """
 
     def set_word_pred_num(self, num):
         self.viewKeypad.WORD_PRED_NUM = self.modelMain.set_word_pred_num(num)
 
-    def _set_word_pred_display(self):
-        boolWordDisplay = self.modelMain.set_bool_word_pred(self.viewKeypad.BOOL_WORD_PRED_DISPLAY)
+    def set_sentence_pred_num(self, num):
+        self.viewKeypad.SENT_PRED_NUM = self.modelMain.set_sentence_pred_num(num)
 
-        if boolWordDisplay:
-            # turn on the display
-            # print(f"Set word prediction display: On")
-            self.set_word_pred_on_last_pressed_key(self.viewKeypad.BOOL_WORD_PRED_PRESSED_KEY)
-        else:
-            # turn off the display
+
+    def _set_word_sentence_pred_display(self):
+
+        if self.viewKeypad.BOOL_WORD_PRED_DISPLAY and self.viewKeypad.BOOL_SENT_PRED_DISPLAY:
+            self._set_word_sentence_pred_place()
+        elif not(self.viewKeypad.BOOL_WORD_PRED_DISPLAY) and self.viewKeypad.BOOL_SENT_PRED_DISPLAY:
+            self._set_word_sentence_pred_place()
             self.viewKeypad.clear_placed_words()
-            # print(f"Set word prediction display: Off")
-
-    
-    def set_word_pred_on_last_pressed_key(self, bool):
-        """ Called in viewMenu """
-        entry = self.viewEntry.entry.get()
-        predictedWord = self._make_word_prediction(entry)
-        # self.currentPressedKey= "h"
-        self.viewKeypad.BOOL_WORD_PRED_PRESSED_KEY = self.modelMain.set_word_pred_on_last_pressed_key(bool)
-        self.viewKeypad.clear_placed_words()
-
-        if bool:
-            # on_last_pressed_key
-            self.viewKeypad.place_predicted_words(self.currentPressedKey, predWords=predictedWord)
+        elif self.viewKeypad.BOOL_WORD_PRED_DISPLAY and not(self.viewKeypad.BOOL_SENT_PRED_DISPLAY):
+            self._set_word_sentence_pred_place()
+            self.viewKeypad.clear_placed_sentence()
         else:
-            # on fixed location
-            self.viewKeypad.place_predicted_words(self.currentPressedKey, predWords=predictedWord)
+            # turn off word and sentence display
+            self.viewKeypad.clear_placed_words()
+
     
-    def set_word_pred_method(self, method):
+    def set_prediction_method(self, method):
         if method == "BM25":
             self.modelMain.load_bm25()
         elif method == "RoBERTa":
@@ -95,13 +95,48 @@ class Controller_main():
             self.boolRoberta = False
             self.boolGpt2 = False
 
-    def _make_word_prediction(self, entry):
-        predictedWord = self.modelMain.make_word_prediction(entry)
-        return predictedWord
+
+    def _make_word_sentence_prediction(self, entry):
+        predictedWord, predictedSentence = self.modelMain.make_word_sentence_prediction(entry)
+        return predictedWord, predictedSentence
         # show word pred
 
 
-    """ Word Prediction Above """
+    def set_word_pred_place(self, boolWordPlaceOnLastPressedKey):
+        self.boolWordPredOnPressedKey = boolWordPlaceOnLastPressedKey
+        self._set_word_sentence_pred_place()
+    
+    def set_sentence_pred_place(self, boolSentencePredShow):
+        self.boolSentencePredShow = boolSentencePredShow
+        self._set_word_sentence_pred_place()
+
+
+    def _set_word_sentence_pred_place(self):
+        """ Called in viewMenu """
+        entry = self.viewEntry.entry.get()
+        predictedWord, predictedSentence = self._make_word_sentence_prediction(entry)
+        # set button place method
+        self.viewKeypad.BOOL_WORD_PRED_PRESSED_KEY = self.modelMain.set_word_pred_on_last_pressed_key(self.boolWordPredOnPressedKey)
+        self.viewKeypad.clear_placed_words()
+
+        
+
+        if self.boolWordPredOnPressedKey:
+            # on_last_pressed_key
+            self.viewKeypad.place_predicted_words(self.currentPressedKey, predWords=predictedWord)
+        else:
+            # on fixed location
+            self.viewKeypad.place_predicted_words(self.currentPressedKey, predWords=predictedWord)
+        
+        self.viewKeypad.place_predicted_sentences(predictedSentence)
+        # TODO: set sentence display flag
+        # if self.viewKeypad.BOOL_SENT_PRED_DISPLAY:
+        #     self.viewKeypad.place_predicted_sentences(predictedSentence)
+       
+
+    
+    """ Word and Sentence Prediction Above """
+
 
     """ Set dragable keys below """
     
