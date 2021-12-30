@@ -53,6 +53,10 @@ class View_keypad:
     PRED_WORD_INIT_LOC_X = 15
     PRED_WORD_INIT_LOC_Y = 110
 
+    PRED_SENT_COL_GAP = 10
+    PRED_SENT_INIT_LOC_X = 1100
+    PRED_SENT_INIT_LOC_Y = 60
+
     buttons = []
     buttonsAttributes = []
 
@@ -69,7 +73,9 @@ class View_keypad:
     BOOL_WORD_PRED_DISPLAY = True
     BOOL_WORD_PRED_PRESSED_KEY = False
     WORD_PRED_NUM = 4
+    SENT_PRED_NUM = 4
 
+    BOOL_SENT_PRED_DISPLAY = True
 
 
     keyList = [['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '<-'], 
@@ -80,7 +86,7 @@ class View_keypad:
     
 
     def __init__(self, controller, rootFrame, entry): 
-        self.keypadFrame = tk.Frame(rootFrame, width=1300, height=940)
+        self.keypadFrame = tk.Frame(rootFrame, width=1500, height=940)
         self.keypadFrame.place(x=0, y=60)
         self.controller = controller
         self.entry = entry
@@ -156,7 +162,7 @@ class View_keypad:
         # print(f"predWordBtn.winfo_reqwidth() = {predWordBtn.winfo_reqwidth()}")
         
         if self.KEY_DRAGABLE:
-            self._make_dragable(predWordBtn, predWord)
+            self._make_dragable(predWordBtn) # , predWord
 
         return predWordBtn, previousX
 
@@ -172,16 +178,12 @@ class View_keypad:
         
         previousX = 0
         if len(predWords) < self.WORD_PRED_NUM:
-            index = 0 
             for word in predWords: 
                 predictedWordBtn, previousX = self._make_word_prediction_button(frame=self.keypadFrame, predWord=word, currentBtnPlaceX=currentBtnAttr[1], currentBtnPlaceY=currentBtnAttr[2], previousX=previousX)
-
                 self.predictedWordButtons.append(predictedWordBtn)
-                index += 1
         else:
             for i in range(self.WORD_PRED_NUM):
                 predictedWordBtn, previousX = self._make_word_prediction_button(frame=self.keypadFrame, predWord=predWords[i], currentBtnPlaceX=currentBtnAttr[1], currentBtnPlaceY=currentBtnAttr[2], previousX=previousX) # self.wordPred
-                
                 self.predictedWordButtons.append(predictedWordBtn)
 
         # return predictedWordButtons
@@ -190,14 +192,41 @@ class View_keypad:
 
     """ sentence prediction below """  
 
-    def make_sentence_prediction_button(self):
-        pass
+    def _make_sentence_prediction_button(self, frame, predSentence, previousY):
+        command = (lambda button=predSentence: self.controller.on_predicted_sentence_button_click(button))
+
+        predSentenceBtn = tk.Button(frame, text=predSentence, command=command, pady=5, bg='#C0C0C0', fg='black', font=('Calibri', 22))
+
+        x = self.PRED_SENT_INIT_LOC_X
+        y = self.PRED_SENT_INIT_LOC_Y + previousY
+
+        predSentenceBtn.place(x=x, y=y)
+        previousY = previousY + predSentenceBtn.winfo_reqheight() + self.PRED_SENT_COL_GAP
+
+        if self.KEY_DRAGABLE:
+            self._make_dragable(predSentenceBtn) # , predSentence
+        
+        return predSentenceBtn, previousY
+
+    def place_predicted_sentences(self, predSentence):
+        previousY = 0
+        print(f"predSentence: {predSentence[1]}, lenth: {len(predSentence)}")
+        if len(predSentence) < self.SENT_PRED_NUM:
+            for sentence in predSentence: 
+                predictedSentenceBtn, previousY = self._make_sentence_prediction_button(frame=self.keypadFrame, predSentence=sentence, previousY=previousY)
+                self.predictedSentenceButtons.append(predictedSentenceBtn)
+        else:
+            for i in range(self.SENT_PRED_NUM):
+                predictedSentenceBtn, previousY = self._make_sentence_prediction_button(frame=self.keypadFrame, predSentence=predSentence[i], previousY=previousY) # self.wordPred
+                self.predictedSentenceButtons.append(predictedSentenceBtn)  
 
     def clear_placed_sentence(self):
-        pass
+        if self.predictedSentenceButtons:
+            for predSentenceBtn in self.predictedSentenceButtons:
+                predSentenceBtn.destroy()
+            self.predictedSentenceButtons = []
 
-    def place_predicted_sentences(self):
-        pass  
+    
 
     """ sentence prediction above """
 
@@ -286,10 +315,10 @@ class View_keypad:
 
 
 
-    def _make_dragable(self,widget,caption):
+    def _make_dragable(self,widget): # ,caption
         widget.bind("<Button-1>", self._on_drag_start)
         widget.bind("<B1-Motion>", self._on_drag_motion)
-        widget.caption = caption
+        # widget.caption = caption
 
         
 
@@ -312,7 +341,7 @@ class View_keypad:
         keyBtn.place(x=placeX, y=placeY, width=sizeX, height=sizeY)
         
         if self.KEY_DRAGABLE:
-            self._make_dragable(keyBtn, caption)
+            self._make_dragable(keyBtn) # , caption
         return keyBtn
 
 
@@ -343,12 +372,12 @@ class View_menu:
 
         predMethodMenu = tk.Menu(menuBar)
         menuBar.add_cascade(label="Prediction Methods", menu=predMethodMenu)
-        predMethodMenu.add_command(label="RoBERTa", command=lambda:self.controller.set_word_pred_method(method="RoBERTa"))
-        predMethodMenu.add_command(label="GPT-2", command=lambda:self.controller.set_word_pred_method(method="GPT-2"))
+        predMethodMenu.add_command(label="RoBERTa", command=lambda:self.controller.set_prediction_method(method="RoBERTa"))
+        predMethodMenu.add_command(label="GPT-2", command=lambda:self.controller.set_prediction_method(method="GPT-2"))
 
         bm25Menu = tk.Menu(predMethodMenu)
         predMethodMenu.add_cascade(label="BM25", menu=bm25Menu)
-        bm25Menu.add_command(label="Original", command=lambda:self.controller.set_word_pred_method(method="BM25"))
+        bm25Menu.add_command(label="Original", command=lambda:self.controller.set_prediction_method(method="BM25"))
         
         bm25StoryTellingMenu = tk.Menu(bm25Menu)
         bm25Menu.add_cascade(label="Story Telling", menu=bm25StoryTellingMenu)
@@ -391,8 +420,8 @@ class View_menu:
 
         wordPredPlaceMenu = tk.Menu(wordPredSettingOnMenu)
         wordPredSettingOnMenu.add_cascade(label="Word Predictions Place on Last-pressed Key", menu=wordPredPlaceMenu)
-        wordPredPlaceMenu.add_command(label="On", command=lambda:self.controller.set_word_pred_on_last_pressed_key(True))
-        wordPredPlaceMenu.add_command(label="Off", command=lambda:self.controller.set_word_pred_on_last_pressed_key(False))
+        wordPredPlaceMenu.add_command(label="On", command=lambda:self.controller.set_word_pred_place(True))
+        wordPredPlaceMenu.add_command(label="Off", command=lambda:self.controller.set_word_pred_place(False))
 
         displayPredWordMenu.add_command(label="Off", command=lambda:self.controller.set_word_pred_display(False))
 
