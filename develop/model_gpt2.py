@@ -18,7 +18,7 @@ class Model_Gpt2:
     
 if __name__ == '__main__':
     gpt2 = Model_Gpt2()
-    query = "It is a "
+    query = "T"
     result = gpt2.predict(query)
     
     query2 = "That "
