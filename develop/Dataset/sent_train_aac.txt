@@ -1057,7 +1057,7 @@ Give me details.
 How old are you?
 You can read it as well.
 I am fine
-hey what took you so long ?
+hey what took you so long?
 The climate is getting warm
 wonderful, i cant believe it
 chicken for dinner?
@@ -1543,7 +1543,7 @@ Is there any change in my condition?
 stop
 How did my boss take the news?
 you came after long time?
-were you busy ?
+were you busy?
 Please turn on the lamp.
 I will need a change of clothes for dinner.
 How is everyone?
@@ -3363,7 +3363,7 @@ im coming now
 I am allergic to flowers, please remove them from my room.
 no
 come near me
-can you visit me everyday ?
+can you visit me everyday?
 Can you play chess?
 I'll have the same.
 i would like to hear from you
@@ -4799,7 +4799,7 @@ The weather is nice today.
 Your dog is feeling hungry.
 i am getting fatter
 Help me with dinner.
-You you enjoy your meal?
+You enjoy your meal?
 You forgot to buy bananas
 I miss them all
 Are we almost to our destination?
