@@ -111,7 +111,7 @@ class View_keypad:
                         index += 1
         else:
             index = self.lastPressedKeyIndex
-        print(f"caption ({caption}) is not in the keyList, index = {index}.")
+        # print(f"caption ({caption}) is not in the keyList, index = {index}.")
         return index
 
 
@@ -210,7 +210,7 @@ class View_keypad:
 
     def place_predicted_sentences(self, predSentence):
         previousY = 0
-        print(f"predSentence: {predSentence[1]}, lenth: {len(predSentence)}")
+        print(f"predSentence: {predSentence}, lenth: {len(predSentence)}")
         if len(predSentence) < self.SENT_PRED_NUM:
             for sentence in predSentence: 
                 predictedSentenceBtn, previousY = self._make_sentence_prediction_button(frame=self.keypadFrame, predSentence=sentence, previousY=previousY)
@@ -220,7 +220,7 @@ class View_keypad:
                 predictedSentenceBtn, previousY = self._make_sentence_prediction_button(frame=self.keypadFrame, predSentence=predSentence[i], previousY=previousY) # self.wordPred
                 self.predictedSentenceButtons.append(predictedSentenceBtn)  
 
-    def clear_placed_sentence(self):
+    def clear_placed_sentences(self):
         if self.predictedSentenceButtons:
             for predSentenceBtn in self.predictedSentenceButtons:
                 predSentenceBtn.destroy()
@@ -398,7 +398,7 @@ class View_menu:
         autoCapMenu.add_command(label="Off", command=donothing)
 
         speakMenu = tk.Menu(textDisplayMenu)
-        textDisplayMenu.add_cascade(label="Skeak", menu=speakMenu)
+        textDisplayMenu.add_cascade(label="Speak", menu=speakMenu)
         speakMenu.add_command(label="On", command=donothing)
         speakMenu.add_command(label="Off", command=donothing)
 
@@ -420,10 +420,10 @@ class View_menu:
 
         wordPredPlaceMenu = tk.Menu(wordPredSettingOnMenu)
         wordPredSettingOnMenu.add_cascade(label="Word Predictions Place on Last-pressed Key", menu=wordPredPlaceMenu)
-        wordPredPlaceMenu.add_command(label="On", command=lambda:self.controller.set_word_pred_place(True))
-        wordPredPlaceMenu.add_command(label="Off", command=lambda:self.controller.set_word_pred_place(False))
+        wordPredPlaceMenu.add_command(label="On", command=lambda:self.controller.set_word_pred_display(True, True))
+        wordPredPlaceMenu.add_command(label="Off", command=lambda:self.controller.set_word_pred_display(True, False))
 
-        displayPredWordMenu.add_command(label="Off", command=lambda:self.controller.set_word_pred_display(False))
+        displayPredWordMenu.add_command(label="Off", command=lambda:self.controller.set_word_pred_display(False, False))
 
 
 
@@ -433,8 +433,8 @@ class View_menu:
         
         displayPredSenMenu = tk.Menu(sentencePredSettingMenu)
         sentencePredSettingMenu.add_cascade(label="Display", menu=displayPredSenMenu)
-        displayPredSenMenu.add_command(label="On", command=donothing)
-        displayPredSenMenu.add_command(label="Off", command=donothing)
+        displayPredSenMenu.add_command(label="On", command=lambda:self.controller.set_sentence_pred_display(True))
+        displayPredSenMenu.add_command(label="Off", command=lambda:self.controller.set_sentence_pred_display(False))
 
         startWithKeywordMenu = tk.Menu(sentencePredSettingMenu) # Bag of key words
         sentencePredSettingMenu.add_cascade(label="Start with Keyword", menu=startWithKeywordMenu)
