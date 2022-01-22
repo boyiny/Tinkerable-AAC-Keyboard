@@ -80,6 +80,8 @@ class Model_main:
         if self.entry == "":
             """ Blank textbox """
             self.entry = self.entry + caption[0].upper() + caption[1:]
+        elif " " not in self.entry:
+            self.entry = caption[0].upper() + caption[1:]
         else:
             """ Textbox has content """
             # entryWordList = self.entry.split()
