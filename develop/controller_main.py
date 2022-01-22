@@ -184,15 +184,83 @@ class Controller_main():
         # show word pred
 
 
-
     def _make_sentence_prediction_with_pred_words(self, entry, predWords):
-        prediectedSentences = []
+        """ Show 2 sentence predictions for [the entry + first word], 1 sentence prediction for [the entry + second word] and [the entry + third word] """
+        predictedSentences = []
+        predSenTemp1 = []
+        predSenTemp2 = []
+        predSenTemp3 = []
+        predSenTemp4 = []
 
+        i = 0
         for word in predWords:
-            entryWithPredWord = entry + word
-            prediectedSentences.append(entryWithPredWord)
+            if entry == "":
+                entryWithPredWord = entry + word
+            elif entry[-1] == " ":
+                entryWithPredWord = entry + word
+            else: 
+                listOfWords = entry.split()
+                lastWord = listOfWords[-1]
+                indexOfLastWord = entry.rfind(lastWord)
+                entryWithPredWord = entry[0:indexOfLastWord] + word
+            print(f"entryWithPredWord is {entryWithPredWord}.")
+            predSen = self.modelMain.make_sentence_prediction(entryWithPredWord)
+            
+            if len(predSen) > 0:
+                if i == 0:
+                    predSenTemp1 = predSen
+                elif i == 1:
+                    predSenTemp2 = predSen
+                elif i == 2: 
+                    predSenTemp3 = predSen
+                else:
+                    predSenTemp4 = predSen
+            i += 1
 
-        return prediectedSentences
+        if len(predSenTemp1) >= 2:
+            for n in range(2):
+                predictedSentences.append(predSenTemp1[n])
+            if len(predSenTemp2) >= 1:
+                predictedSentences.append(predSenTemp2[0]) 
+                if len(predSenTemp3) >= 1:
+                    """ ideal, all have pred -> 1,1,2,3 """
+                    predictedSentences.append(predSenTemp3[0])
+                else:
+                    """ temp3 == 0 -> 1,1,2,4 """
+                    predictedSentences.append(predSenTemp4[0])
+            else:
+                """ temp2 == 0 """
+                if len(predSenTemp3) >= 1:
+                    predictedSentences.append(predSenTemp3[0])
+                    if len(predSenTemp4) >= 1:
+                        """ -> 1,1,3,4 """
+                        predictedSentences.append(predSenTemp4[0])
+                    else:
+                        """ temp4 == 0 """
+                        if len(predSenTemp3) >= 2:
+                            """ -> 1,1,3,3 """
+                            predictedSentences.append(predSenTemp3[1])
+                        else:
+                            if len(predSenTemp1) >= 3: 
+                                """ -> 1,1,1,3 """
+                                predictedSentences[2] = predSenTemp1[2]
+                                predictedSentences.append(predSenTemp3[0])
+        
+        if len(predictedSentences) < 4 and predSenTemp1 == 4:
+            """ -> 1,1,1,1 """
+            predictedSentences = []
+            for sen in predSenTemp1:
+                predictedSentences.append(sen)
+
+
+        predictedSentencesWithoutNone = []
+        for sen in predictedSentences:
+            if sen != "":
+                predictedSentencesWithoutNone.append(sen)
+        self.viewKeypad.clear_placed_sentences()
+        self.viewKeypad.place_predicted_sentences(predSentence=predictedSentencesWithoutNone)
+
+        return predictedSentences
 
 
     def _set_word_pred_place(self, boolWordPlaceOnLastPressedKey):
