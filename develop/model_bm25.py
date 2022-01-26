@@ -4,8 +4,6 @@ import os
 import re
 
 class Model_Bm25:
-    WORD_PRED_NUM = 10
-    SENT_PRED_NUM = 10
 
     def __init__(self):
 
@@ -106,34 +104,6 @@ class Model_Bm25:
         wordImp.sort(reverse=True, key=takeImportance)
 
         return wordImp
-
-
-    # def _pred_initial_word(self):
-    #     predInitWords = []
-    #     if self.predSentences != []:
-    #         for sen in self.predSentences:
-    #             listOfWords = sen.split()
-    #             initWord = listOfWords[0]
-    #             predInitWords.append(initWord)
-        
-    #     predInitWords = list(dict.fromkeys(predInitWords))
-
-    #     return predInitWords
-
-            
-    # def _pred_current_word(self):
-        
-    #     queryListOfWords = self.query.split()
-    #     currentUnfinishedWord = queryListOfWords[-1]
-    #     print(f"current unfinished word: {currentUnfinishedWord}")
-
-    #     predCurrentWords = []
-    #     if self.wordsImportance != []:
-    #         for wordImp in self.wordsImportance:
-    #             if wordImp.word.startswith(currentUnfinishedWord):
-    #                 predCurrentWords.append(wordImp.word)
-                
-        # return predCurrentWords
     
     def _pred_next_word(self, query, predSentences):
         queryListOfWords = query.split()
@@ -151,48 +121,6 @@ class Model_Bm25:
         predWords = list(dict.fromkeys(predWords))     
 
         return predWords
-
-
-    # def _get_pred_words(self, numOfPredWords):
-
-    #     if numOfPredWords > self.WORD_PRED_NUM:
-    #         numOfPredWords = self.WORD_PRED_NUM
-
-    #     self.predWords = []
-    #     predWordsInNum = []
-      
-    #     if self.query != "": 
-    #         """ having entry in textbox """
-    #         if self.query[-1] == " ":
-    #             self.predWords = self._pred_next_word()
-    #         else:
-    #             self.predWords = self._pred_current_word()
-
-    #     else: 
-    #         self.predWords = self._pred_initial_word()
-        
-    #     # print(f"Predicted Words: {self.predWords}")
-
-    #     if len(self.predWords) > numOfPredWords:
-    #         for i in range(numOfPredWords):
-    #             predWordsInNum.append(self.predWords[i])
-    #     else:
-    #         for word in self.predWords:
-    #             predWordsInNum.append(word)
-
-    #     # print(f"Pred words in num: {predWordsInNum}")
-
-    #     return predWordsInNum
-        
-    
-    # def _get_sentence_pred(self, numOfPredSentences):
-    #     if numOfPredSentences > self.SENT_PRED_NUM:
-    #         numOfPredSentences = self.SENT_PRED_NUM
-    #     predSentences = []
-    #     if self.results != []:
-    #         for i in range(numOfPredSentences):
-    #             predSentences.append(self.results[i])
-    #     return predSentences
 
 
 
