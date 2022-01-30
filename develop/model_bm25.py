@@ -38,12 +38,13 @@ class Model_Bm25:
 
 
     def predict_words(self, query):
+        print(f"In bm25, word, current entry is: '{query}'")
         predSentences = []
         query = query.lower()
         # print(f"query is: \'{self.query}\'")
 
         tokenized_query = query.split()
-        print(f"Tokenized query: {tokenized_query}")
+        # print(f"Tokenized query: {tokenized_query}")
 
         # doc_scores = self.bm25.get_scores(tokenized_query)
         # print(f"score: {doc_scores}")
@@ -66,6 +67,7 @@ class Model_Bm25:
         return predWords
 
     def predict_sentences(self, query):
+        print(f"In bm25, sentence, current entry is: '{query}'")
         query = query.lower()
         predSentences = []
 
