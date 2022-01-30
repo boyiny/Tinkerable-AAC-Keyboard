@@ -141,6 +141,7 @@ class Model_main:
         self.boolBm25 = False
         self.boolRoberta = False
         self.boolGpt2 = True
+        self.gpt2.set_gpt2_method("top-p sampling")
 
     def make_word_prediction(self, entry):
         """ link to controller_main """
@@ -148,7 +149,7 @@ class Model_main:
         if self.boolBm25:
             predWords = self.bm25.predict_words(entry)
         elif self.boolGpt2:
-            pass
+            predWords = self.gpt2.predict_words(entry)
         elif self.boolRoberta:
             pass
 
@@ -184,7 +185,7 @@ class Model_main:
         if self.boolBm25:
             predSentences = self.bm25.predict_sentences(entry)
         elif self.boolGpt2:
-            pass
+            predSentences = self.gpt2.predict_sentences(entry)
         elif self.boolRoberta:
             pass
 
@@ -193,6 +194,6 @@ class Model_main:
 
     """ Sentence prediction method above """
 
-    # def make_sentence_prediction(self, entry):
+
 
 
