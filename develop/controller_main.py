@@ -85,6 +85,7 @@ class Controller_main():
                 self.viewKeypad.clear_placed_words()
             if self.boolSentencePredDisplay:
                 # set sentence pred display
+                print(f"In controller_main, key_button_click, current entry is: '{entry}'")
                 self._make_sentence_prediction(entry)
             else:
                 self.viewKeypad.clear_placed_sentences()
@@ -121,7 +122,7 @@ class Controller_main():
         # sentence pred control
         if self.viewKeypad.BOOL_SENT_PRED_DISPLAY:
 
-            self._make_sentence_prediction(entry)
+            self._make_sentence_prediction(self.viewEntry.entry.get())
         else:
             self.viewKeypad.clear_placed_sentences()
         
@@ -302,7 +303,7 @@ class Controller_main():
         """ For menu setting """
         
         entry = self.viewEntry.entry.get()
-        print(f"Current entry is: {entry}.")
+        print(f"In controller_main, current entry is: '{entry}'")
         predictedSentence = self._make_sentence_prediction(entry)
         # set button place method
         self.viewKeypad.BOOL_WORD_PRED_PRESSED_KEY = self.modelMain.set_word_pred_on_last_pressed_key(self.boolWordPredOnPressedKey)
