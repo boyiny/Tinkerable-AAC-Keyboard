@@ -66,7 +66,7 @@ class Model_Bm25:
 
         return predWords
 
-    def predict_sentences(self, query):
+    def retrieve_sentences(self, query):
         print(f"In bm25, sentence, current entry is: '{query}'")
         query = query.lower()
         predSentences = []
@@ -131,7 +131,7 @@ if __name__ == '__main__':
     query1 = "You are a"
     query2 = "You are "
     nextWords = model.predict_words(query1)
-    sentences = model.predict_sentences(query2)
+    sentences = model.retrieve_sentences(query2)
     print(f"Next words: {nextWords}")
     print(f"Sentences: {sentences}")
 
