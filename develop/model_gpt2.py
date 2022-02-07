@@ -1,20 +1,22 @@
 from os import pread
+from symtable import Symbol
 from unittest.util import _MAX_LENGTH
 from soupsieve import match
 import torch
 from transformers import pipelines, set_seed
-from transformers import TFGPT2LMHeadModel, GPT2Tokenizer
 from transformers import GPT2TokenizerFast, GPT2LMHeadModel
 import transformers
-
+import time
+import re
 
 class Model_Gpt2:
 
     WORD_PRED_NUM = 5
     MAX_LENGTH = 30
+    SYMBOLS = "!@#$%^&*()_-+=`~\{\};':\",./<>?\|\n"
 
     def __init__(self):
-        self.type = "default"
+        self.type = "top-p sampling"
 
         # Using pipline by default
         self.generator = pipelines.pipeline(task='text-generation', model='gpt2', framework='pt')
@@ -27,11 +29,19 @@ class Model_Gpt2:
 
     def _load_gpt2_using_model_mechanism(self):
         # Load pre-trained model tokenizer (vocabulary)
-        self.tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
+        self.tokenizer = GPT2TokenizerFast.from_pretrained('gpt2')
 
         # Load pre-trained model (weights)
         # add the EOS token as PAD token to avoid warnings
         self.model = GPT2LMHeadModel.from_pretrained('gpt2', pad_token_id=self.tokenizer.eos_token_id)
+
+        # Load pre-trained model tokenizer (vocabulary)
+        # self.tokenizer = GPT2TokenizerFast.from_pretrained('/Users/yangboyin/Code/Cambridge/AAC/Tinkerable-AAC-Keyboard/Playground/GPT2Model', local_files_only=True)
+
+        # # Load pre-trained model (weights)
+        # self.model = GPT2LMHeadModel.from_pretrained('/Users/yangboyin/Code/Cambridge/AAC/Tinkerable-AAC-Keyboard/Playground/GPT2Model', local_files_only=True)
+
+        self.model.eval()
 
     def _pred_next_word(self, query, predSentences):
         queryListOfWords = query.split()
@@ -59,6 +69,7 @@ class Model_Gpt2:
             indexOfComma = result.find(",")
             indexOfQuestionMark = result.find("?")
             indexOfExclamationMark = result.find("!")
+            indexOfNewLine = result.find("\n")
             if indexOfPeriod != -1 and indexOfPeriod < index:
                 index = indexOfPeriod
             if indexOfComma != -1 and indexOfComma < index:
@@ -67,6 +78,8 @@ class Model_Gpt2:
                 index = indexOfQuestionMark
             if indexOfExclamationMark != -1 and indexOfExclamationMark < index:
                 index = indexOfExclamationMark
+            if indexOfNewLine != -1 and indexOfNewLine < index:
+                index = indexOfNewLine
             singleSentence = result[0:index]
             oneSentenceList.append(singleSentence)
             # print(singleSentence)
@@ -85,30 +98,58 @@ class Model_Gpt2:
             results = self._top_k_sampling_output(query)
         elif self.type == "top-p sampling":
             results = self._top_p_sampling_output(query)
-        elif self.type == "default":
-            results = self._default_output(query)
+        # elif self.type == "default":
+        #     results = self._default_output(query)
         
         prediction = self._strip_one_sentence(results)
         
         return prediction
 
-
     def predict_words(self, query):
+        #encode text inputs
         query = query.strip()
-        print(f"In gpt2 words, current entry is: '{query}'")
-        predWords = []
-        prediction = self._run_gpt2_method(query)
+        indexed_tokens = self.tokenizer.encode(query)
         
-        predWords = self._pred_next_word(query, prediction)
+        # Convert indexed tokens in a PyTorch tensor
+        tokens_tensor = torch.tensor([indexed_tokens])
+        
+        # Predict all tokens
+        with torch.no_grad():
+            outputs = self.model(tokens_tensor)
+            predictions = outputs[0]
+            
+        top_preds = 50
+        predWords = []
+        
+        predicted_indices = torch.argsort(predictions[0, -1, :], descending=True)
 
+        for i in range(top_preds):
+            predictedItem = predicted_indices[i].item()
+            decodedPredictedText = self.tokenizer.decode([predictedItem]).strip()
+            decodedPredictedText = re.sub(r'[^\w]', '', decodedPredictedText)
+            if decodedPredictedText != '':
+                predWords.append(decodedPredictedText)
+            
         return predWords
-    
-    def predict_sentences(self, query):
-        query = query.strip()
-        print(f"In gpt2 sentences, current entry is: '{query}'")
-        predSentences = []
 
-        predSentences = self._run_gpt2_method(query)
+    # def predict_words(self, query):
+    #     query = query.strip()
+    #     print(f"In gpt2 words, current entry is: '{query}'")
+    #     predWords = []
+    #     prediction = self._run_gpt2_method(query)
+        
+    #     predWords = self._pred_next_word(query, prediction)
+
+    #     return predWords
+    
+    def generate_sentences(self, query):
+        query = query.strip()
+        print(f"In gpt2 generate_sentences, current entry is: '{query}'")
+
+        if query != "":
+            predSentences = []
+
+            predSentences = self._run_gpt2_method(query)
 
         return predSentences
 
@@ -163,21 +204,34 @@ class Model_Gpt2:
 
     def _top_k_sampling_output(self, query):
         # encode context the generation is conditioned on
+        startEncode = time.time()
         input_ids = self.tokenizer.encode(query, return_tensors='pt')
+        endEncode = time.time()
+        print(f"top-k encode time: {endEncode - startEncode}")
 
         # set seed to reproduce results. Feel free to change the seed though to get different results
+        startSeed = time.time()
         set_seed(0)
+        endSeed = time.time()
+        print(f"top-k seed time: {endSeed - startSeed}")
+
 
         # set top_k to 50
+        startGenerate = time.time()
         top_k_sampling_output = self.model.generate(
             input_ids, 
             do_sample=True, 
             max_length=self.MAX_LENGTH, 
             top_k=50
         )
+        endGenerate = time.time()
+        print(f"top-k generate time: {endGenerate - startGenerate}")
 
         decodedTopKSamplingResult = []
+        startDecode = time.time()
         decodedTopKSamplingResult.append(self.tokenizer.decode(top_k_sampling_output[0], skip_special_tokens=True))
+        endDecode = time.time()
+        print(f"top-k decode time: {endDecode - startDecode}")
 
         return decodedTopKSamplingResult
 
@@ -223,11 +277,20 @@ if __name__ == '__main__':
     # prediction1 = gpt2.set_gpt2_method("top-p sampling", query1)
     # prediction2 = gpt2.set_gpt2_method("top-p sampling", query2)
     gpt2.set_gpt2_method("top-p sampling")
-    predWords = gpt2.predict_words(query1)
-    print(f"predWords = {predWords}")
-    predSentences = gpt2.predict_sentences(query1)
+    predSentences = gpt2.generate_sentences(query2)
     print(f"predSentences = {predSentences}")
 
+    predWords = gpt2.predict_words(query2)
+    print(f"predWords = {predWords}")
+    
+    while True:
+        query = input("Your query: ")
+        predWords = gpt2.predict_words(query)
+        for word in predWords:
+            print(f"Pred word: {word}")
+        predSentences = gpt2.generate_sentences(query)
+        for sen in predSentences:
+            print(f"Pred sen: {sen}")
 
 
     # gpt2.predict_words(query)
