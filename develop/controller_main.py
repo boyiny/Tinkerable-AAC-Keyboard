@@ -146,6 +146,7 @@ class Controller_main():
 
     
     def set_prediction_method(self, method):
+        subType = ""
         if method == "BM25":
             self.modelMain.load_bm25()
         elif method == "RoBERTa":
@@ -153,11 +154,15 @@ class Controller_main():
             self.boolRoberta = True
             self.boolGpt2 = False
             self.modelMain.load_roberta()
-        elif method == "GPT-2":
+        elif "GPT-2" in method:
+            index = method.find(":")
+            subType = method[index+2:]
+            print(f"In set prediction method, subType is '{subType}'")
             self.boolBm25 = False
             self.boolRoberta = False
             self.boolGpt2 = True
-            self.modelMain.load_gpt2()
+
+            self.modelMain.load_gpt2(subType)
         else:
             self.boolBm25 = False
             self.boolRoberta = False
