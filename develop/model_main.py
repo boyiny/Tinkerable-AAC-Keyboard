@@ -58,20 +58,23 @@ class Model_main:
 
     def edit_text_word(self, caption):
         """ Caption is a word prediction """
-        if self.entry == "":
-            """ Blank textbox """
-            self.entry = self.entry + caption[0].upper() + caption[1:]
+        if caption[0] == "'":
+            self.entry = self.entry + caption
         else:
-            """ Textbox has content """
-            if self.entry[-1] == " ":
-                """ A word is finished """
-                self.entry = self.entry + caption
+            if self.entry == "":
+                """ Blank textbox """
+                self.entry = self.entry + caption[0].upper() + caption[1:]
             else:
-                """ A word is not finished """
-                wordList = self.entry.split()
-                lastWord = wordList[-1]
-                indexOfLastWord = self.entry.rfind(lastWord) 
-                self.entry = self.entry[0:indexOfLastWord] + caption
+                """ Textbox has content """
+                if self.entry[-1] == " ":
+                    """ A word is finished """
+                    self.entry = self.entry + caption
+                else:
+                    """ A word is not finished """
+                    wordList = self.entry.split()
+                    lastWord = wordList[-1]
+                    indexOfLastWord = self.entry.rfind(lastWord) 
+                    self.entry = self.entry[0:indexOfLastWord] + caption
         
         return self.entry
 
@@ -136,12 +139,12 @@ class Model_main:
         self.boolRoberta = True
         self.boolGpt2 = False
     
-    def load_gpt2(self):
+    def load_gpt2(self, subType):
         self.gpt2 = Model_Gpt2()
         self.boolBm25 = False
         self.boolRoberta = False
         self.boolGpt2 = True
-        self.gpt2.set_gpt2_method("top-p sampling")
+        self.gpt2.set_gpt2_method(subType) # "top-p sampling"
 
     def make_word_prediction(self, entry):
         """ link to controller_main """
@@ -151,7 +154,7 @@ class Model_main:
         elif self.boolGpt2:
             predWords = self.gpt2.predict_words(entry)
         elif self.boolRoberta:
-            pass
+            predWords = self.roberta.predict_words(entry)
 
         predWordsInNum = self._get_required_num_of_pred(predWords, self.wordPredNum)
         print(f"predicted words: {predWordsInNum}")
@@ -181,11 +184,12 @@ class Model_main:
 
     def make_sentence_prediction(self, entry):
         """ link to controller_main """
+        # TODO add sentence generation and sentence retrieval options.
         predSentences = []
         if self.boolBm25:
-            predSentences = self.bm25.predict_sentences(entry)
+            predSentences = self.bm25.retrieve_sentences(entry)
         elif self.boolGpt2:
-            predSentences = self.gpt2.predict_sentences(entry)
+            predSentences = self.gpt2.generate_sentences(entry)
         elif self.boolRoberta:
             pass
 
