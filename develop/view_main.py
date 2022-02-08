@@ -2,7 +2,6 @@ from os import pread
 import tkinter as tk
 from tkinter import ttk
 from typing import Sized
-# from tkinter.constants import BOTTOM
 
 
 class View_main(tk.Tk):
@@ -395,6 +394,8 @@ class View_menu:
         bm25Menu.add_cascade(label="Routine Conversation", menu=bm25RoutineConvMenu)
         bm25RoutineConvMenu.add_command(label="Context Aware On", command=donothing)
         bm25RoutineConvMenu.add_command(label="Context Aware Off", command=donothing)
+
+        predMethodMenu.add_command(label="Default", command=lambda:self.controller.set_prediction_method(method="Default"))
 
         textDisplayMenu = tk.Menu(menuBar)
         menuBar.add_cascade(label="Text Display", menu=textDisplayMenu)
