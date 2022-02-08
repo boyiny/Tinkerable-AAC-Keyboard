@@ -4,6 +4,7 @@ from model_fill_word import Fill_Word
 from model_bm25 import Model_Bm25
 from model_gpt2 import Model_Gpt2
 from model_roberta import Model_Roberta
+from model_semantic_sentence_retrieval import Model_Semantic_Sentence_Retrieval
 
 
 class Model_main:
@@ -17,6 +18,8 @@ class Model_main:
         self.boolBm25 = False
         self.boolRoberta = False
         self.boolGpt2 = False
+        self.boolSenRetrieval = True # False -> use sentence generation
+        self.boolSemantic = False
         self.wordPredNum = 4
         self.sentencePredNum = 4
 
@@ -125,6 +128,14 @@ class Model_main:
     def load_fill_word(self):
         self.fillWord = Fill_Word()
 
+    def load_semantic_sen_retrieval(self):
+        self.semanticSenRetri = Model_Semantic_Sentence_Retrieval()
+        self.boolSenRetrieval = True
+        self.boolSemantic = True
+        self.boolBm25 = False
+        self.boolRoberta = False
+        self.boolGpt2 = False
+
 
     def load_bm25(self):
         self.bm25 = Model_Bm25()
@@ -186,12 +197,16 @@ class Model_main:
         """ link to controller_main """
         # TODO add sentence generation and sentence retrieval options.
         predSentences = []
-        if self.boolBm25:
-            predSentences = self.bm25.retrieve_sentences(entry)
-        elif self.boolGpt2:
-            predSentences = self.gpt2.generate_sentences(entry)
-        elif self.boolRoberta:
-            pass
+        if self.boolSenRetrieval:
+            predSentences = self.semanticSenRetri.retrieve_sentences(entry)
+        else:
+            if self.boolBm25:
+                # TODO move to above
+                predSentences = self.bm25.retrieve_sentences(entry)
+            elif self.boolGpt2:
+                predSentences = self.gpt2.generate_sentences(entry)
+            elif self.boolRoberta:
+                pass
 
         predSetencesInNum = self._get_required_num_of_pred(predSentences, self.sentencePredNum)
         return predSetencesInNum
