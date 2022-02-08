@@ -18,6 +18,8 @@ class Controller_main():
         self.boolBm25 = False
         self.boolRoberta = False
         self.boolGpt2 = False
+        self.boolSenRetrieval = True
+        self.boolSemantic = True
 
         self.boolWordPredDisplay = False
         self.boolWordPredOnPressedKey = False
@@ -146,6 +148,7 @@ class Controller_main():
 
     
     def set_prediction_method(self, method):
+        # TODO add sentence generation and sentence retrieval options
         subType = ""
         if method == "BM25":
             self.modelMain.load_bm25()
@@ -163,6 +166,13 @@ class Controller_main():
             self.boolGpt2 = True
 
             self.modelMain.load_gpt2(subType)
+        elif method == "Default":
+            self.boolBm25 = False
+            self.boolRoberta = False
+            self.boolGpt2 = False
+            self.boolSenRetrieval = True
+            self.boolSemantic = True
+            self.modelMain.load_semantic_sen_retrieval()
         else:
             self.boolBm25 = False
             self.boolRoberta = False
