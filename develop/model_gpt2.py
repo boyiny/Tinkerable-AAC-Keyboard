@@ -11,16 +11,16 @@ import re
 
 class Model_Gpt2:
 
-    WORD_PRED_NUM = 5
     MAX_LENGTH = 30
+    SEED = 0
     SYMBOLS = "!@#$%^&*()_-+=`~\{\};':\",./<>?\|\n"
 
     def __init__(self):
         self.type = "top-p sampling"
 
         # Using pipline by default
-        self.generator = pipelines.pipeline(task='text-generation', model='gpt2', framework='pt')
-        set_seed(32)
+        # self.generator = pipelines.pipeline(task='text-generation', model='gpt2', framework='pt')
+        # set_seed(self.SEED)
 
     def set_gpt2_method(self, type):
         """ Link the menu """        
@@ -160,7 +160,10 @@ class Model_Gpt2:
         input_ids = self.tokenizer.encode(query, return_tensors='pt')
 
         # generate text until the output length (which includes the context length) reaches 50
-        greedy_result = self.model.generate(input_ids, max_length=self.MAX_LENGTH, no_repeat_ngram_size=2)
+        greedy_result = self.model.generate(
+            input_ids, 
+            max_length=self.MAX_LENGTH, 
+            no_repeat_ngram_size=2)
         decodedGreedyResult = self.tokenizer.decode(greedy_result[0], skip_special_tokens=True)
 
         return decodedGreedyResult
@@ -187,7 +190,7 @@ class Model_Gpt2:
         input_ids = self.tokenizer.encode(query, return_tensors='pt')
 
         # set seed to reproduce results. Feel free to change the seed though to get different results
-        set_seed(0)
+        set_seed(self.SEED)
 
         # activate sampling and deactivate top_k by setting top_k sampling to 0
         sampling_output = self.model.generate(
@@ -211,7 +214,7 @@ class Model_Gpt2:
 
         # set seed to reproduce results. Feel free to change the seed though to get different results
         startSeed = time.time()
-        set_seed(0)
+        set_seed(self.SEED)
         endSeed = time.time()
         print(f"top-k seed time: {endSeed - startSeed}")
 
@@ -240,7 +243,7 @@ class Model_Gpt2:
         input_ids = self.tokenizer.encode(query, return_tensors='pt')
 
         # set seed to reproduce results. Feel free to change the seed though to get different results
-        set_seed(0)
+        set_seed(self.SEED)
 
         # deactivate top_k sampling and sample only from 92% most likely words
         top_p_sampling_outputs = self.model.generate(
@@ -258,14 +261,14 @@ class Model_Gpt2:
 
         return decodedTopPSamplingResult
 
-    def _default_output(self, query):
-        results = self.generator(query, max_length=30, num_return_sequence=5)
-        defaultPredResult = []
-        for res in results:
-            sen = res.get('generated_text')
-            defaultPredResult.append(sen) 
+    # def _default_output(self, query):
+    #     results = self.generator(query, max_length=30, num_return_sequence=5)
+    #     defaultPredResult = []
+    #     for res in results:
+    #         sen = res.get('generated_text')
+    #         defaultPredResult.append(sen) 
 
-        return defaultPredResult
+    #     return defaultPredResult
 
     
     

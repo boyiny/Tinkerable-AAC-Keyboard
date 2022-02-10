@@ -1,9 +1,15 @@
-from rank_bm25 import BM25Okapi
+from rank_bm25 import BM25Okapi, BM25L, BM25Plus
 from data_types import Word_importance
 import os
 import re
 
 class Model_Bm25:
+    BM25_OPTIONS = "BM25Okapi"
+    BM25_k1 = 1.5
+    BM25_b = 0.75
+    BM25_epsilon = 0.25
+    BM25_delta_L = 0.5
+    BM25_delta_Plus = 1
 
     def __init__(self):
 
@@ -27,7 +33,15 @@ class Model_Bm25:
             self.corpus.append(sen)
 
         self.tokenized_corpus = [doc.split(" ") for doc in self.corpus]
-        self.bm25 = BM25Okapi(self.tokenized_corpus)
+        if self.BM25_OPTIONS == "BM25Okapi":
+            self.bm25 = BM25Okapi(self.tokenized_corpus, k1=self.BM25_k1, b=self.BM25_b, epsilon=self.BM25_epsilon)
+        elif self.BM25_OPTIONS == "BM25L":
+            self.bm25 = BM25L(self.tokenized_corpus)
+        elif self.BM25_OPTIONS == "BM25Plus":
+            self.bm25 = BM25Plus(self.tokenized_corpus)
+        else:
+            print(f"Unknown BM25 selection, using BM25Okapi...")
+            self.bm25 = BM25Okapi(self.tokenized_corpus)
         
         allWords = []
         for sentence in self.tokenized_corpus:
