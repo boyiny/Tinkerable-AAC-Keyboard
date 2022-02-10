@@ -1,7 +1,10 @@
+import imp
 from os import pread
 import tkinter as tk
 from tkinter import ttk
 from typing import Sized
+
+from view_tinker_panel import View_tinker
 
 
 class View_main(tk.Tk):
@@ -356,6 +359,7 @@ class View_menu:
         self.rootFrame = rootFrame
         self.controller = controller
         self._make_menu()
+        self.tinkerView = View_tinker()
 
     def _make_menu(self):
         def donothing():
@@ -483,4 +487,8 @@ class View_menu:
         moveElementMenu.add_command(label="Off", command=lambda:self.controller.set_drag(False))
         moveElementMenu.add_command(label="Window Size", command=donothing)
 
+        tinkerMenu = tk.Menu(menuBar)
+        menuBar.add_cascade(label="Tinker", menu=tinkerMenu)
+        tinkerMenu.add_command(label="Default Prediction Setting", command=donothing)
+        tinkerMenu.add_command(label="Open Tinker Panel...", command=lambda:self.tinkerView.run())
 
