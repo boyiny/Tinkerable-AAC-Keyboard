@@ -10,7 +10,8 @@ class Model_Semantic_Sentence_Retrieval:
 
         rootDir = os.path.dirname(__file__)
 
-        self.model = SentenceTransformer(os.path.join(rootDir, 'Model','DistilbertBase')) # './' + path_change +'DistilbertBase' 
+        # self.model = SentenceTransformer(os.path.join(rootDir, 'Model','DistilbertBase')) # './' + path_change +'DistilbertBase' 
+        self.model = SentenceTransformer('all-mpnet-base-v2')
 
         with open(os.path.join(rootDir, 'Dataset', 'sent_train_aac.txt')) as f: #  + path_change
             self.corpus1 = [line.rstrip() for line in f]
