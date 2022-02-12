@@ -24,7 +24,6 @@ class View_tinker:
     DELTA_BM25PLUS = 1.0
 
     MODEL_GPT2 = ["distilgpt2", "gpt2", "gpt2-medium", "gpt2-large", "gpt2-xl", "Please input..."]
-    SEED_GPT2 = 0
 
     MODEL_ROBERTA = ["distilroberta-base","roberta-base", "roberta-large", "xlm-roberta-base", "xlm-roberta-large", "Please input..."]
 
@@ -50,15 +49,20 @@ class View_tinker:
     def __init__(self):
         pass
         
-       
+    def _close(self):
+        self.root.destroy()
+
+    def _save(self):
+        self.root.destroy()
+        
 
     def run(self):
         
 
-        root = tk.Tk()
-        root.title("Tinker Panel")
+        self.root = tk.Tk()
+        self.root.title("Tinker Panel")
 
-        baseFrame = ttk.Frame(root)
+        baseFrame = ttk.Frame(self.root)
         baseFrame.pack(padx=5, pady=5)
 
         tabControl = ttk.Notebook(baseFrame)
@@ -71,10 +75,10 @@ class View_tinker:
         tabControl.pack(expand = 1, fill ="both")
 
 
-        cancelBtn = ttk.Button(baseFrame, text="Cancel")
+        cancelBtn = ttk.Button(baseFrame, text="Cancel", command=self._close)
         cancelBtn.pack(padx=5, pady=5, side=tk.RIGHT)
 
-        confirmBtn = ttk.Button(baseFrame, text="Confirm")
+        confirmBtn = ttk.Button(baseFrame, text="Confirm", command=self._save)
         confirmBtn.pack(padx=5, pady=5, side=tk.RIGHT)
 
         
@@ -86,7 +90,7 @@ class View_tinker:
                     
         # ttk.Button(buttonFrame, text="Confirm").
 
-        root.mainloop() 
+        self.root.mainloop() 
 
     def _word_pred_method_combobox(self, event, frame):
         # TODO when "Confirm" button is clicked -> record data via .get()
@@ -153,7 +157,7 @@ class View_tinker:
             modelGpt2.grid(sticky="W", column=1, row=4)
             # row 5
             ttk.Label(frame, text="Seed").grid(sticky="E", column=0, row=5)
-            seedGpt2String = tk.StringVar(frame, self.SEED_GPT2)
+            seedGpt2String = tk.StringVar(frame, self.GPT2_SEED)
             seedGpt2 = tk.Entry(frame, width=21, textvariable=seedGpt2String)
             seedGpt2.grid(sticky="W", column=1, row=5)
             #  row 6
@@ -409,7 +413,7 @@ class View_tinker:
         
         if self.senGenMethod.get() == "GPT-2":
             # row 5
-            ttk.Label(frame, text="Select Method").grid(sticky="E", column=0, row=5)
+            ttk.Label(frame, text="      Select Method").grid(sticky="E", column=0, row=5)
             self.senGpt2Approach = ttk.Combobox(frame, values=self.SEN_GPT2_APPROACH, state="readonly")
             self.senGpt2Approach.grid(sticky="W", column=1, row=5)
             self.senGpt2Approach.current(0)
@@ -428,7 +432,23 @@ class View_tinker:
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1,row=9)
         elif self.senGenMethod.get() == "KWickChat":
             # row 5
-            pass
+            ttk.Label(frame, text="Number of History").grid(sticky="E", column=0, row=5)
+            senKWHistoryNumString = tk.StringVar(frame, value=self.SEN_KW_HISTORY_NUM)
+            senKWHistoryNum = tk.Entry(frame, width=21, textvariable=senKWHistoryNumString)
+            senKWHistoryNum.grid(sticky="W", column=1, row=5)
+            # row 6
+            ttk.Label(frame, text="      Persona").grid(sticky="E", column=0, row=6)
+            senKWPersona = tk.Entry(frame, width=21)
+            senKWPersona.grid(sticky="W", column=1, row=6)
+            # row 7
+            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=7)
+            ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1,row=7)
+            # row 8
+            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=8)
+            ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1,row=8)
+             # row 9
+            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=9)
+            ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1,row=9)
 
     def _sen_pred_approach_combobox(self, event, frame):
         
