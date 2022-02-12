@@ -1,8 +1,10 @@
+import imp
 from os import pread
 import tkinter as tk
 from tkinter import ttk
 from typing import Sized
-# from tkinter.constants import BOTTOM
+
+from view_tinker_panel import View_tinker
 
 
 class View_main(tk.Tk):
@@ -357,6 +359,7 @@ class View_menu:
         self.rootFrame = rootFrame
         self.controller = controller
         self._make_menu()
+        self.tinkerView = View_tinker()
 
     def _make_menu(self):
         def donothing():
@@ -373,7 +376,14 @@ class View_menu:
         predMethodMenu = tk.Menu(menuBar)
         menuBar.add_cascade(label="Prediction Methods", menu=predMethodMenu)
         predMethodMenu.add_command(label="RoBERTa", command=lambda:self.controller.set_prediction_method(method="RoBERTa"))
-        predMethodMenu.add_command(label="GPT-2", command=lambda:self.controller.set_prediction_method(method="GPT-2"))
+        
+        gpt2Menu = tk.Menu(predMethodMenu)
+        predMethodMenu.add_cascade(label="GPT-2", menu=gpt2Menu)
+        gpt2Menu.add_command(label="Greedy Search", command=lambda:self.controller.set_prediction_method(method="GPT-2: greedy"))
+        gpt2Menu.add_command(label="Beam Search", command=lambda:self.controller.set_prediction_method(method="GPT-2: beam"))
+        gpt2Menu.add_command(label="Sampling (K=0)", command=lambda:self.controller.set_prediction_method(method="GPT-2: sampling"))
+        gpt2Menu.add_command(label="Top-k Sampling", command=lambda:self.controller.set_prediction_method(method="GPT-2: top-k sampling"))
+        gpt2Menu.add_command(label="Top-p Sampling", command=lambda:self.controller.set_prediction_method(method="GPT-2: top-p sampling"))
 
         bm25Menu = tk.Menu(predMethodMenu)
         predMethodMenu.add_cascade(label="BM25", menu=bm25Menu)
@@ -388,6 +398,8 @@ class View_menu:
         bm25Menu.add_cascade(label="Routine Conversation", menu=bm25RoutineConvMenu)
         bm25RoutineConvMenu.add_command(label="Context Aware On", command=donothing)
         bm25RoutineConvMenu.add_command(label="Context Aware Off", command=donothing)
+
+        predMethodMenu.add_command(label="Default", command=lambda:self.controller.set_prediction_method(method="Default"))
 
         textDisplayMenu = tk.Menu(menuBar)
         menuBar.add_cascade(label="Text Display", menu=textDisplayMenu)
@@ -475,4 +487,8 @@ class View_menu:
         moveElementMenu.add_command(label="Off", command=lambda:self.controller.set_drag(False))
         moveElementMenu.add_command(label="Window Size", command=donothing)
 
+        tinkerMenu = tk.Menu(menuBar)
+        menuBar.add_cascade(label="Tinker", menu=tinkerMenu)
+        tinkerMenu.add_command(label="Default Prediction Setting", command=donothing)
+        tinkerMenu.add_command(label="Open Tinker Panel...", command=lambda:self.tinkerView.run())
 

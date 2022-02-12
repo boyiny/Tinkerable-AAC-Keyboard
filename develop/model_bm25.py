@@ -1,11 +1,15 @@
-from rank_bm25 import BM25Okapi
+from rank_bm25 import BM25Okapi, BM25L, BM25Plus
 from data_types import Word_importance
 import os
 import re
 
 class Model_Bm25:
-    WORD_PRED_NUM = 10
-    SENT_PRED_NUM = 10
+    BM25_OPTIONS = "BM25Okapi"
+    BM25_k1 = 1.5
+    BM25_b = 0.75
+    BM25_epsilon = 0.25
+    BM25_delta_L = 0.5
+    BM25_delta_Plus = 1
 
     def __init__(self):
 
@@ -29,7 +33,15 @@ class Model_Bm25:
             self.corpus.append(sen)
 
         self.tokenized_corpus = [doc.split(" ") for doc in self.corpus]
-        self.bm25 = BM25Okapi(self.tokenized_corpus)
+        if self.BM25_OPTIONS == "BM25Okapi":
+            self.bm25 = BM25Okapi(self.tokenized_corpus, k1=self.BM25_k1, b=self.BM25_b, epsilon=self.BM25_epsilon)
+        elif self.BM25_OPTIONS == "BM25L":
+            self.bm25 = BM25L(self.tokenized_corpus)
+        elif self.BM25_OPTIONS == "BM25Plus":
+            self.bm25 = BM25Plus(self.tokenized_corpus)
+        else:
+            print(f"Unknown BM25 selection, using BM25Okapi...")
+            self.bm25 = BM25Okapi(self.tokenized_corpus)
         
         allWords = []
         for sentence in self.tokenized_corpus:
@@ -40,12 +52,13 @@ class Model_Bm25:
 
 
     def predict_words(self, query):
+        print(f"In bm25, word, current entry is: '{query}'")
         predSentences = []
         query = query.lower()
         # print(f"query is: \'{self.query}\'")
 
         tokenized_query = query.split()
-        print(f"Tokenized query: {tokenized_query}")
+        # print(f"Tokenized query: {tokenized_query}")
 
         # doc_scores = self.bm25.get_scores(tokenized_query)
         # print(f"score: {doc_scores}")
@@ -67,7 +80,8 @@ class Model_Bm25:
 
         return predWords
 
-    def predict_sentences(self, query):
+    def retrieve_sentences(self, query):
+        print(f"In bm25, sentence, current entry is: '{query}'")
         query = query.lower()
         predSentences = []
 
@@ -106,34 +120,6 @@ class Model_Bm25:
         wordImp.sort(reverse=True, key=takeImportance)
 
         return wordImp
-
-
-    # def _pred_initial_word(self):
-    #     predInitWords = []
-    #     if self.predSentences != []:
-    #         for sen in self.predSentences:
-    #             listOfWords = sen.split()
-    #             initWord = listOfWords[0]
-    #             predInitWords.append(initWord)
-        
-    #     predInitWords = list(dict.fromkeys(predInitWords))
-
-    #     return predInitWords
-
-            
-    # def _pred_current_word(self):
-        
-    #     queryListOfWords = self.query.split()
-    #     currentUnfinishedWord = queryListOfWords[-1]
-    #     print(f"current unfinished word: {currentUnfinishedWord}")
-
-    #     predCurrentWords = []
-    #     if self.wordsImportance != []:
-    #         for wordImp in self.wordsImportance:
-    #             if wordImp.word.startswith(currentUnfinishedWord):
-    #                 predCurrentWords.append(wordImp.word)
-                
-        # return predCurrentWords
     
     def _pred_next_word(self, query, predSentences):
         queryListOfWords = query.split()
@@ -153,55 +139,13 @@ class Model_Bm25:
         return predWords
 
 
-    # def _get_pred_words(self, numOfPredWords):
-
-    #     if numOfPredWords > self.WORD_PRED_NUM:
-    #         numOfPredWords = self.WORD_PRED_NUM
-
-    #     self.predWords = []
-    #     predWordsInNum = []
-      
-    #     if self.query != "": 
-    #         """ having entry in textbox """
-    #         if self.query[-1] == " ":
-    #             self.predWords = self._pred_next_word()
-    #         else:
-    #             self.predWords = self._pred_current_word()
-
-    #     else: 
-    #         self.predWords = self._pred_initial_word()
-        
-    #     # print(f"Predicted Words: {self.predWords}")
-
-    #     if len(self.predWords) > numOfPredWords:
-    #         for i in range(numOfPredWords):
-    #             predWordsInNum.append(self.predWords[i])
-    #     else:
-    #         for word in self.predWords:
-    #             predWordsInNum.append(word)
-
-    #     # print(f"Pred words in num: {predWordsInNum}")
-
-    #     return predWordsInNum
-        
-    
-    # def _get_sentence_pred(self, numOfPredSentences):
-    #     if numOfPredSentences > self.SENT_PRED_NUM:
-    #         numOfPredSentences = self.SENT_PRED_NUM
-    #     predSentences = []
-    #     if self.results != []:
-    #         for i in range(numOfPredSentences):
-    #             predSentences.append(self.results[i])
-    #     return predSentences
-
-
 
 if __name__ == '__main__':
     model = Model_Bm25()
     query1 = "You are a"
     query2 = "You are "
     nextWords = model.predict_words(query1)
-    sentences = model.predict_sentences(query2)
+    sentences = model.retrieve_sentences(query2)
     print(f"Next words: {nextWords}")
     print(f"Sentences: {sentences}")
 
