@@ -26,7 +26,6 @@ class View_tinker:
     MODEL_GPT2 = ["distilgpt2", "gpt2", "gpt2-medium", "gpt2-large", "gpt2-xl", "Please input..."]
 
     MODEL_ROBERTA = ["distilroberta-base","roberta-base", "roberta-large", "xlm-roberta-base", "xlm-roberta-large", "Please input..."]
-
     
 
     SEN_PRED_NUM = [1,2,3,4]
@@ -520,3 +519,4 @@ class View_tinker:
 if __name__ == '__main__':
     panel = View_tinker()
     panel.run()
+    
