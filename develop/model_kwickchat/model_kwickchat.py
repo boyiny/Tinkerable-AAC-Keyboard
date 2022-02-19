@@ -87,7 +87,7 @@ class Model_Kwickchat:
         return current_output
 
     def _run(self):
-        rootDir = os.path.realpath(os.path.join(os.path.dirname(__file__), 'Aug08_11-34-29_b765d32f222d_openai-gpt'))
+        rootDir = os.path.realpath(os.path.join(os.path.dirname(__file__), '../Model/KwickChat'))
         parser = ArgumentParser()
         parser.add_argument("--dataset_path", type=str, default="", help="Path or url of the dataset. If empty download from S3.")
         parser.add_argument("--dataset_cache", type=str, default='./dataset_cache', help="Path or url of the dataset cache")
@@ -188,7 +188,7 @@ class Model_Kwickchat:
 
 
     def _setup_kwickchat(self):
-        rootDir = os.path.realpath(os.path.join(os.path.dirname(__file__), 'Aug08_11-34-29_b765d32f222d_openai-gpt'))
+        rootDir = os.path.realpath(os.path.join(os.path.dirname(__file__), '../Model/KwickChat'))
         parser = ArgumentParser()
         parser.add_argument("--dataset_path", type=str, default="", help="Path or url of the dataset. If empty download from S3.")
         parser.add_argument("--dataset_cache", type=str, default='./dataset_cache', help="Path or url of the dataset cache")
