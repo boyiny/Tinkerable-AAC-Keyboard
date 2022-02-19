@@ -1,2 +1,4 @@
-./Model/
-./model_kwickchat/Aug08_11-34-29_b765d32f222d_openai-gpt/
+/Develop/Model/
+/Develop/model_kwickchat/Aug08_11-34-29_b765d32f222d_openai-gpt/
+.DS_Store
+*.bin
