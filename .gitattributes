@@ -1,3 +1,4 @@
+Develop/Model/DistilbertBase filter=lfs diff=lfs merge=lfs -text
 ./Develop/Model/DistilbertBase filter=lfs diff=lfs merge=lfs -text
 ./Develop/Model/DistilbertBase/** filter=lfs diff=lfs merge=lfs -text
 *.bin filter=lfs diff=lfs merge=lfs -text
