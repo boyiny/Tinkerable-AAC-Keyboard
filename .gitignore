@@ -1,3 +1,4 @@
 /Develop/Model/
+/Develop/__pycache__
 .DS_Store
 *.bin

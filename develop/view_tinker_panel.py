@@ -4,6 +4,11 @@ import tkinter as tk
 from tkinter import BOTTOM, ttk
 
 from click import command
+from gevent import config
+from sympy import per
+
+import configparser 
+import os
 
 
 class View_tinker:
@@ -36,6 +41,7 @@ class View_tinker:
     SEN_RETRI_SEMAN_MODEL = ["all-mpnet-base-v2", "multi-qa-mpnet-base-dot-v1", "all-distilroberta-v1", "all-MiniLM-L12-v2", "multi-qa-distilbert-cos-v1", "all-MiniLM-L6-v2", "multi-qa-MiniLM-L6-cos-v1", "paraphrase-multilingual-mpnet-base-v2", "paraphrase-albert-small-v2", "paraphrase-multilingual-MiniLM-L12-v2", "paraphrase-MiniLM-L3-v2", "distiluse-base-multilingual-cased-v1", "distiluse-base-multilingual-cased-v2", "Please input..."]
     SEN_GEN_METHOD = ["KWickChat", "GPT-2"]
     SEN_KW_HISTORY_NUM = 3
+    SEN_KW_PERSONA_NUM = 3
     SEN_GPT2_APPROACH = ["Greedy search", "Beam search", "Top-k sampling", "Top-p sampling"]
     GPT2_MAX_LENGTH = 30
     GPT2_NO_REPEAT_NGRAM_SIZE = 2
@@ -44,14 +50,31 @@ class View_tinker:
     GPT2_TOP_K = 50
     GPT2_TOP_P = 0.92
 
+    lastPersonaNum = 1
+
+    WORD_PRED_TASK = ""
+    SENTENCE_PRED_TASK = ""
+
     def __init__(self):
-        pass
+        self.file = os.path.realpath(os.path.join(os.path.dirname(__file__), 'tinker.ini'))
+        self.config = configparser.ConfigParser()
+        self.config.read(self.file)
+        self.config.sections()
+        print(self.config.sections())
+        print(f"init - Word pred: {self.config['PREDICTION_TASK']['WORD_PRED']}")
+        print(f"init - Sentence pred: {self.config['PREDICTION_TASK']['SENTENCE_PRED']}")
+
         
     def _close(self):
         self.root.destroy()
 
     def _save(self):
-        self.root.destroy()
+        self.config.set('PREDICTION_TASK', 'WORD_PRED', self.WORD_PRED_TASK)
+        self.config.set('PREDICTION_TASK', 'SENTENCE_PRED', self.SENTENCE_PRED_TASK)
+        self.config.write(open(self.file,'w'))
+        # self.root.destroy()
+        print(f"Word pred: {self.WORD_PRED_TASK}")
+        print(f"Sentence pred: {self.SENTENCE_PRED_TASK}")
         
 
     def run(self):
@@ -100,7 +123,6 @@ class View_tinker:
             k1Bm25OkpiString = tk.StringVar(frame, self.K1_BM25OKPI) 
             k1BM25Okpi = tk.Entry(frame, width=21, textvariable = k1Bm25OkpiString)
             k1BM25Okpi.grid(sticky="W", column=1, row=4)
-
             # row 5
             ttk.Label(frame, text="      b").grid(sticky="E", column=0, row=5)
             bBm25OkpiString = tk.StringVar(frame, self.B_BM25OKPI)
@@ -111,8 +133,8 @@ class View_tinker:
             epsilonBm25OkpiString = tk.StringVar(frame, self.EPSILON_BM25OKPI)
             epsilonBm25Okpi = tk.Entry(frame, width=21, textvariable=epsilonBm25OkpiString)
             epsilonBm25Okpi.grid(sticky="W", column=1, row=6)
-
-            # print("Select BM25Okpi")
+            # Assign task
+            self.WORD_PRED_TASK = "WORD_BM25OKPI"
         elif self.wordPredMethod.get() == "BM25L":
             # row 4
             ttk.Label(frame, text="      k1").grid(sticky="E", column=0, row=4)
@@ -129,6 +151,8 @@ class View_tinker:
             deltaBm25LString = tk.StringVar(frame, self.DELTA_BM25L)
             deltaBm25L = tk.Entry(frame, width=21, textvariable=deltaBm25LString)
             deltaBm25L.grid(sticky="W", column=1, row=6)
+            # Assign task
+            self.WORD_PRED_TASK = "WORD_BM25OL"
         elif self.wordPredMethod.get() == "BM25Plus":
             # row 4
             ttk.Label(frame, text="      k1").grid(sticky="E", column=0, row=4)
@@ -145,7 +169,8 @@ class View_tinker:
             deltaBm25PlusString = tk.StringVar(frame, self.DELTA_BM25PLUS)
             deltaBm25Plus = tk.Entry(frame, width=21, textvariable=deltaBm25PlusString)
             deltaBm25Plus.grid(sticky="W", column=1, row=6)
-
+            # Assign task
+            self.WORD_PRED_TASK = "WORD_BM25PLUS"
         elif self.wordPredMethod.get() == "GPT-2":
             # row 4
             ttk.Label(frame, text="Model").grid(sticky="E", column=0, row=4)
@@ -160,20 +185,22 @@ class View_tinker:
             #  row 6
             ttk.Label(frame, text="", width=8, padding=5).grid(sticky="E", column=0, row=6)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1,row=6)
-
+            # Assign task
+            self.WORD_PRED_TASK = "WORD_GPT2"
         elif self.wordPredMethod.get() == "RoBERTa":
             # row 4
             ttk.Label(frame, text="Model").grid(sticky="E", column=0, row=4)
             modelRoberta = ttk.Combobox(frame, values=self.MODEL_ROBERTA)
             modelRoberta.current(1)
             modelRoberta.grid(sticky="W", column=1, row=4)
-
             # row 5
             ttk.Label(frame, text="", width=8, padding=5).grid(sticky="E", column=0, row=5)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1,row=5)
             #  row 6
             ttk.Label(frame, text="", width=8, padding=5).grid(sticky="E", column=0, row=6)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1,row=6)
+            # Assign task
+            self.WORD_PRED_TASK = "WORD_ROBERTA"
 
     def _word_pred_panel(self, frame):
         # row 0
@@ -197,27 +224,9 @@ class View_tinker:
         ttk.Label(frame, text ="Method").grid(sticky="E", column=0, row=3)
         self.wordPredMethod = ttk.Combobox(frame, values=self.WORD_PRED_METHOD, state="readonly")
         self.wordPredMethod.grid(sticky="W", column=1, row=3)
-        self.wordPredMethod.current(0)
+        # self.wordPredMethod.current(0)
         self.wordPredMethod.bind("<<ComboboxSelected>>", lambda event: self._word_pred_method_combobox(event, frame))
-        # print(f"wordPredMethod.current() = {wordPredMethod.current()}")
-        # print(f"wordPredMethod.get() = {wordPredMethod.get()}")
-        
-        # # row 4
-        # ttk.Label(frame, text="      k1").grid(sticky="E", column=0, row=4)
-        # k1Bm25OkpiString = tk.StringVar(frame, self.K1_BM25OKPI) 
-        # k1BM25Okpi = tk.Entry(frame, width=21, textvariable = k1Bm25OkpiString)
-        # k1BM25Okpi.grid(sticky="W", column=1, row=4)
 
-        # # row 5
-        # ttk.Label(frame, text="      b").grid(sticky="E", column=0, row=5)
-        # bBm25OkpiString = tk.StringVar(frame, self.B_BM25OKPI)
-        # bBm25Okpi = tk.Entry(frame, width=21, textvariable=bBm25OkpiString)
-        # bBm25Okpi.grid(sticky="W", column=1, row=5)
-        # # row 6
-        # ttk.Label(frame, text='      \u03B5').grid(sticky="E", column=0, row=6) # epsilon
-        # epsilonBm25OkpiString = tk.StringVar(frame, self.EPSILON_BM25OKPI)
-        # epsilonBm25Okpi = tk.Entry(frame, width=21, textvariable=epsilonBm25OkpiString)
-        # epsilonBm25Okpi.grid(sticky="W", column=1, row=6)
         
 
     """ Sentence Prediction Below """
@@ -228,6 +237,7 @@ class View_tinker:
             k1Bm25OkpiString_senRetri = tk.StringVar(frame, self.K1_BM25OKPI) 
             k1BM25Okpi_senRetri = tk.Entry(frame, width=21, textvariable = k1Bm25OkpiString_senRetri)
             k1BM25Okpi_senRetri.grid(sticky="W", column=1, row=6)
+            ttk.Label(frame, text="", width=5, padding=5).grid(sticky="W", column=2,row=6)
             # row 7
             ttk.Label(frame, text="      b").grid(sticky="E", column=0, row=7)
             bBm25OkpiString_senRetri = tk.StringVar(frame, self.B_BM25OKPI)
@@ -241,12 +251,15 @@ class View_tinker:
             # row 9
             ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=9)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1,row=9)
+            # Assign task
+            self.SENTENCE_PRED_TASK = "SENTENCE_BM25OKPI"
         elif self.senRetriTextMethod.get() == "BM25L":
             # row 6
             ttk.Label(frame, text="      k1").grid(sticky="E", column=0, row=6)
             k1Bm25LString_senRetri = tk.StringVar(frame, self.K1_BM25L)
             k1Bm25L_senRetri = tk.Entry(frame, width=21, textvariable=k1Bm25LString_senRetri)
             k1Bm25L_senRetri.grid(sticky="W", column=1, row=6)
+            ttk.Label(frame, text="", width=5, padding=5).grid(sticky="W", column=2,row=6)
             # row 7
             ttk.Label(frame, text="      b").grid(sticky="E", column=0, row=7)
             bBm25LString_senRetri = tk.StringVar(frame, self.B_BM25L)
@@ -260,12 +273,15 @@ class View_tinker:
             # row 9
             ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=9)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1,row=9)
+            # Assign task
+            self.SENTENCE_PRED_TASK = "SENTENCE_BM25L"
         elif self.senRetriTextMethod.get() == "BM25Plus":
             # row 6
             ttk.Label(frame, text="      k1").grid(sticky="E", column=0, row=6)
             k1Bm25PlusString_senRetri = tk.StringVar(frame, self.K1_BM25PLUS)
             k1Bm25Plus_senRetri = tk.Entry(frame, width=21, textvariable=k1Bm25PlusString_senRetri)
             k1Bm25Plus_senRetri.grid(sticky="W", column=1, row=6)
+            ttk.Label(frame, text="", width=5, padding=5).grid(sticky="W", column=2,row=6)
             # row 7
             ttk.Label(frame, text="      b").grid(sticky="E", column=0, row=7)
             bBm25PlusString_senRetri = tk.StringVar(frame, self.B_BM25PLUS)
@@ -279,7 +295,8 @@ class View_tinker:
             # row 9
             ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=9)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1,row=9)
-
+            # Assign task
+            self.SENTENCE_PRED_TASK = "SENTENCE_BM25PLUS"
 
     def _sen_similarity_combobox(self, event, frame):
         
@@ -288,11 +305,12 @@ class View_tinker:
             ttk.Label(frame, text="Select Retrieval Method").grid(sticky="E", column=0, row=5)
             self.senRetriTextMethod = ttk.Combobox(frame, values=self.SEN_RETRI_TEXT_METHOD, state="readonly")
             self.senRetriTextMethod.grid(sticky="W", column=1, row=5)
-            self.senRetriTextMethod.current(0)
+            # self.senRetriTextMethod.current(0)
             self.senRetriTextMethod.bind("<<ComboboxSelected>>", lambda event: self._sen_retrieval_text_method_combobox(event, frame))
             # row 6
             ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=6)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1,row=6)
+            ttk.Label(frame, text="", width=5, padding=5).grid(sticky="W", column=2,row=6)
             # row 7
             ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=7)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1,row=7)
@@ -307,10 +325,11 @@ class View_tinker:
             ttk.Label(frame, text="Select Language Model").grid(sticky="E", column=0, row=5)
             self.senRetriSemanticsModel = ttk.Combobox(frame, values=self.SEN_RETRI_SEMAN_MODEL)
             self.senRetriSemanticsModel.grid(sticky="E", column=1, row=5)
-            self.senRetriSemanticsModel.current(0)
+            # self.senRetriSemanticsModel.current(0)
             # row 6
             ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=6)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1,row=6)
+            ttk.Label(frame, text="", width=5, padding=5).grid(sticky="W", column=2,row=6)
             # row 7
             ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=7)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1,row=7)
@@ -329,6 +348,7 @@ class View_tinker:
             maxLengthString_senGpt2Greedy = tk.StringVar(frame, value=self.GPT2_MAX_LENGTH)
             maxLength_senGpt2Greedy = tk.Entry(frame, width=21, textvariable=maxLengthString_senGpt2Greedy)
             maxLength_senGpt2Greedy.grid(sticky="W", column=1, row=6)
+            ttk.Label(frame, text="", width=5, padding=5).grid(sticky="W", column=2,row=6)
             # row 7
             ttk.Label(frame, text="no repeat n-gram size").grid(sticky="E", column=0, row=7)
             noRepeatNGramSizeString_senGpt2Greedy = tk.StringVar(frame, value=self.GPT2_NO_REPEAT_NGRAM_SIZE)
@@ -340,6 +360,8 @@ class View_tinker:
             # row 9
             ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=9)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1,row=9)
+            # Assign task
+            self.SENTENCE_PRED_TASK = "SENTENCE_GPT2_GREEDY"
 
         elif self.senGpt2Approach.get() == "Beam search":
             # row 6
@@ -347,6 +369,7 @@ class View_tinker:
             maxLengthString_senGpt2Beam = tk.StringVar(frame, value=self.GPT2_MAX_LENGTH)
             maxLength_senGpt2Beam = tk.Entry(frame, width=21, textvariable=maxLengthString_senGpt2Beam)
             maxLength_senGpt2Beam.grid(sticky="W", column=1, row=6)
+            ttk.Label(frame, text="", width=5, padding=5).grid(sticky="W", column=2,row=6)
             # row 7
             ttk.Label(frame, text="no repeat n-gram size").grid(sticky="E", column=0, row=7)
             noRepeatNGramSizeString_senGpt2Beam = tk.StringVar(frame, value=self.GPT2_NO_REPEAT_NGRAM_SIZE)
@@ -360,6 +383,8 @@ class View_tinker:
              # row 9
             ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=9)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1,row=9)
+            # Assign task
+            self.SENTENCE_PRED_TASK = "SENTENCE_GPT2_BEAM"
 
         elif self.senGpt2Approach.get() == "Top-k sampling":
             # row 6
@@ -367,6 +392,7 @@ class View_tinker:
             maxLengthString_senGpt2TopK = tk.StringVar(frame, value=self.GPT2_MAX_LENGTH)
             maxLength_senGpt2TopK = tk.Entry(frame, width=21, textvariable=maxLengthString_senGpt2TopK)
             maxLength_senGpt2TopK.grid(sticky="W", column=1, row=6)
+            ttk.Label(frame, text="", width=5, padding=5).grid(sticky="W", column=2,row=6)
             # row 7
             ttk.Label(frame, text="                                seed").grid(sticky="E", column=0, row=7)
             seedString_senGpt2TopK = tk.StringVar(frame, value=self.GPT2_SEED)
@@ -380,6 +406,8 @@ class View_tinker:
             # row 9
             ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=9)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1,row=9)
+            # Assign task
+            self.SENTENCE_PRED_TASK = "SENTENCE_GPT2_TOP_K"
 
         elif self.senGpt2Approach.get() == "Top-p sampling":
             # row 6
@@ -387,6 +415,7 @@ class View_tinker:
             maxLengthString_senGpt2TopP = tk.StringVar(frame, value=self.GPT2_MAX_LENGTH)
             maxLength_senGpt2TopP = tk.Entry(frame, width=21, textvariable=maxLengthString_senGpt2TopP)
             maxLength_senGpt2TopP.grid(sticky="W", column=1, row=6)
+            ttk.Label(frame, text="", width=5, padding=5).grid(sticky="W", column=2,row=6)
             # row 7
             ttk.Label(frame, text="                                seed").grid(sticky="E", column=0, row=7)
             seedString_senGpt2TopP = tk.StringVar(frame, value=self.GPT2_SEED)
@@ -402,7 +431,8 @@ class View_tinker:
             topPString_senGpt2TopP = tk.StringVar(frame, value=self.GPT2_TOP_P)
             topP_senGpt2TopP = tk.Entry(frame, width=21, textvariable=topPString_senGpt2TopP)
             topP_senGpt2TopP.grid(sticky="W", column=1, row=9)
-
+            # Assign task
+            self.SENTENCE_PRED_TASK = "SENTENCE_GPT2_TOP_P"
 
     def _sen_gen_method_combobox(self, event, frame):
         
@@ -411,11 +441,12 @@ class View_tinker:
             ttk.Label(frame, text="      Select Method").grid(sticky="E", column=0, row=5)
             self.senGpt2Approach = ttk.Combobox(frame, values=self.SEN_GPT2_APPROACH, state="readonly")
             self.senGpt2Approach.grid(sticky="W", column=1, row=5)
-            self.senGpt2Approach.current(0)
+            # self.senGpt2Approach.current(0)
             self.senGpt2Approach.bind("<<ComboboxSelected>>", lambda event: self._sen_gpt2_approach_combobox(event, frame))
             # row 6
             ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=6)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1,row=6)
+            ttk.Label(frame, text="", width=5, padding=5).grid(sticky="W", column=2,row=6)
             # row 7
             ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=7)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1,row=7)
@@ -433,8 +464,11 @@ class View_tinker:
             senKWHistoryNum.grid(sticky="W", column=1, row=5)
             # row 6
             ttk.Label(frame, text="      Persona").grid(sticky="E", column=0, row=6)
-            senKWPersona = tk.Entry(frame, width=21)
-            senKWPersona.grid(sticky="W", column=1, row=6)
+            senKWPersonaNumString = tk.StringVar(frame, value=self.SEN_KW_PERSONA_NUM)
+            senKWPersonaNum = tk.Entry(frame, width=21, textvariable=senKWPersonaNumString)
+            senKWPersonaNum.grid(sticky="W", column=1, row=6)
+            senKWPersonaNumBtn = tk.Button(frame, text="ok", command=lambda: self._create_persona(frame, int(senKWPersonaNum.get())))
+            senKWPersonaNumBtn.grid(sticky="W", column=2,row=6)
             # row 7
             ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=7)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1,row=7)
@@ -444,6 +478,31 @@ class View_tinker:
              # row 9
             ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=9)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1,row=9)
+            
+            
+
+    def _create_persona(self, frame, personaNum):
+        # row 7 - X
+        rowNum = 7
+        self.senKWPersonaList = []
+        if personaNum >= self.lastPersonaNum:
+            for i in range(personaNum):
+                ttk.Label(frame, text="Input persona").grid(sticky="E", column=0, row=rowNum+i)
+                senKWPersona = ttk.Entry(frame, width=21)
+                senKWPersona.grid(sticky="W", column=1,row=rowNum+i)
+                self.senKWPersonaList.append(senKWPersona.get())
+        else:
+            for i in range(personaNum):
+                ttk.Label(frame, text="Input persona").grid(sticky="E", column=0, row=rowNum+i)
+                senKWPersona = ttk.Entry(frame, width=21)
+                senKWPersona.grid(sticky="W", column=1,row=rowNum+i)
+                self.senKWPersonaList.append(senKWPersona.get())
+            for i in range(self.lastPersonaNum - personaNum):
+                ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=rowNum+personaNum+i)
+                ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1,row=rowNum+personaNum+i)
+        self.lastPersonaNum = personaNum
+        # Assign task
+        self.SENTENCE_PRED_TASK = "SENTENCE_KWICKCHAT"
 
     def _sen_pred_approach_combobox(self, event, frame):
         
@@ -452,7 +511,7 @@ class View_tinker:
             ttk.Label(frame, text="        Similarity").grid(sticky="E", column=0, row=4)
             self.senSimilarity = ttk.Combobox(frame, values=self.SEN_SIMILARITY, state="readonly")
             self.senSimilarity.grid(sticky="W", column=1, row=4)
-            self.senSimilarity.current(0)
+            # self.senSimilarity.current(0)
             self.senSimilarity.bind("<<ComboboxSelected>>", lambda event: self._sen_similarity_combobox(event, frame))
             # row 5
             ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=5)
@@ -460,6 +519,7 @@ class View_tinker:
             # row 6
             ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=6)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1,row=6)
+            ttk.Label(frame, text="", width=5, padding=5).grid(sticky="W", column=2,row=6)
             # row 7
             ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=7)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1,row=7)
@@ -474,7 +534,7 @@ class View_tinker:
             ttk.Label(frame, text="Select Method").grid(sticky="E", column=0, row=4)
             self.senGenMethod = ttk.Combobox(frame, values=self.SEN_GEN_METHOD, state="readonly")
             self.senGenMethod.grid(sticky="W", column=1, row=4)
-            self.senGenMethod.current(1)
+            # self.senGenMethod.current(1)
             self.senGenMethod.bind("<<ComboboxSelected>>", lambda event: self._sen_gen_method_combobox(event, frame))
             # row 5
             ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=5)
@@ -482,6 +542,7 @@ class View_tinker:
             # row 6
             ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=6)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1,row=6)
+            ttk.Label(frame, text="", width=5, padding=5).grid(sticky="W", column=2,row=6)
             # row 7
             ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=7)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1,row=7)
@@ -501,6 +562,7 @@ class View_tinker:
         maxSenPredNum = ttk.Combobox(frame, values=self.SEN_PRED_NUM, state="readonly")
         maxSenPredNum.grid(sticky="W", column=1, row=1)
         maxSenPredNum.current(3)
+        
 
         # row 2
         ttk.Label(frame, text ="Sentence Entry Approach").grid(sticky="E", column=0, row=2)
@@ -512,11 +574,10 @@ class View_tinker:
         ttk.Label(frame, text="Prediction Approach").grid(sticky="E", column=0, row=3)
         self.senPredApproach = ttk.Combobox(frame, values=self.SEN_PRED_APPROACH, state="readonly")
         self.senPredApproach.grid(sticky="W", column=1, row=3)
-        self.senPredApproach.current(0)
+        # self.senPredApproach.current(0)
         self.senPredApproach.bind("<<ComboboxSelected>>", lambda event: self._sen_pred_approach_combobox(event, frame))
 
         
 if __name__ == '__main__':
     panel = View_tinker()
     panel.run()
-    
