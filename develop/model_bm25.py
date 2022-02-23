@@ -5,9 +5,9 @@ import re
 
 class Model_Bm25:
     BM25_OPTION = "BM25Okapi"
-    k1_BM25OKPI = 1.5
-    b_BM25OKPI = 0.75
-    epsilon_BM25OKPI = 0.25
+    k1_BM25OKAPI = 1.5
+    b_BM25OKAPI = 0.75
+    epsilon_BM25OKAPI = 0.25
 
     k1_BM25L = 1.5
     b_BM25L = 0.75
@@ -44,10 +44,10 @@ class Model_Bm25:
         self.tokenized_corpus = [doc.split(" ") for doc in self.corpus]
         if self.BM25_OPTION == "BM25Okapi":
             if k1 > 0 and b > 0 and epsilon > 0:
-                self.k1_BM25OKPI = k1
-                self.b_BM25OKPI = b
-                self.epsilon_BM25OKPI = epsilon
-            self.bm25 = BM25Okapi(self.tokenized_corpus, k1=self.k1_BM25OKPI, b=self.b_BM25OKPI, epsilon=self.epsilon_BM25OKPI)
+                self.k1_BM25OKAPI = k1
+                self.b_BM25OKAPI = b
+                self.epsilon_BM25OKAPI = epsilon
+            self.bm25 = BM25Okapi(self.tokenized_corpus, k1=self.k1_BM25OKAPI, b=self.b_BM25OKAPI, epsilon=self.epsilon_BM25OKAPI)
         elif self.BM25_OPTION == "BM25L":
             if k1 > 0 and b > 0 and delta > 0:
                 self.k1_BM25L = k1

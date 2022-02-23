@@ -45,16 +45,16 @@ class Controller_main():
         self.config.sections()
 
         self.word_pred_PREDICTION_TASK          = self.config['PREDICTION_TASK']['word_pred']
-        if self.word_pred_PREDICTION_TASK == None:
+        if self.word_pred_PREDICTION_TASK == '':
             self.boolWordPredDisplay = False
-            print(f"word pred task: {self.word_pred_PREDICTION_TASK}")
+            print(f"word pred task is empty")
         else:
             self.boolWordPredDisplay = True
             print(f"word pred task: {self.word_pred_PREDICTION_TASK}")
         self.sentence_pred_PREDICTION_TASK      = self.config['PREDICTION_TASK']['sentence_pred']
-        if self.sentence_pred_PREDICTION_TASK == None:
+        if self.sentence_pred_PREDICTION_TASK == '':
             self.boolSentencePredDisplay = False
-            print(f"sen pred task: {self.sentence_pred_PREDICTION_TASK}")
+            print(f"sen pred task is empty")
         else:
             self.boolSentencePredDisplay = True
             print(f"sen pred task: {self.sentence_pred_PREDICTION_TASK}")
@@ -63,9 +63,9 @@ class Controller_main():
         self.display_location_WORD_PREDICTION   = str(self.config['WORD_PREDICTION']['display_location'])
         self.method_WORD_PREDICTION             = str(self.config['WORD_PREDICTION']['method'])
         
-        self.k1_WORD_BM25OKPI           = float(self.config['WORD_BM25OKPI']['k1'])
-        self.b_WORD_BM25OKPI            = float(self.config['WORD_BM25OKPI']['b'])
-        self.epsilon_WORD_BM25OKPI      = float(self.config['WORD_BM25OKPI']['epsilon'])
+        self.k1_WORD_BM25OKAPI           = float(self.config['WORD_BM25OKAPI']['k1'])
+        self.b_WORD_BM25OKAPI            = float(self.config['WORD_BM25OKAPI']['b'])
+        self.epsilon_WORD_BM25OKAPI      = float(self.config['WORD_BM25OKAPI']['epsilon'])
 
         self.k1_WORD_BM25L              = float(self.config['WORD_BM25L']['k1'])
         self.b_WORD_BM25L               = float(self.config['WORD_BM25L']['b'])
@@ -88,9 +88,9 @@ class Controller_main():
 
         self.retri_method_SENTENCE_TEXT_SIMILARITY          = str(self.config['SENTENCE_TEXT_SIMILARITY']['retri_method'])
 
-        self.k1_SENTENCE_BM25OKPI       = float(self.config['SENTENCE_BM25OKPI']['k1'])
-        self.b_SENTENCE_BM25OKPI        = float(self.config['SENTENCE_BM25OKPI']['b'])
-        self.epsilon_SENTENCE_BM25OKPI  = float(self.config['SENTENCE_BM25OKPI']['epsilon'])
+        self.k1_SENTENCE_BM25OKAPI       = float(self.config['SENTENCE_BM25OKAPI']['k1'])
+        self.b_SENTENCE_BM25OKAPI        = float(self.config['SENTENCE_BM25OKAPI']['b'])
+        self.epsilon_SENTENCE_BM25OKAPI  = float(self.config['SENTENCE_BM25OKAPI']['epsilon'])
 
         self.k1_SENTENCE_BM25L          = float(self.config['SENTENCE_BM25L']['k1'])
         self.b_SENTENCE_BM25L           = float(self.config['SENTENCE_BM25L']['b'])
@@ -140,7 +140,7 @@ class Controller_main():
 
     def _word_prediction_settings(self):
         # link to view: show pred
-        if self.word_pred_PREDICTION_TASK == None:
+        if self.word_pred_PREDICTION_TASK == '':
             self.viewKeypad.clear_placed_words()
         else:
             # make the first prediction based on current input
@@ -167,9 +167,9 @@ class Controller_main():
 
         # link to model: word pred method
         self.modelMain.WORD_PRED_METHOD = self.word_pred_PREDICTION_TASK
-        if self.word_pred_PREDICTION_TASK == "WORD_BM25OKPI": # "BM25L", "BM25Plus", "GPT-2", "RoBERTa"
-            option = "BM25Okpi"
-            self.modelMain.load_bm25(option, self.k1_WORD_BM25OKPI, self.b_WORD_BM25OKPI, epsilon=self.epsilon_WORD_BM25OKPI)
+        if self.word_pred_PREDICTION_TASK == "WORD_BM25OKAPI": # "BM25L", "BM25Plus", "GPT-2", "RoBERTa"
+            option = "BM25Okapi"
+            self.modelMain.load_bm25(option, self.k1_WORD_BM25OKAPI, self.b_WORD_BM25OKAPI, epsilon=self.epsilon_WORD_BM25OKAPI)
         elif self.word_pred_PREDICTION_TASK == "WORD_BM25L":
             option = "BM25L"
             self.modelMain.load_bm25(option, self.k1_WORD_BM25L, self.b_WORD_BM25L, delta=self.delta_WORD_BM25L)
@@ -184,7 +184,7 @@ class Controller_main():
 
     def _sentence_prediction_settings(self):
         # link to view: show pred
-        if self.sentence_pred_PREDICTION_TASK == None:
+        if self.sentence_pred_PREDICTION_TASK == '':
             self.viewKeypad.clear_placed_sentences()
         else:
             entry = self.viewEntry.entry.get()
@@ -221,7 +221,7 @@ class Controller_main():
     
     # done
     def set_word_pred_display(self, boolWordPredDisplay, boolWordPredOnPressedKey):
-        self.boolWordPredDisplay = boolWordPredDisplay
+        # self.boolWordPredDisplay = boolWordPredDisplay
         if boolWordPredDisplay:
             self._set_word_pred_place(boolWordPredOnPressedKey)
         else:
@@ -231,7 +231,7 @@ class Controller_main():
         
     # done
     def set_sentence_pred_display(self, boolSentencePredDisplay):
-        self.boolSentencePredDisplay = boolSentencePredDisplay
+        # self.boolSentencePredDisplay = boolSentencePredDisplay
         if boolSentencePredDisplay:
             self._set_sentence_pred_place()
         else:
@@ -275,7 +275,7 @@ class Controller_main():
                 predWords = self._make_word_prediction(entry)
             else:
                 self.viewKeypad.clear_placed_words()
-            if self.boolSentencePredDisplay:
+            if  self.boolSentencePredDisplay:
                 # set sentence pred display
                 print(f"In controller_main, key_button_click, current entry is: '{entry}'")
                 self._make_sentence_prediction(entry)
@@ -290,7 +290,7 @@ class Controller_main():
             else:
                 self.viewKeypad.clear_placed_words()
 
-            if self.boolSentencePredDisplay:
+            if  self.boolSentencePredDisplay:
                 # set sentence pred display
 
                 self._make_sentence_prediction_with_pred_words(entry, predWords)
@@ -305,18 +305,18 @@ class Controller_main():
         self.viewMain.textBox.set(predictedWord)
 
         # """ Update the word prediction when operate the menu during the usage """
-        # # word pred control
-        # if self.viewKeypad.BOOL_WORD_PRED_DISPLAY:
-        #     self._set_word_pred_place(self.boolWordPredOnPressedKey)
-        # else:
-        #     self.viewKeypad.clear_placed_words()
+        # word pred control
+        if self.boolWordPredDisplay:
+            self._set_word_pred_place(self.boolWordPredOnPressedKey)
+        else:
+            self.viewKeypad.clear_placed_words()
 
-        # # sentence pred control
-        # if self.viewKeypad.BOOL_SENT_PRED_DISPLAY:
+        # sentence pred control
+        if self.boolSentencePredDisplay:
 
-        #     self._make_sentence_prediction(self.viewEntry.entry.get())
-        # else:
-        #     self.viewKeypad.clear_placed_sentences()
+            self._make_sentence_prediction(self.viewEntry.entry.get())
+        else:
+            self.viewKeypad.clear_placed_sentences()
         
 
     def on_predicted_sentence_button_click(self, entry):

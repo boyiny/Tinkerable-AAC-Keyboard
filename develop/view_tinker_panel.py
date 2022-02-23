@@ -14,11 +14,11 @@ import os
 class View_tinker:
     WORD_PRED_NUM = [1,2,3,4]
     WORD_DISP_LOC = ["Fixed", "Above last pressed key"]
-    WORD_PRED_METHOD = ["BM25Okpi", "BM25L", "BM25Plus", "GPT-2", "RoBERTa"]
+    WORD_PRED_METHOD = ["BM25Okapi", "BM25L", "BM25Plus", "GPT-2", "RoBERTa"]
     
-    K1_BM25OKPI = 1.5
-    B_BM25OKPI = 0.75
-    EPSILON_BM25OKPI = 0.25
+    K1_BM25OKAPI = 1.5
+    B_BM25OKAPI = 0.75
+    EPSILON_BM25OKAPI = 0.25
 
     K1_BM25L = 1.5
     B_BM25L = 0.75
@@ -37,7 +37,7 @@ class View_tinker:
     SEN_ENTRY_APPROACH = ["Left to right", "Keywords"]
     SEN_PRED_APPROACH = ["Retrieval", "Generation"]
     SEN_SIMILARITY = ["Text", "Semantics"]
-    SEN_RETRI_TEXT_METHOD = ["BM25Okpi", "BM25L", "BM25Plus"]
+    SEN_RETRI_TEXT_METHOD = ["BM25Okapi", "BM25L", "BM25Plus"]
     SEN_RETRI_SEMAN_MODEL = ["all-mpnet-base-v2", "multi-qa-mpnet-base-dot-v1", "all-distilroberta-v1", "all-MiniLM-L12-v2", "multi-qa-distilbert-cos-v1", "all-MiniLM-L6-v2", "multi-qa-MiniLM-L6-cos-v1", "paraphrase-multilingual-mpnet-base-v2", "paraphrase-albert-small-v2", "paraphrase-multilingual-MiniLM-L12-v2", "paraphrase-MiniLM-L3-v2", "distiluse-base-multilingual-cased-v1", "distiluse-base-multilingual-cased-v2", "Please input..."]
     SEN_GEN_METHOD = ["KWickChat", "GPT-2"]
     SEN_KW_HISTORY_NUM = 3
@@ -81,10 +81,10 @@ class View_tinker:
         self.config.set('WORD_PREDICTION', 'display_location', self.wordDisplayLocation.get())
         self.config.set('WORD_PREDICTION', 'method', self.wordPredMethod.get())
         
-        if self.WORD_PRED_TASK == "WORD_BM25OKPI":
-            self.config.set('WORD_BM25OKPI', 'k1', self.k1BM25Okpi_wordPred.get())
-            self.config.set('WORD_BM25OKPI', 'b', self.bBm25Okpi_wordPred.get())
-            self.config.set('WORD_BM25OKPI', 'epsilon', self.epsilonBm25Okpi_wordPred.get())
+        if self.WORD_PRED_TASK == "WORD_BM25OKAPI":
+            self.config.set('WORD_BM25OKAPI', 'k1', self.k1BM25Okapi_wordPred.get())
+            self.config.set('WORD_BM25OKAPI', 'b', self.bBM25Okapi_wordPred.get())
+            self.config.set('WORD_BM25OKAPI', 'epsilon', self.epsilonBM25Okapi_wordPred.get())
         elif self.WORD_PRED_TASK == "WORD_BM25L":
             self.config.set('WORD_BM25L', 'k1', self.k1Bm25L_wordPred.get())
             self.config.set('WORD_BM25L', 'b', self.bBm25L_wordPred.get())
@@ -107,10 +107,10 @@ class View_tinker:
             self.config.set('SENTENCE_RETRIEVAL', 'similarity', self.senSimilarity.get())
             if self.senSimilarity.get() == "Text":
                 self.config.set('SENTENCE_TEXT_SIMILARITY', 'retri_method', self.senRetriTextMethod.get())
-                if self.SENTENCE_PRED_TASK == "SENTENCE_BM25OKPI":
-                    self.config.set('SENTENCE_BM25OKPI', 'k1', self.k1BM25Okpi_senRetri.get())
-                    self.config.set('SENTENCE_BM25OKPI', 'b', self.bBm25Okpi_senRetri.get())
-                    self.config.set('SENTENCE_BM25OKPI', 'epsilon', self.epsilonBm25Okpi_senRetri.get())
+                if self.SENTENCE_PRED_TASK == "SENTENCE_BM25OKAPI":
+                    self.config.set('SENTENCE_BM25OKAPI', 'k1', self.k1BM25Okapi_senRetri.get())
+                    self.config.set('SENTENCE_BM25OKAPI', 'b', self.bBM25Okapi_senRetri.get())
+                    self.config.set('SENTENCE_BM25OKAPI', 'epsilon', self.epsilonBM25Okapi_senRetri.get())
                 elif self.SENTENCE_PRED_TASK == "SENTENCE_BM25L":
                     self.config.set('SENTENCE_BM25L', 'k1', self.k1Bm25L_senRetri.get())
                     self.config.set('SENTENCE_BM25L', 'b', self.bBm25L_senRetri.get())
@@ -204,24 +204,24 @@ class View_tinker:
 
 
         # row 4 - 6
-        if self.wordPredMethod.get() == "BM25Okpi":
+        if self.wordPredMethod.get() == "BM25Okapi":
             # row 4
             ttk.Label(frame, text="      k1").grid(sticky="E", column=0, row=4)
-            k1Bm25OkpiString_wordPred = tk.StringVar(frame, self.K1_BM25OKPI) 
-            self.k1BM25Okpi_wordPred = tk.Entry(frame, width=21, textvariable = k1Bm25OkpiString_wordPred)
-            self.k1BM25Okpi_wordPred.grid(sticky="W", column=1, row=4)
+            k1BM25OkapiString_wordPred = tk.StringVar(frame, self.K1_BM25OKAPI) 
+            self.k1BM25Okapi_wordPred = tk.Entry(frame, width=21, textvariable = k1BM25OkapiString_wordPred)
+            self.k1BM25Okapi_wordPred.grid(sticky="W", column=1, row=4)
             # row 5
             ttk.Label(frame, text="      b").grid(sticky="E", column=0, row=5)
-            bBm25OkpiString_wordPred = tk.StringVar(frame, self.B_BM25OKPI)
-            self.bBm25Okpi_wordPred = tk.Entry(frame, width=21, textvariable=bBm25OkpiString_wordPred)
-            self.bBm25Okpi_wordPred.grid(sticky="W", column=1, row=5)
+            bBM25OkapiString_wordPred = tk.StringVar(frame, self.B_BM25OKAPI)
+            self.bBM25Okapi_wordPred = tk.Entry(frame, width=21, textvariable=bBM25OkapiString_wordPred)
+            self.bBM25Okapi_wordPred.grid(sticky="W", column=1, row=5)
             # row 6
             ttk.Label(frame, text='      \u03B5').grid(sticky="E", column=0, row=6) # epsilon
-            epsilonBm25OkpiString_wordPred = tk.StringVar(frame, self.EPSILON_BM25OKPI)
-            self.epsilonBm25Okpi_wordPred = tk.Entry(frame, width=21, textvariable=epsilonBm25OkpiString_wordPred)
-            self.epsilonBm25Okpi_wordPred.grid(sticky="W", column=1, row=6)
+            epsilonBM25OkapiString_wordPred = tk.StringVar(frame, self.EPSILON_BM25OKAPI)
+            self.epsilonBM25Okapi_wordPred = tk.Entry(frame, width=21, textvariable=epsilonBM25OkapiString_wordPred)
+            self.epsilonBM25Okapi_wordPred.grid(sticky="W", column=1, row=6)
             # Assign task
-            self.WORD_PRED_TASK = "WORD_BM25OKPI"
+            self.WORD_PRED_TASK = "WORD_BM25OKAPI"
         elif self.wordPredMethod.get() == "BM25L":
             # row 4
             ttk.Label(frame, text="      k1").grid(sticky="E", column=0, row=4)
@@ -318,22 +318,22 @@ class View_tinker:
 
     """ Sentence Prediction Below """
     def _sen_retrieval_text_method_combobox(self, event, frame):
-        if self.senRetriTextMethod.get() == "BM25Okpi":
+        if self.senRetriTextMethod.get() == "BM25Okapi":
             # row 6
             ttk.Label(frame, text="      k1").grid(sticky="E", column=0, row=6)
-            k1Bm25OkpiString_senRetri = tk.StringVar(frame, self.K1_BM25OKPI) 
-            self.k1BM25Okpi_senRetri = tk.Entry(frame, width=21, textvariable = k1Bm25OkpiString_senRetri)
-            self.k1BM25Okpi_senRetri.grid(sticky="W", column=1, row=6)
+            k1BM25OkapiString_senRetri = tk.StringVar(frame, self.K1_BM25OKAPI) 
+            self.k1BM25Okapi_senRetri = tk.Entry(frame, width=21, textvariable = k1BM25OkapiString_senRetri)
+            self.k1BM25Okapi_senRetri.grid(sticky="W", column=1, row=6)
             # row 7
             ttk.Label(frame, text="      b").grid(sticky="E", column=0, row=7)
-            bBm25OkpiString_senRetri = tk.StringVar(frame, self.B_BM25OKPI)
-            self.bBm25Okpi_senRetri = tk.Entry(frame, width=21, textvariable=bBm25OkpiString_senRetri)
-            self.bBm25Okpi_senRetri.grid(sticky="W", column=1, row=7)
+            bBM25OkapiString_senRetri = tk.StringVar(frame, self.B_BM25OKAPI)
+            self.bBM25Okapi_senRetri = tk.Entry(frame, width=21, textvariable=bBM25OkapiString_senRetri)
+            self.bBM25Okapi_senRetri.grid(sticky="W", column=1, row=7)
             # row 8
             ttk.Label(frame, text='      \u03B5').grid(sticky="E", column=0, row=8) # epsilon
-            epsilonBm25OkpiString_senRetri = tk.StringVar(frame, self.EPSILON_BM25OKPI)
-            self.epsilonBm25Okpi_senRetri = tk.Entry(frame, width=21, textvariable=epsilonBm25OkpiString_senRetri)
-            self.epsilonBm25Okpi_senRetri.grid(sticky="W", column=1, row=8)
+            epsilonBM25OkapiString_senRetri = tk.StringVar(frame, self.EPSILON_BM25OKAPI)
+            self.epsilonBM25Okapi_senRetri = tk.Entry(frame, width=21, textvariable=epsilonBM25OkapiString_senRetri)
+            self.epsilonBM25Okapi_senRetri.grid(sticky="W", column=1, row=8)
             # row 9
             ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=9)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=9)
@@ -360,7 +360,7 @@ class View_tinker:
             ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=16)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=16)
             # Assign task
-            self.SENTENCE_PRED_TASK = "SENTENCE_BM25OKPI"
+            self.SENTENCE_PRED_TASK = "SENTENCE_BM25OKAPI"
         elif self.senRetriTextMethod.get() == "BM25L":
             # row 6
             ttk.Label(frame, text="      k1").grid(sticky="E", column=0, row=6)
