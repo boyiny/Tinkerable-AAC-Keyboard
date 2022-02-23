@@ -4,14 +4,23 @@ import os
 import re
 
 class Model_Bm25:
-    BM25_OPTIONS = "BM25Okapi"
-    BM25_k1 = 1.5
-    BM25_b = 0.75
-    BM25_epsilon = 0.25
-    BM25_delta_L = 0.5
-    BM25_delta_Plus = 1
+    BM25_OPTION = "BM25Okapi"
+    k1_BM25OKPI = 1.5
+    b_BM25OKPI = 0.75
+    epsilon_BM25OKPI = 0.25
 
-    def __init__(self):
+    k1_BM25L = 1.5
+    b_BM25L = 0.75
+    delta_BM25L = 0.5
+
+    k1_BM25PLUS = 1.5
+    b_BM25PLUS = 0.75
+    delta_BM25PLUS = 1.0
+
+    def __init__(self, option, k1, b, epsilon=None, delta=None):
+        print(f"In model_bm25, option = {option}, k1 = {k1}, b = {b}, epsilon = {epsilon}, delta = {delta}.")
+        if option != None:
+            self.BM25_OPTION = option
 
         txt_path = './Dataset/sent_train_aac.txt'
         # print(f"{os.path.dirname(__file__)}")
@@ -33,12 +42,24 @@ class Model_Bm25:
             self.corpus.append(sen)
 
         self.tokenized_corpus = [doc.split(" ") for doc in self.corpus]
-        if self.BM25_OPTIONS == "BM25Okapi":
-            self.bm25 = BM25Okapi(self.tokenized_corpus, k1=self.BM25_k1, b=self.BM25_b, epsilon=self.BM25_epsilon)
-        elif self.BM25_OPTIONS == "BM25L":
-            self.bm25 = BM25L(self.tokenized_corpus)
-        elif self.BM25_OPTIONS == "BM25Plus":
-            self.bm25 = BM25Plus(self.tokenized_corpus)
+        if self.BM25_OPTION == "BM25Okapi":
+            if k1 > 0 and b > 0 and epsilon > 0:
+                self.k1_BM25OKPI = k1
+                self.b_BM25OKPI = b
+                self.epsilon_BM25OKPI = epsilon
+            self.bm25 = BM25Okapi(self.tokenized_corpus, k1=self.k1_BM25OKPI, b=self.b_BM25OKPI, epsilon=self.epsilon_BM25OKPI)
+        elif self.BM25_OPTION == "BM25L":
+            if k1 > 0 and b > 0 and delta > 0:
+                self.k1_BM25L = k1
+                self.b_BM25L = b
+                self.delta_BM25L = delta
+            self.bm25 = BM25L(self.tokenized_corpus, k1=self.k1_BM25L, b=self.b_BM25L, delta=self.delta_BM25L)
+        elif self.BM25_OPTION == "BM25Plus":
+            if k1 > 0 and b > 0 and delta > 0:
+                self.k1_BM25PLUS = k1
+                self.b_BM25PLUS = b
+                self.b_BM25PLUS = delta
+            self.bm25 = BM25Plus(self.tokenized_corpus, k1=self.k1_BM25PLUS, b=self.k1_BM25PLUS, delta=self.delta_BM25PLUS)
         else:
             print(f"Unknown BM25 selection, using BM25Okapi...")
             self.bm25 = BM25Okapi(self.tokenized_corpus)

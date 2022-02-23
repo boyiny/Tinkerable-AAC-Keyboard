@@ -11,6 +11,10 @@ class Model_main:
     wordPredTest = ['hey', 'hello', 'have', 'has', 'happy', 'happen']
     sentencePredTest = ["Jingyi, I miss you", "How is your day?", "When can I see you?", "Let's dance."]
 
+    BOOL_ENTRY_BY_KEYWORDS = False
+    WORD_PRED_METHOD = ''
+    SENT_PRED_METHOD = ''
+
     def __init__(self):
         self.previousEntry = ''
         self.entry = ''
@@ -137,8 +141,8 @@ class Model_main:
         self.boolGpt2 = False
 
 
-    def load_bm25(self):
-        self.bm25 = Model_Bm25()
+    def load_bm25(self, option, k1, b, epsilon=None, delta=None):
+        self.bm25 = Model_Bm25(option, k1, b, epsilon, delta)
         self.boolBm25 = True
         self.boolRoberta = False
         self.boolGpt2 = False

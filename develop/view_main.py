@@ -79,6 +79,8 @@ class View_keypad:
 
     BOOL_SENT_PRED_DISPLAY = True
 
+    BOOL_ENTRY_BY_KEYWORDS = False
+
 
     keyList = [['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '<-'], 
         ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'Speak'], 
@@ -359,7 +361,7 @@ class View_menu:
         self.rootFrame = rootFrame
         self.controller = controller
         self._make_menu()
-        self.tinkerView = View_tinker()
+        self.tinkerView = View_tinker(self.controller)
 
     def _make_menu(self):
         def donothing():

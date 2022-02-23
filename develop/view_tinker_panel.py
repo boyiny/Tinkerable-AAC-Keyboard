@@ -62,15 +62,14 @@ class View_tinker:
     WORD_PRED_TASK = ""
     SENTENCE_PRED_TASK = ""
 
-    def __init__(self):
+    def __init__(self, controller):
+        self.controller = controller
         self.file = os.path.realpath(os.path.join(os.path.dirname(__file__), 'tinker.ini'))
         self.config = configparser.ConfigParser()
         self.config.read(self.file)
         self.config.sections()
-        # print(self.config.sections())
-        # print(f"init - Word pred: {self.config['PREDICTION_TASK']['WORD_PRED']}")
-        # print(f"init - Sentence pred: {self.config['PREDICTION_TASK']['SENTENCE_PRED']}")
 
+        
         
     def _close(self):
         self.root.destroy()
@@ -86,7 +85,7 @@ class View_tinker:
             self.config.set('WORD_BM25OKPI', 'k1', self.k1BM25Okpi_wordPred.get())
             self.config.set('WORD_BM25OKPI', 'b', self.bBm25Okpi_wordPred.get())
             self.config.set('WORD_BM25OKPI', 'epsilon', self.epsilonBm25Okpi_wordPred.get())
-        elif self.WORD_PRED_TASK == "WORD_BM25OL":
+        elif self.WORD_PRED_TASK == "WORD_BM25L":
             self.config.set('WORD_BM25L', 'k1', self.k1Bm25L_wordPred.get())
             self.config.set('WORD_BM25L', 'b', self.bBm25L_wordPred.get())
             self.config.set('WORD_BM25L', 'delta', self.deltaBm25L_wordPred.get())
@@ -156,13 +155,14 @@ class View_tinker:
                     personaList.append(p.get())
                 personas = "|".join(personaList)
                 self.config.set('SENTENCE_KWICKCHAT', 'persona', personas) # it is a list
-        
 
         self.config.write(open(self.file,'w'))
-        # self.root.destroy()
 
-        # print(f"Word pred: {self.WORD_PRED_TASK}")
-        # print(f"Sentence pred: {self.SENTENCE_PRED_TASK}")
+        self.controller.get_tinker_data()
+
+        self.root.destroy()
+
+        
         
 
     def run(self):
@@ -201,7 +201,6 @@ class View_tinker:
         self.root.mainloop() 
 
     def _word_pred_method_combobox(self, event, frame):
-        # TODO when "Confirm" button is clicked -> record data via .get()
 
 
         # row 4 - 6
@@ -240,7 +239,7 @@ class View_tinker:
             self.deltaBm25L_wordPred = tk.Entry(frame, width=21, textvariable=deltaBm25LString_wordPred)
             self.deltaBm25L_wordPred.grid(sticky="W", column=1, row=6)
             # Assign task
-            self.WORD_PRED_TASK = "WORD_BM25OL"
+            self.WORD_PRED_TASK = "WORD_BM25L"
         elif self.wordPredMethod.get() == "BM25Plus":
             # row 4
             ttk.Label(frame, text="      k1").grid(sticky="E", column=0, row=4)
@@ -532,6 +531,8 @@ class View_tinker:
             # row 16
             ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=16)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=16)
+
+            self.SENTENCE_PRED_TASK = "SENTENCE_SEMANTIC_SIMILARITY"
 
     def _sen_gpt2_approach_combobox(self, event, frame):
 
