@@ -330,10 +330,10 @@ class Controller_main():
     """ On button click above """
 
     """ Word and Sentence Prediction Below """
-
+    # done
     def set_word_pred_num(self, num):
         self.viewKeypad.WORD_PRED_NUM = self.modelMain.set_word_pred_num(num)
-
+    # done
     def set_sentence_pred_num(self, num):
         self.viewKeypad.SENT_PRED_NUM = self.modelMain.set_sentence_pred_num(num)
 
@@ -475,9 +475,14 @@ class Controller_main():
         """ self.boolWordPredDisplay is True """
         self.modelMain.load_fill_word()
 
-        self.boolWordPredOnPressedKey = boolWordPlaceOnLastPressedKey
+        # self.boolWordPredOnPressedKey = boolWordPlaceOnLastPressedKey
         
-        self.viewKeypad.BOOL_WORD_PRED_PRESSED_KEY = self.modelMain.set_word_pred_on_last_pressed_key(self.boolWordPredOnPressedKey)
+        # self.viewKeypad.BOOL_WORD_PRED_PRESSED_KEY = self.modelMain.set_word_pred_on_last_pressed_key(self.boolWordPredOnPressedKey)
+
+        if self.display_location_WORD_PREDICTION == 'Above last pressed key':
+            self.viewKeypad.BOOL_WORD_PRED_PRESSED_KEY = True
+        elif self.display_location_WORD_PREDICTION == 'Fixed':
+            self.viewKeypad.BOOL_WORD_PRED_PRESSED_KEY = False
 
         entry = self.viewEntry.entry.get()
         if entry == "":
@@ -499,7 +504,12 @@ class Controller_main():
         print(f"In controller_main, current entry is: '{entry}'")
         predictedSentence = self._make_sentence_prediction(entry)
         # set button place method
-        self.viewKeypad.BOOL_WORD_PRED_PRESSED_KEY = self.modelMain.set_word_pred_on_last_pressed_key(self.boolWordPredOnPressedKey)
+        # self.viewKeypad.BOOL_WORD_PRED_PRESSED_KEY = self.modelMain.set_word_pred_on_last_pressed_key(self.boolWordPredOnPressedKey)
+        if self.display_location_WORD_PREDICTION == 'Above last pressed key':
+            self.viewKeypad.BOOL_WORD_PRED_PRESSED_KEY = True
+        elif self.display_location_WORD_PREDICTION == 'Fixed':
+            self.viewKeypad.BOOL_WORD_PRED_PRESSED_KEY = False
+            
         self.viewKeypad.clear_placed_sentences()
         
         if self.boolSentencePredDisplay:
