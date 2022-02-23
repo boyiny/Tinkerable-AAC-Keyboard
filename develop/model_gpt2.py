@@ -15,25 +15,41 @@ class Model_Gpt2:
     SEED = 0
     SYMBOLS = "!@#$%^&*()_-+=`~\{\};':\",./<>?\|\n"
 
-    def __init__(self):
-        self.type = "top-p sampling"
+    def __init__(self, option, model=None, seed=None, max_length=None, no_repeat_ngram_size=None, num_of_beams=None, top_k=None, top_p=None):
+        print(f"GPT2 option: {option}, model: {model}, seed: {seed}, max_length: {max_length}, no_repeat_ngram_size: {no_repeat_ngram_size}, num_of_beams: {num_of_beams}, top_k: {top_k}, top_p: {top_p}")
+        self.OPTION = option
+        if "WORD" in option:
+            self.MODEL = model
+            self.SEED = seed
+        elif "SENTENCE" in option:
+            self.MODEL = model
+            self.MAX_LENGTH = max_length
+            self.NO_REPET_NGRAM_SIZE = no_repeat_ngram_size
+            self.NUM_OF_BEAMS = num_of_beams
+            self.TOP_K = top_k
+            self.TOP_P = top_p
+        
+        self._load_gpt2_using_model_mechanism()
 
         # Using pipline by default
         # self.generator = pipelines.pipeline(task='text-generation', model='gpt2', framework='pt')
         # set_seed(self.SEED)
+        
 
+    # done
     def set_gpt2_method(self, type):
         """ Link the menu """        
-        self.type = type
+        self.OPTION = type
         self._load_gpt2_using_model_mechanism()
 
     def _load_gpt2_using_model_mechanism(self):
         # Load pre-trained model tokenizer (vocabulary)
-        self.tokenizer = GPT2TokenizerFast.from_pretrained('gpt2')
+
+        self.tokenizer = GPT2TokenizerFast.from_pretrained(self.MODEL)
 
         # Load pre-trained model (weights)
         # add the EOS token as PAD token to avoid warnings
-        self.model = GPT2LMHeadModel.from_pretrained('gpt2', pad_token_id=self.tokenizer.eos_token_id)
+        self.MODEL = GPT2LMHeadModel.from_pretrained(self.MODEL, pad_token_id=self.tokenizer.eos_token_id)
 
         # Load pre-trained model tokenizer (vocabulary)
         # self.tokenizer = GPT2TokenizerFast.from_pretrained('/Users/yangboyin/Code/Cambridge/AAC/Tinkerable-AAC-Keyboard/Playground/GPT2Model', local_files_only=True)
@@ -41,7 +57,7 @@ class Model_Gpt2:
         # # Load pre-trained model (weights)
         # self.model = GPT2LMHeadModel.from_pretrained('/Users/yangboyin/Code/Cambridge/AAC/Tinkerable-AAC-Keyboard/Playground/GPT2Model', local_files_only=True)
 
-        self.model.eval()
+        self.MODEL.eval()
 
     def _pred_next_word(self, query, predSentences):
         queryListOfWords = query.split()
@@ -88,15 +104,15 @@ class Model_Gpt2:
     def _run_gpt2_method(self, query):
         results = []
 
-        if self.type == "greedy":
+        if self.OPTION == "greedy":
             results = self._greedy_output(query)
-        elif self.type == "beam":
+        elif self.OPTION == "beam":
             results = self._beam_output(query)
-        elif self.type == "sampling":
+        elif self.OPTION == "sampling":
             results = self._sampling_output(query)
-        elif self.type == "top-k sampling": 
+        elif self.OPTION == "top-k sampling": 
             results = self._top_k_sampling_output(query)
-        elif self.type == "top-p sampling":
+        elif self.OPTION == "top-p sampling":
             results = self._top_p_sampling_output(query)
         # elif self.type == "default":
         #     results = self._default_output(query)
@@ -115,7 +131,7 @@ class Model_Gpt2:
         
         # Predict all tokens
         with torch.no_grad():
-            outputs = self.model(tokens_tensor)
+            outputs = self.MODEL(tokens_tensor)
             predictions = outputs[0]
             
         top_preds = 50
@@ -160,7 +176,7 @@ class Model_Gpt2:
         input_ids = self.tokenizer.encode(query, return_tensors='pt')
 
         # generate text until the output length (which includes the context length) reaches 50
-        greedy_result = self.model.generate(
+        greedy_result = self.MODEL.generate(
             input_ids, 
             max_length=self.MAX_LENGTH, 
             no_repeat_ngram_size=2)
@@ -173,7 +189,7 @@ class Model_Gpt2:
         input_ids = self.tokenizer.encode(query, return_tensors='pt')
 
         # activate beam search and early_stopping
-        beam_output = self.model.generate(
+        beam_output = self.MODEL.generate(
             input_ids, 
             max_length=self.MAX_LENGTH, 
             num_beams=5, 
@@ -193,7 +209,7 @@ class Model_Gpt2:
         set_seed(self.SEED)
 
         # activate sampling and deactivate top_k by setting top_k sampling to 0
-        sampling_output = self.model.generate(
+        sampling_output = self.MODEL.generate(
             input_ids, 
             do_sample=True, 
             max_length=self.MAX_LENGTH, 
@@ -221,7 +237,7 @@ class Model_Gpt2:
 
         # set top_k to 50
         startGenerate = time.time()
-        top_k_sampling_output = self.model.generate(
+        top_k_sampling_output = self.MODEL.generate(
             input_ids, 
             do_sample=True, 
             max_length=self.MAX_LENGTH, 
@@ -246,7 +262,7 @@ class Model_Gpt2:
         set_seed(self.SEED)
 
         # deactivate top_k sampling and sample only from 92% most likely words
-        top_p_sampling_outputs = self.model.generate(
+        top_p_sampling_outputs = self.MODEL.generate(
             input_ids,
             do_sample=True, 
             max_length=self.MAX_LENGTH, 

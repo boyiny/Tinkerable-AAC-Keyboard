@@ -154,12 +154,12 @@ class Model_main:
         self.boolRoberta = True
         self.boolGpt2 = False
     
-    def load_gpt2(self, subType):
-        self.gpt2 = Model_Gpt2()
+    def load_gpt2(self, option, model=None, seed=None, max_length=None, no_repeat_ngram_size=None, num_of_beams=None, top_k=None, top_p=None):
+        self.gpt2 = Model_Gpt2(option, model, seed, max_length, no_repeat_ngram_size, num_of_beams, top_k, top_p)
         self.boolBm25 = False
         self.boolRoberta = False
         self.boolGpt2 = True
-        self.gpt2.set_gpt2_method(subType) # "top-p sampling"
+        # self.gpt2.set_gpt2_method() # "top-p sampling"
 
     def make_word_prediction(self, entry):
         """ link to controller_main """
@@ -193,9 +193,7 @@ class Model_main:
         return predictionsInNum
 
 
-
     """ Word prediction method above """
-
 
     def make_sentence_prediction(self, entry):
         """ link to controller_main """

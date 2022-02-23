@@ -104,6 +104,7 @@ class Controller_main():
 
         self.method_SENTENCE_GENERATION                         = str(self.config['SENTENCE_GENERATION']['method'])
 
+        self.model_SENTENCE_GPT2                                = str(self.config['SENTENCE_GPT2']['model'])
         self.method_SENTENCE_GPT2                               = str(self.config['SENTENCE_GPT2']['method'])
 
         self.max_length_SENTENCE_GPT2_GREEDY                = int(self.config['SENTENCE_GPT2_GREEDY']['max_length'])
@@ -177,7 +178,7 @@ class Controller_main():
             option = "BM25Plus"
             self.modelMain.load_bm25(option, self.k1_WORD_BM25PLUS, self.b_WORD_BM25PLUS, delta=self.delta_WORD_BM25PLUS)
         elif self.word_pred_PREDICTION_TASK == "WORD_GPT2":
-            pass
+            self.modelMain.load_gpt2(option=self.word_pred_PREDICTION_TASK, model=self.model_WORD_GPT2, seed=self.seed_WORD_GPT2)
         elif self.word_pred_PREDICTION_TASK == "WORD_ROBERTA":
             pass
 

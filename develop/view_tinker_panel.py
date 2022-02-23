@@ -124,6 +124,7 @@ class View_tinker:
         elif self.senPredApproach.get() == "Generation":
             self.config.set('SENTENCE_GENERATION', 'method', self.senGenMethod.get())
             if self.senGenMethod.get() == "GPT-2":
+                self.config.set('SENTENCE_GPT2', 'model', self.senGpt2Model.get())
                 self.config.set('SENTENCE_GPT2', 'method', self.senGpt2Approach.get())
                 if self.SENTENCE_PRED_TASK == "SENTENCE_GPT2_GREEDY":
                     self.config.set('SENTENCE_GPT2_GREEDY', 'max_length', self.maxLength_senGpt2Greedy.get())
@@ -718,14 +719,21 @@ class View_tinker:
             # row 2
             self.senEntryApproach.state(["!disabled"])
             # row 5
-            ttk.Label(frame, text="      Select Method").grid(sticky="E", column=0, row=5)
+            ttk.Label(frame, text="      Select Model").grid(sticky="E", column=0, row=5)
+            self.senGpt2Model = ttk.Combobox(frame, values=self.MODEL_GPT2)
+            self.senGpt2Model.current(1)
+            self.senGpt2Model.grid(sticky="W", column=1, row=5)
+            # self.senGpt2Approach.bind("<<ComboboxSelected>>", lambda event: self._sen_gpt2_approach_combobox(event, frame))
+
+            # row 6
+            ttk.Label(frame, text="      Select Method").grid(sticky="E", column=0, row=6)
             self.senGpt2Approach = ttk.Combobox(frame, values=self.SEN_GPT2_APPROACH, state="readonly")
-            self.senGpt2Approach.grid(sticky="W", column=1, row=5)
+            self.senGpt2Approach.grid(sticky="W", column=1, row=6)
             # self.senGpt2Approach.current(0)
             self.senGpt2Approach.bind("<<ComboboxSelected>>", lambda event: self._sen_gpt2_approach_combobox(event, frame))
-            # row 6
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=6)
-            ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=6)
+            
+            # ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=6)
+            # ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=6)
             # row 7
             ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=7)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=7)
