@@ -148,8 +148,8 @@ class Model_main:
         self.boolGpt2 = False
         # Add loading screen
     
-    def load_roberta(self):
-        self.roberta = Model_Roberta()
+    def load_roberta(self, option, model):
+        self.roberta = Model_Roberta(option, model)
         self.boolBm25 = False
         self.boolRoberta = True
         self.boolGpt2 = False

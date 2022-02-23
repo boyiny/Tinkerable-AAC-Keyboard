@@ -180,7 +180,7 @@ class Controller_main():
         elif self.word_pred_PREDICTION_TASK == "WORD_GPT2":
             self.modelMain.load_gpt2(option=self.word_pred_PREDICTION_TASK, model=self.model_WORD_GPT2, seed=self.seed_WORD_GPT2)
         elif self.word_pred_PREDICTION_TASK == "WORD_ROBERTA":
-            pass
+            self.modelMain.load_roberta(option=self.word_pred_PREDICTION_TASK, model=self.model_WORD_ROBERTA)
 
 
     def _sentence_prediction_settings(self):
