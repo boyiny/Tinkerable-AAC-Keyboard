@@ -15,8 +15,8 @@ class Model_Gpt2:
     SEED = 0
     SYMBOLS = "!@#$%^&*()_-+=`~\{\};':\",./<>?\|\n"
 
-    def __init__(self, option, model=None, seed=None, max_length=None, no_repeat_ngram_size=None, num_of_beams=None, top_k=None, top_p=None):
-        print(f"GPT2 option: {option}, model: {model}, seed: {seed}, max_length: {max_length}, no_repeat_ngram_size: {no_repeat_ngram_size}, num_of_beams: {num_of_beams}, top_k: {top_k}, top_p: {top_p}")
+    def __init__(self, option, model=None, seed=None, method=None, max_length=None, no_repeat_ngram_size=None, num_of_beams=None, top_k=None, top_p=None):
+        print(f"GPT2 option: {option}, model: {model}, seed: {seed}, method: {method}, max_length: {max_length}, no_repeat_ngram_size: {no_repeat_ngram_size}, num_of_beams: {num_of_beams}, top_k: {top_k}, top_p: {top_p}")
         self.OPTION = option
         if "WORD" in option:
             self.MODEL = model

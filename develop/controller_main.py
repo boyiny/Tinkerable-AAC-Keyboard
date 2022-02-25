@@ -1,3 +1,4 @@
+from pyexpat import model
 from model_main import Model_main
 from view_main import View_main, View_menu, View_entry, View_keypad
 from view_tinker_panel import View_tinker
@@ -37,6 +38,10 @@ class Controller_main():
         
     def main(self):
         self.viewMain.mainloop()
+
+
+
+    
 
     def get_tinker_data(self):
         self.file = os.path.realpath(os.path.join(os.path.dirname(__file__), 'tinker.ini'))
@@ -169,18 +174,18 @@ class Controller_main():
         # link to model: word pred method
         self.modelMain.WORD_PRED_METHOD = self.word_pred_PREDICTION_TASK
         if self.word_pred_PREDICTION_TASK == "WORD_BM25OKAPI": # "BM25L", "BM25Plus", "GPT-2", "RoBERTa"
-            option = "BM25Okapi"
-            self.modelMain.load_bm25(option, self.k1_WORD_BM25OKAPI, self.b_WORD_BM25OKAPI, epsilon=self.epsilon_WORD_BM25OKAPI)
+            option = "BM25OKAPI"
+            self.modelMain.load_bm25_word(option, self.k1_WORD_BM25OKAPI, self.b_WORD_BM25OKAPI, epsilon=self.epsilon_WORD_BM25OKAPI)
         elif self.word_pred_PREDICTION_TASK == "WORD_BM25L":
             option = "BM25L"
-            self.modelMain.load_bm25(option, self.k1_WORD_BM25L, self.b_WORD_BM25L, delta=self.delta_WORD_BM25L)
+            self.modelMain.load_bm25_word(option, self.k1_WORD_BM25L, self.b_WORD_BM25L, delta=self.delta_WORD_BM25L)
         elif self.word_pred_PREDICTION_TASK == "WORD_BM25PLUS":
-            option = "BM25Plus"
-            self.modelMain.load_bm25(option, self.k1_WORD_BM25PLUS, self.b_WORD_BM25PLUS, delta=self.delta_WORD_BM25PLUS)
+            option = "BM25PLUS"
+            self.modelMain.load_bm25_word(option, self.k1_WORD_BM25PLUS, self.b_WORD_BM25PLUS, delta=self.delta_WORD_BM25PLUS)
         elif self.word_pred_PREDICTION_TASK == "WORD_GPT2":
-            self.modelMain.load_gpt2(option=self.word_pred_PREDICTION_TASK, model=self.model_WORD_GPT2, seed=self.seed_WORD_GPT2)
+            self.modelMain.load_gpt2_word(option=self.word_pred_PREDICTION_TASK, model=self.model_WORD_GPT2, seed=self.seed_WORD_GPT2)
         elif self.word_pred_PREDICTION_TASK == "WORD_ROBERTA":
-            self.modelMain.load_roberta(option=self.word_pred_PREDICTION_TASK, model=self.model_WORD_ROBERTA)
+            self.modelMain.load_roberta_word(option=self.word_pred_PREDICTION_TASK, model=self.model_WORD_ROBERTA)
 
 
     def _sentence_prediction_settings(self):
@@ -208,38 +213,44 @@ class Controller_main():
 
         # link to model: sentence pred method
         self.modelMain.SENT_PRED_METHOD = self.sentence_pred_PREDICTION_TASK
+        if self.sentence_pred_PREDICTION_TASK == 'SENTENCE_BM25OKAPI':
+            option = 'BM25OKAPI'
+            self.modelMain.load_bm25_sentence(option, self.k1_SENTENCE_BM25OKAPI, self.b_SENTENCE_BM25OKAPI, epsilon=self.epsilon_SENTENCE_BM25OKAPI)
+        elif self.sentence_pred_PREDICTION_TASK == 'SENTENCE_BM25L':
+            option = 'BM25L'
+            self.modelMain.load_bm25_sentence(option, self.k1_SENTENCE_BM25L, self.b_SENTENCE_BM25L, delta=self.delta_SENTENCE_BM25L)
+        elif self.sentence_pred_PREDICTION_TASK == 'SENTENCE_BM25PLUS':
+            option = 'BM25PLUS'
+            self.modelMain.load_bm25_sentence(option, self.k1_SENTENCE_BM25PLUS, self.b_SENTENCE_BM25PLUS, delta=self.delta_SENTENCE_BM25PLUS)
+        elif self.sentence_pred_PREDICTION_TASK == 'SENTENCE_SEMANTIC_SIMILARITY':
+            option = 'SEMANTIC_SIMILARITY'
+            self.modelMain.load_semantic_sen_retrieval_sentence(model=self.sen_retri_seman_model_SENTENCE_SEMANTIC_SIMILARITY)
+        elif self.sentence_pred_PREDICTION_TASK == 'SENTENCE_GPT2_GREEDY':
+            method = 'GPT2_GREEDY'
+            self.modelMain.load_gpt2_sentence(option=self.sentence_pred_PREDICTION_TASK, model=self.model_SENTENCE_GPT2, method=method, max_length=self.max_length_SENTENCE_GPT2_GREEDY, no_repeat_ngram_size=self.no_repeat_n_gram_size_SENTENCE_GPT2_GREEDY)
+        elif self.sentence_pred_PREDICTION_TASK == 'SENTENCE_GPT2_BEAM':
+            method = 'GPT2_BEAM'
+            self.modelMain.load_gpt2_sentence(option=self.sentence_pred_PREDICTION_TASK, model=self.model_SENTENCE_GPT2, method=method, max_length=self.max_length_SENTENCE_GPT2_BEAM, no_repeat_ngram_size=self.no_repeat_n_gram_size_SENTENCE_GPT2_BEAM, num_of_beams=self.num_of_beams_SENTENCE_GPT2_BEAM)
+        elif self.sentence_pred_PREDICTION_TASK == 'SENTENCE_GPT2_TOP_K':
+            method = 'GPT2_TOP_K'
+            self.modelMain.load_gpt2_sentence(option=self.sentence_pred_PREDICTION_TASK, model=self.model_SENTENCE_GPT2, method=method, max_length=self.max_length_SENTENCE_GPT2_TOP_K, seed=self.seed_SENTENCE_GPT2_TOP_K, top_k=self.top_k_SENTENCE_GPT2_TOP_K)
+        elif self.sentence_pred_PREDICTION_TASK == 'SENTENCE_GPT2_TOP_P':
+            method = 'GPT2_TOP_P'
+            self.modelMain.load_gpt2_sentence(option=self.sentence_pred_PREDICTION_TASK, model=self.model_SENTENCE_GPT2, method=method, max_length=self.max_length_SENTENCE_GPT2_TOP_P, seed=self.seed_SENTENCE_GPT2_TOP_P, top_k=self.top_k_SENTENCE_GPT2_TOP_P, top_p=self.top_p_SENTENCE_GPT2_TOP_P)
+        elif self.sentence_pred_PREDICTION_TASK == 'SENTENCE_KWICKCHAT':
+            option = 'KWICKCHAT'
+
+            
+
 
     def assign_task(self):
         self._word_prediction_settings()
-        # self._sentence_prediction_settings()
+        self._sentence_prediction_settings()
     
 
     """ Tinker Panel responses above """
 
         
-
-    """ Menu response below """
-    
-    # done
-    def set_word_pred_display(self, boolWordPredDisplay, boolWordPredOnPressedKey):
-        # self.boolWordPredDisplay = boolWordPredDisplay
-        if boolWordPredDisplay:
-            self._set_word_pred_place(boolWordPredOnPressedKey)
-        else:
-            # turn off word display
-            self.viewKeypad.clear_placed_words()
-
-        
-    # done
-    def set_sentence_pred_display(self, boolSentencePredDisplay):
-        # self.boolSentencePredDisplay = boolSentencePredDisplay
-        if boolSentencePredDisplay:
-            self._set_sentence_pred_place()
-        else:
-            self.viewKeypad.clear_placed_sentences()
-
-
-    """ Menu response above """
 
 
     """ On button click below """
@@ -337,37 +348,7 @@ class Controller_main():
     def set_sentence_pred_num(self, num):
         self.viewKeypad.SENT_PRED_NUM = self.modelMain.set_sentence_pred_num(num)
 
-    
-    def set_prediction_method(self, method):
-        # TODO add sentence generation and sentence retrieval options
-        subType = ""
-        if method == "BM25":
-            self.modelMain.load_bm25()
-        elif method == "RoBERTa":
-            self.boolBm25 = False
-            self.boolRoberta = True
-            self.boolGpt2 = False
-            self.modelMain.load_roberta()
-        elif "GPT-2" in method:
-            index = method.find(":")
-            subType = method[index+2:]
-            print(f"In set prediction method, subType is '{subType}'")
-            self.boolBm25 = False
-            self.boolRoberta = False
-            self.boolGpt2 = True
-
-            self.modelMain.load_gpt2(subType)
-        elif method == "Default":
-            self.boolBm25 = False
-            self.boolRoberta = False
-            self.boolGpt2 = False
-            self.boolSenRetrieval = True
-            self.boolSemantic = True
-            self.modelMain.load_semantic_sen_retrieval()
-        else:
-            self.boolBm25 = False
-            self.boolRoberta = False
-            self.boolGpt2 = False
+        
 
     def _make_word_fill(self, entry): 
         currentWord = self.modelMain.make_initail_word_and_word_fill(entry)
@@ -509,7 +490,7 @@ class Controller_main():
             self.viewKeypad.BOOL_WORD_PRED_PRESSED_KEY = True
         elif self.display_location_WORD_PREDICTION == 'Fixed':
             self.viewKeypad.BOOL_WORD_PRED_PRESSED_KEY = False
-            
+
         self.viewKeypad.clear_placed_sentences()
         
         if self.boolSentencePredDisplay:

@@ -4,14 +4,18 @@ import torch
 import os
 
 class Model_Semantic_Sentence_Retrieval:
+    MODEL = 'all-mpnet-base-v2'
+    BOOL_ENTRY_BY_KEYWORDS = False
 
-    def __init__(self):
-        self.BOOL_INPUT_BY_KEY_WORDS = False
+    def __init__(self, model, boolEntryByKeywords=None):
+        self.BOOL_ENTRY_BY_KEYWORDS = boolEntryByKeywords
 
+        self.MODEL = model
+        print(f"In SBERT, using model: {self.MODEL}")
         rootDir = os.path.dirname(__file__)
 
         # self.model = SentenceTransformer(os.path.join(rootDir, 'Model','DistilbertBase')) # './' + path_change +'DistilbertBase' 
-        self.model = SentenceTransformer('all-mpnet-base-v2')
+        self.model = SentenceTransformer(self.MODEL)
 
         with open(os.path.join(rootDir, 'Dataset', 'sent_train_aac.txt')) as f: #  + path_change
             self.corpus1 = [line.rstrip() for line in f]
@@ -72,7 +76,10 @@ class Model_Semantic_Sentence_Retrieval:
         top_results = np.argpartition(-cos_scores, range(num_sentences))[0:min(num_sentences,len(self.corpus))]
         top_sentences = [self.corpus[idx].strip() for idx in top_results[0:min(num_sentences,len(self.corpus))]]
 
-        if self.BOOL_INPUT_BY_KEY_WORDS == False:
+        results = None
+        if self.BOOL_ENTRY_BY_KEYWORDS:
+            results = top_sentences
+        else:
             results = self._filter(top_sentences, query)
         
         return results

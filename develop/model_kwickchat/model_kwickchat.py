@@ -10,11 +10,15 @@ import torch
 import torch.nn.functional as F
 
 from transformers import OpenAIGPTLMHeadModel, OpenAIGPTTokenizer, GPT2LMHeadModel, GPT2Tokenizer
-from model_utils import SPECIAL_TOKENS, build_input_from_segments, add_special_tokens_
-from model_utils import download_pretrained_model
+from model_kwickchat.model_utils import SPECIAL_TOKENS, build_input_from_segments, add_special_tokens_
+from model_kwickchat.model_utils import download_pretrained_model
 
 class Model_Kwickchat:
     PERSONA_NUM = 3
+
+    def __init__(self):
+        pass
+
     def _top_filtering(self, logits, top_k=0., top_p=0.9, threshold=-float('Inf'), filter_value=-float('Inf')):
         """ Filter a distribution of logits using top-k, top-p (nucleus) and/or threshold filtering
             Args:

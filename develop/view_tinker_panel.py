@@ -538,19 +538,16 @@ class View_tinker:
     def _sen_gpt2_approach_combobox(self, event, frame):
 
         if self.senGpt2Approach.get() == "Greedy search":
-            # row 6
-            ttk.Label(frame, text="max length").grid(sticky="E", column=0, row=6)
+            # row 7
+            ttk.Label(frame, text="max length").grid(sticky="E", column=0, row=7)
             maxLengthString_senGpt2Greedy = tk.StringVar(frame, value=self.GPT2_MAX_LENGTH)
             self.maxLength_senGpt2Greedy = tk.Entry(frame, width=21, textvariable=maxLengthString_senGpt2Greedy)
-            self.maxLength_senGpt2Greedy.grid(sticky="W", column=1, row=6)
-            # row 7
-            ttk.Label(frame, text="no repeat n-gram size").grid(sticky="E", column=0, row=7)
+            self.maxLength_senGpt2Greedy.grid(sticky="W", column=1, row=7)
+            # row 8
+            ttk.Label(frame, text="no repeat n-gram size").grid(sticky="E", column=0, row=8)
             noRepeatNGramSizeString_senGpt2Greedy = tk.StringVar(frame, value=self.GPT2_NO_REPEAT_NGRAM_SIZE)
             self.noRepeatNGramSize_senGpt2Greedy = tk.Entry(frame, width=21, textvariable=noRepeatNGramSizeString_senGpt2Greedy)
-            self.noRepeatNGramSize_senGpt2Greedy.grid(sticky="W", column=1, row=7)
-            # row 8
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=8)
-            ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=8)
+            self.noRepeatNGramSize_senGpt2Greedy.grid(sticky="W", column=1, row=8)
             # row 9
             ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=9)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=9)
@@ -576,29 +573,27 @@ class View_tinker:
             # row 16
             ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=16)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=16)
+
             # Assign task
             self.SENTENCE_PRED_TASK = "SENTENCE_GPT2_GREEDY"
 
         elif self.senGpt2Approach.get() == "Beam search":
-            # row 6
-            ttk.Label(frame, text="max length").grid(sticky="E", column=0, row=6)
+            # row 7
+            ttk.Label(frame, text="max length").grid(sticky="E", column=0, row=7)
             maxLengthString_senGpt2Beam = tk.StringVar(frame, value=self.GPT2_MAX_LENGTH)
             self.maxLength_senGpt2Beam = tk.Entry(frame, width=21, textvariable=maxLengthString_senGpt2Beam)
-            self.maxLength_senGpt2Beam.grid(sticky="W", column=1, row=6)
-            # row 7
-            ttk.Label(frame, text="no repeat n-gram size").grid(sticky="E", column=0, row=7)
+            self.maxLength_senGpt2Beam.grid(sticky="W", column=1, row=7)
+            # row 8
+            ttk.Label(frame, text="no repeat n-gram size").grid(sticky="E", column=0, row=8)
             noRepeatNGramSizeString_senGpt2Beam = tk.StringVar(frame, value=self.GPT2_NO_REPEAT_NGRAM_SIZE)
             self.noRepeatNGramSize_senGpt2Beam = tk.Entry(frame, width=21, textvariable=noRepeatNGramSizeString_senGpt2Beam)
-            self.noRepeatNGramSize_senGpt2Beam.grid(sticky="W", column=1, row=7)
-            # row 8
-            ttk.Label(frame, text="number of beams").grid(sticky="E", column=0, row=8)
+            self.noRepeatNGramSize_senGpt2Beam.grid(sticky="W", column=1, row=8)
+            # row 9
+            ttk.Label(frame, text="number of beams").grid(sticky="E", column=0, row=9)
             numOfBeamsString_senGpt2Beam = tk.StringVar(frame, value=self.GPT2_NUM_BEAMS)
             self.numOfBeams_senGpt2Beam = tk.Entry(frame, width=21, textvariable=numOfBeamsString_senGpt2Beam)
-            self.numOfBeams_senGpt2Beam.grid(sticky="W", column=1, row=8)
-             # row 9
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=9)
-            ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=9)
-            # row 10
+            self.numOfBeams_senGpt2Beam.grid(sticky="W", column=1, row=9)
+             # row 10
             ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=10)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=10)
             # row 11
@@ -620,28 +615,26 @@ class View_tinker:
             # row 16
             ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=16)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=16)
+            
             # Assign task
             self.SENTENCE_PRED_TASK = "SENTENCE_GPT2_BEAM"
 
         elif self.senGpt2Approach.get() == "Top-k sampling":
-            # row 6
-            ttk.Label(frame, text="max length").grid(sticky="E", column=0, row=6)
+            # row 7
+            ttk.Label(frame, text="max length").grid(sticky="E", column=0, row=7)
             maxLengthString_senGpt2TopK = tk.StringVar(frame, value=self.GPT2_MAX_LENGTH)
             self.maxLength_senGpt2TopK = tk.Entry(frame, width=21, textvariable=maxLengthString_senGpt2TopK)
-            self.maxLength_senGpt2TopK.grid(sticky="W", column=1, row=6)
-            # row 7
-            ttk.Label(frame, text="                                seed").grid(sticky="E", column=0, row=7)
+            self.maxLength_senGpt2TopK.grid(sticky="W", column=1, row=7)
+            # row 8
+            ttk.Label(frame, text="                                seed").grid(sticky="E", column=0, row=8)
             seedString_senGpt2TopK = tk.StringVar(frame, value=self.GPT2_SEED)
             self.seed_senGpt2TopK = tk.Entry(frame, width=21, textvariable=seedString_senGpt2TopK)
-            self.seed_senGpt2TopK.grid(sticky="W", column=1, row=7)
-            # row 8
-            ttk.Label(frame, text="                                top k").grid(sticky="E", column=0, row=8)
+            self.seed_senGpt2TopK.grid(sticky="W", column=1, row=8)
+            # row 9
+            ttk.Label(frame, text="                                top k").grid(sticky="E", column=0, row=9)
             topKString_senGpt2TopK = tk.StringVar(frame, value=self.GPT2_TOP_K)
             self.topK_senGpt2TopK = tk.Entry(frame, width=21, textvariable=topKString_senGpt2TopK)
-            self.topK_senGpt2TopK.grid(sticky="W", column=1, row=8)
-            # row 9
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=9)
-            ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=9)
+            self.topK_senGpt2TopK.grid(sticky="W", column=1, row=9)
             # row 10
             ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=10)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=10)
@@ -664,33 +657,31 @@ class View_tinker:
             # row 16
             ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=16)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=16)
+
             # Assign task
             self.SENTENCE_PRED_TASK = "SENTENCE_GPT2_TOP_K"
 
         elif self.senGpt2Approach.get() == "Top-p sampling":
-            # row 6
-            ttk.Label(frame, text="max length").grid(sticky="E", column=0, row=6)
+            # row 7
+            ttk.Label(frame, text="max length").grid(sticky="E", column=0, row=7)
             maxLengthString_senGpt2TopP = tk.StringVar(frame, value=self.GPT2_MAX_LENGTH)
             self.maxLength_senGpt2TopP = tk.Entry(frame, width=21, textvariable=maxLengthString_senGpt2TopP)
-            self.maxLength_senGpt2TopP.grid(sticky="W", column=1, row=6)
-            # row 7
-            ttk.Label(frame, text="                                seed").grid(sticky="E", column=0, row=7)
+            self.maxLength_senGpt2TopP.grid(sticky="W", column=1, row=7)
+            # row 8
+            ttk.Label(frame, text="                                seed").grid(sticky="E", column=0, row=8)
             seedString_senGpt2TopP = tk.StringVar(frame, value=self.GPT2_SEED)
             self.seed_senGpt2TopP = tk.Entry(frame, width=21, textvariable=seedString_senGpt2TopP)
-            self.seed_senGpt2TopP.grid(sticky="W", column=1, row=7)
-            # row 8
-            ttk.Label(frame, text="                                top k").grid(sticky="E", column=0, row=8)
+            self.seed_senGpt2TopP.grid(sticky="W", column=1, row=8)
+            # row 9
+            ttk.Label(frame, text="                                top k").grid(sticky="E", column=0, row=9)
             topKString_senGpt2TopP = tk.StringVar(frame, value=self.GPT2_TOP_K)
             self.topK_senGpt2TopP = tk.Entry(frame, width=21, textvariable=topKString_senGpt2TopP)
-            self.topK_senGpt2TopP.grid(sticky="W", column=1, row=8)
-            # row 9
-            ttk.Label(frame, text="                                top p").grid(sticky="E", column=0, row=9)
+            self.topK_senGpt2TopP.grid(sticky="W", column=1, row=9)
+            # row 10
+            ttk.Label(frame, text="                                top p").grid(sticky="E", column=0, row=10)
             topPString_senGpt2TopP = tk.StringVar(frame, value=self.GPT2_TOP_P)
             self.topP_senGpt2TopP = tk.Entry(frame, width=21, textvariable=topPString_senGpt2TopP)
-            self.topP_senGpt2TopP.grid(sticky="W", column=1, row=9)
-            # row 10
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=10)
-            ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=10)
+            self.topP_senGpt2TopP.grid(sticky="W", column=1, row=10)
             # row 11
             ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=11)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=11)
@@ -710,6 +701,7 @@ class View_tinker:
             # row 16
             ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=16)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=16)
+            
             # Assign task
             self.SENTENCE_PRED_TASK = "SENTENCE_GPT2_TOP_P"
 
@@ -717,7 +709,8 @@ class View_tinker:
         
         if self.senGenMethod.get() == "GPT-2":
             # row 2
-            self.senEntryApproach.state(["!disabled"])
+            self.senEntryApproach.current(0)
+            self.senEntryApproach.state(["disabled"])
             # row 5
             ttk.Label(frame, text="      Select Model").grid(sticky="E", column=0, row=5)
             self.senGpt2Model = ttk.Combobox(frame, values=self.MODEL_GPT2)
@@ -770,42 +763,44 @@ class View_tinker:
             self.senEntryApproach.current(1)
             self.senEntryApproach.state(["disabled"])
             # row 5
-            ttk.Label(frame, text="max length").grid(sticky="E", column=0, row=5)
+            ttk.Label(frame, text="        max length").grid(sticky="E", column=0, row=5)
+            ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=5)
             senKWMaxLenthString = tk.StringVar(frame, value=self.KW_MAX_LENGTH)
             self.senKWMaxLength = tk.Entry(frame, width=21, textvariable=senKWMaxLenthString)
             self.senKWMaxLength.grid(sticky="W", column=1, row=5)
             # row 6
-            ttk.Label(frame, text="min length").grid(sticky="E", column=0, row=6)
+            ttk.Label(frame, text="        min length").grid(sticky="E", column=0, row=6)
+            ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=6)
             senKWMinLenthString = tk.StringVar(frame, value=self.KW_MIN_LENGTH)
             self.senKWMinLength = tk.Entry(frame, width=21, textvariable=senKWMinLenthString)
             self.senKWMinLength.grid(sticky="W", column=1, row=6)
             # row 7
-            ttk.Label(frame, text="seed").grid(sticky="E", column=0, row=7)
+            ttk.Label(frame, text="        seed").grid(sticky="E", column=0, row=7)
             senKWSeedString = tk.StringVar(frame, value=self.KW_SEED)
             self.senKWSeed = tk.Entry(frame, width=21, textvariable=senKWSeedString)
             self.senKWSeed.grid(sticky="W", column=1, row=7)
             # row 8
-            ttk.Label(frame, text="temperature").grid(sticky="E", column=0, row=8)
+            ttk.Label(frame, text="        temperature").grid(sticky="E", column=0, row=8)
             senKWTemperatureString = tk.StringVar(frame, value=self.KW_TEMPERATURE)
             self.senKWTemperature = tk.Entry(frame, width=21, textvariable=senKWTemperatureString)
             self.senKWTemperature.grid(sticky="W", column=1, row=8)
             # row 9
-            ttk.Label(frame, text="top k").grid(sticky="E", column=0, row=9)
+            ttk.Label(frame, text="        top k").grid(sticky="E", column=0, row=9)
             senKWTopKString = tk.StringVar(frame, value=self.KW_TOP_K)
             self.senKWTopK = tk.Entry(frame, width=21, textvariable=senKWTopKString)
             self.senKWTopK.grid(sticky="W", column=1, row=9)
             # row 10
-            ttk.Label(frame, text="top p").grid(sticky="E", column=0, row=10)
+            ttk.Label(frame, text="        top p").grid(sticky="E", column=0, row=10)
             senKWTopPString = tk.StringVar(frame, value=self.KW_TOP_P)
             self.senKWTopP = tk.Entry(frame, width=21, textvariable=senKWTopPString)
             self.senKWTopP.grid(sticky="W", column=1, row=10)
             # row 11
-            ttk.Label(frame, text="Number of History").grid(sticky="E", column=0, row=11)
+            ttk.Label(frame, text="        Number of History").grid(sticky="E", column=0, row=11)
             senKWHistoryNumString = tk.StringVar(frame, value=self.SEN_KW_HISTORY_NUM)
             self.senKWHistoryNum = tk.Entry(frame, width=21, textvariable=senKWHistoryNumString)
             self.senKWHistoryNum.grid(sticky="W", column=1, row=11)
             # row 12
-            ttk.Label(frame, text="      Persona").grid(sticky="E", column=0, row=12)
+            ttk.Label(frame, text="        Persona").grid(sticky="E", column=0, row=12)
             senKWPersonaNumString = tk.StringVar(frame, value=self.SEN_KW_PERSONA_NUM)
             self.senKWPersonaNum = tk.Entry(frame, width=21, textvariable=senKWPersonaNumString)
             self.senKWPersonaNum.grid(sticky="W", column=1, row=12)

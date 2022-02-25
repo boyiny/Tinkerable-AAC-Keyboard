@@ -5,6 +5,7 @@ import re
 
 class Model_Bm25:
     BM25_OPTION = "BM25Okapi"
+    BOOL_ENTRY_BY_KEYWORDS = False
     k1_BM25OKAPI = 1.5
     b_BM25OKAPI = 0.75
     epsilon_BM25OKAPI = 0.25
@@ -17,10 +18,11 @@ class Model_Bm25:
     b_BM25PLUS = 0.75
     delta_BM25PLUS = 1.0
 
-    def __init__(self, option, k1, b, epsilon=None, delta=None):
-        print(f"In model_bm25, option = {option}, k1 = {k1}, b = {b}, epsilon = {epsilon}, delta = {delta}.")
+    def __init__(self, option, k1, b, epsilon=None, delta=None, boolEntryByKeywords=None):
+        print(f"In model_bm25, option = {option}, boolEntryByKeywords = {boolEntryByKeywords} k1 = {k1}, b = {b}, epsilon = {epsilon}, delta = {delta}.")
         if option != None:
             self.BM25_OPTION = option
+            self.BOOL_ENTRY_BY_KEYWORDS = boolEntryByKeywords
 
         txt_path = './Dataset/sent_train_aac.txt'
         # print(f"{os.path.dirname(__file__)}")
@@ -42,7 +44,7 @@ class Model_Bm25:
             self.corpus.append(sen)
 
         self.tokenized_corpus = [doc.split(" ") for doc in self.corpus]
-        if self.BM25_OPTION == "BM25Okapi":
+        if self.BM25_OPTION == "BM25OKAPI":
             if k1 > 0 and b > 0 and epsilon > 0:
                 self.k1_BM25OKAPI = k1
                 self.b_BM25OKAPI = b
@@ -54,7 +56,7 @@ class Model_Bm25:
                 self.b_BM25L = b
                 self.delta_BM25L = delta
             self.bm25 = BM25L(self.tokenized_corpus, k1=self.k1_BM25L, b=self.b_BM25L, delta=self.delta_BM25L)
-        elif self.BM25_OPTION == "BM25Plus":
+        elif self.BM25_OPTION == "BM25PLUS":
             if k1 > 0 and b > 0 and delta > 0:
                 self.k1_BM25PLUS = k1
                 self.b_BM25PLUS = b
@@ -112,8 +114,11 @@ class Model_Bm25:
 
         for sen in topNSen:
             sentence = sen.rstrip("\n")
-            if sentence.startswith(query):
+            if self.BOOL_ENTRY_BY_KEYWORDS:
                 predSentences.append(sentence)
+            else:
+                if sentence.startswith(query):
+                    predSentences.append(sentence)
         predSentences = list(dict.fromkeys(predSentences))
         
         return predSentences
