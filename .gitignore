@@ -1,4 +1,6 @@
 /Develop/Model/
 /Develop/__pycache__
 .DS_Store
+.gitattributes
+.gitignore
 *.bin

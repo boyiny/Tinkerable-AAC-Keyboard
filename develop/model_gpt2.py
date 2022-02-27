@@ -104,15 +104,13 @@ class Model_Gpt2:
     def _run_gpt2_method(self, query):
         results = []
 
-        if self.OPTION == "greedy":
-            results = self._greedy_output(query)
-        elif self.OPTION == "beam":
+        if 'GPT2_GREEDY' in self.OPTION:
+            results.append(self._greedy_output(query))
+        elif 'GPT2_BEAM' in self.OPTION:
             results = self._beam_output(query)
-        elif self.OPTION == "sampling":
-            results = self._sampling_output(query)
-        elif self.OPTION == "top-k sampling": 
+        elif 'GPT2_TOP_K' in self.OPTION: 
             results = self._top_k_sampling_output(query)
-        elif self.OPTION == "top-p sampling":
+        elif 'GPT2_TOP_P' in self.OPTION:
             results = self._top_p_sampling_output(query)
         # elif self.type == "default":
         #     results = self._default_output(query)
@@ -162,9 +160,9 @@ class Model_Gpt2:
         query = query.strip()
         print(f"In gpt2 generate_sentences, current entry is: '{query}'")
 
+        predSentences = []
+        
         if query != "":
-            predSentences = []
-
             predSentences = self._run_gpt2_method(query)
 
         return predSentences
@@ -277,14 +275,6 @@ class Model_Gpt2:
 
         return decodedTopPSamplingResult
 
-    # def _default_output(self, query):
-    #     results = self.generator(query, max_length=30, num_return_sequence=5)
-    #     defaultPredResult = []
-    #     for res in results:
-    #         sen = res.get('generated_text')
-    #         defaultPredResult.append(sen) 
-
-    #     return defaultPredResult
 
     
     
@@ -312,73 +302,4 @@ if __name__ == '__main__':
             print(f"Pred sen: {sen}")
 
 
-    # gpt2.predict_words(query)
 
-    # gpt2.predict_words(query2)
-    
-    # greedyPred = gpt2.greedy_output(query)
-    # print(f"Greedy Result:\n{greedyPred}\n-------")
-
-    # beamPred = gpt2.beam_output(query)
-    # print(f"Beam Result:\n{beamPred}\n-------")
-
-    # samplingPred = gpt2.sampling_output(query)
-    # print(f"Sampling Result:\n{samplingPred}\n-------")
-
-    # topKSamplingPred = gpt2.top_k_sampling_output(query)
-    # print(f"Top-k Sampling Result:\n{topKSamplingPred}\n-------")
-
-    # topPSamplingPred = gpt2.top_p_sampling_output(query)
-    # print(f"Top-p Sampling Result:\n{topPSamplingPred}\n-------")
-
-
-
-    # query = "You are a"
-    # result = gpt2.predict(query)
-    
-    # query2 = "You are "
-    # result2 = gpt2.predict(query2)
-
-    
-    # print(f"Result: {result2}")
-
-
-
-
-# import torch
-# from transformers import GPT2TokenizerFast, GPT2LMHeadModel
-
-# # Load pre-trained model tokenizer (vocabulary)
-# tokenizer = GPT2TokenizerFast.from_pretrained('./GPT2/GPT2Model')
-
-# # Load pre-trained model (weights)
-# model = GPT2LMHeadModel.from_pretrained('./GPT2/GPT2Model')
-
-# # Set the model in evaluation mode to deactivate the DropOut modules
-# # This is IMPORTANT to have reproducible results during evaluation!
-# model.eval()
-
-# # define a function to predict next word
-# def PredNext(text):
-#     #encode text inputs
-#     indexed_tokens = tokenizer.encode(text)
-    
-#     # Convert indexed tokens in a PyTorch tensor
-#     tokens_tensor = torch.tensor([indexed_tokens])
-    
-#     # Predict all tokens
-#     with torch.no_grad():
-#         outputs = model(tokens_tensor)
-#         predictions = outputs[0]
-        
-#     top_preds = 1000
-#     preds = []
-    
-#     predicted_indices = torch.argsort(predictions[0, -1, :], descending=True)
-
-#     for i in range(top_preds):
-#         predicted_index2 = predicted_indices[i].item()
-#         predicted_text2 = tokenizer.decode([predicted_index2])
-#         preds.append(predicted_text2)
-        
-#     return preds

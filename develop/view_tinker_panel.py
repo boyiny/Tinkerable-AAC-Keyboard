@@ -62,7 +62,12 @@ class View_tinker:
     WORD_PRED_TASK = ""
     SENTENCE_PRED_TASK = ""
 
+    BOOL_WORD_TINKERED = False
+    BOOL_SENTENCE_TINKERED = False
+
     def __init__(self, controller):
+
+
         self.controller = controller
         self.file = os.path.realpath(os.path.join(os.path.dirname(__file__), 'tinker.ini'))
         self.config = configparser.ConfigParser()
@@ -74,7 +79,7 @@ class View_tinker:
     def _close(self):
         self.root.destroy()
 
-    def _save(self):
+    def _save_word_pred_settings(self):
         self.config.set('PREDICTION_TASK', 'word_pred', self.WORD_PRED_TASK)
         self.config.set('PREDICTION_TASK', 'sentence_pred', self.SENTENCE_PRED_TASK)
         self.config.set('WORD_PREDICTION', 'max_pred_num', self.maxWordPredNum.get())
@@ -99,6 +104,7 @@ class View_tinker:
         elif self.WORD_PRED_TASK == "WORD_ROBERTA":
             self.config.set('WORD_ROBERTA', 'model', self.modelRoberta_wordPred.get())
 
+    def _save_sentence_pred_settings(self):
         self.config.set('SENTENCE_PREDICTION', 'max_pred_num', self.maxSenPredNum.get())
         self.config.set('SENTENCE_PREDICTION', 'sentence_entry_approach', self.senEntryApproach.get())
         self.config.set('SENTENCE_PREDICTION', 'prediction_approach', self.senPredApproach.get())
@@ -157,11 +163,20 @@ class View_tinker:
                 personas = "|".join(personaList)
                 self.config.set('SENTENCE_KWICKCHAT', 'persona', personas) # it is a list
 
-        self.config.write(open(self.file,'w'))
 
-        self.controller.get_tinker_data()
+    def _save(self):
+        if self.BOOL_WORD_TINKERED:
+            self._save_word_pred_settings()
+        if self.BOOL_SENTENCE_TINKERED:
+            self._save_sentence_pred_settings()
+        
+        if self.BOOL_WORD_TINKERED or self.BOOL_SENTENCE_TINKERED:
+            self.config.write(open(self.file,'w'))
+            self.controller.get_tinker_data()
 
         self.root.destroy()
+        self.BOOL_WORD_TINKERED = False
+        self.BOOL_SENTENCE_TINKERED = False
 
         
         
@@ -223,6 +238,7 @@ class View_tinker:
             self.epsilonBM25Okapi_wordPred.grid(sticky="W", column=1, row=6)
             # Assign task
             self.WORD_PRED_TASK = "WORD_BM25OKAPI"
+            self.BOOL_WORD_TINKERED = True
         elif self.wordPredMethod.get() == "BM25L":
             # row 4
             ttk.Label(frame, text="      k1").grid(sticky="E", column=0, row=4)
@@ -241,6 +257,7 @@ class View_tinker:
             self.deltaBm25L_wordPred.grid(sticky="W", column=1, row=6)
             # Assign task
             self.WORD_PRED_TASK = "WORD_BM25L"
+            self.BOOL_WORD_TINKERED = True
         elif self.wordPredMethod.get() == "BM25Plus":
             # row 4
             ttk.Label(frame, text="      k1").grid(sticky="E", column=0, row=4)
@@ -259,6 +276,7 @@ class View_tinker:
             self.deltaBm25Plus_wordPred.grid(sticky="W", column=1, row=6)
             # Assign task
             self.WORD_PRED_TASK = "WORD_BM25PLUS"
+            self.BOOL_WORD_TINKERED = True
         elif self.wordPredMethod.get() == "GPT-2":
             # row 4
             ttk.Label(frame, text="Model").grid(sticky="E", column=0, row=4)
@@ -275,6 +293,7 @@ class View_tinker:
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=6)
             # Assign task
             self.WORD_PRED_TASK = "WORD_GPT2"
+            self.BOOL_WORD_TINKERED = True
         elif self.wordPredMethod.get() == "RoBERTa":
             # row 4
             ttk.Label(frame, text="Model").grid(sticky="E", column=0, row=4)
@@ -289,6 +308,7 @@ class View_tinker:
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=6)
             # Assign task
             self.WORD_PRED_TASK = "WORD_ROBERTA"
+            self.BOOL_WORD_TINKERED = True
 
     def _word_pred_panel(self, frame):
         # row 0
@@ -362,6 +382,7 @@ class View_tinker:
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=16)
             # Assign task
             self.SENTENCE_PRED_TASK = "SENTENCE_BM25OKAPI"
+            self.BOOL_SENTENCE_TINKERED = True
         elif self.senRetriTextMethod.get() == "BM25L":
             # row 6
             ttk.Label(frame, text="      k1").grid(sticky="E", column=0, row=6)
@@ -405,6 +426,7 @@ class View_tinker:
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=16)
             # Assign task
             self.SENTENCE_PRED_TASK = "SENTENCE_BM25L"
+            self.BOOL_SENTENCE_TINKERED = True
         elif self.senRetriTextMethod.get() == "BM25Plus":
             # row 6
             ttk.Label(frame, text="      k1").grid(sticky="E", column=0, row=6)
@@ -448,6 +470,7 @@ class View_tinker:
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=16)
             # Assign task
             self.SENTENCE_PRED_TASK = "SENTENCE_BM25PLUS"
+            self.BOOL_SENTENCE_TINKERED = True
 
     def _sen_similarity_combobox(self, event, frame):
         
@@ -532,8 +555,9 @@ class View_tinker:
             # row 16
             ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=16)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=16)
-
+            # Assign task
             self.SENTENCE_PRED_TASK = "SENTENCE_SEMANTIC_SIMILARITY"
+            self.BOOL_SENTENCE_TINKERED = True
 
     def _sen_gpt2_approach_combobox(self, event, frame):
 
@@ -576,6 +600,7 @@ class View_tinker:
 
             # Assign task
             self.SENTENCE_PRED_TASK = "SENTENCE_GPT2_GREEDY"
+            self.BOOL_SENTENCE_TINKERED = True
 
         elif self.senGpt2Approach.get() == "Beam search":
             # row 7
@@ -618,6 +643,7 @@ class View_tinker:
             
             # Assign task
             self.SENTENCE_PRED_TASK = "SENTENCE_GPT2_BEAM"
+            self.BOOL_SENTENCE_TINKERED = True
 
         elif self.senGpt2Approach.get() == "Top-k sampling":
             # row 7
@@ -660,6 +686,7 @@ class View_tinker:
 
             # Assign task
             self.SENTENCE_PRED_TASK = "SENTENCE_GPT2_TOP_K"
+            self.BOOL_SENTENCE_TINKERED = True
 
         elif self.senGpt2Approach.get() == "Top-p sampling":
             # row 7
@@ -704,6 +731,7 @@ class View_tinker:
             
             # Assign task
             self.SENTENCE_PRED_TASK = "SENTENCE_GPT2_TOP_P"
+            self.BOOL_SENTENCE_TINKERED = True
 
     def _sen_gen_method_combobox(self, event, frame):
         
@@ -841,8 +869,10 @@ class View_tinker:
                 ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=rowNum+personaNum+i)
                 ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=rowNum+personaNum+i)
         self.lastPersonaNum = personaNum
+
         # Assign task
         self.SENTENCE_PRED_TASK = "SENTENCE_KWICKCHAT"
+        self.BOOL_SENTENCE_TINKERED = True
 
     def _sen_pred_approach_combobox(self, event, frame):
         

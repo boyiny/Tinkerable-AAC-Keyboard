@@ -190,14 +190,7 @@ class Controller_main():
 
     def _sentence_prediction_settings(self):
         # link to view: show pred
-        if self.sentence_pred_PREDICTION_TASK == '':
-            self.viewKeypad.clear_placed_sentences()
-        else:
-            entry = self.viewEntry.entry.get()
-            predictedSentence = self._make_sentence_prediction(entry)
-            self.viewKeypad.clear_placed_sentences()
-            self.viewKeypad.place_predicted_sentences(predSentence=predictedSentence) # TODO set different for KWickChat
-            # self.viewMain.textBox.set(predictedSentence)
+        
 
         # link to view: sentence pred num
         self.viewKeypad.SENT_PRED_NUM = self.max_pred_num_SENTENCE_PREDICTION
@@ -213,6 +206,7 @@ class Controller_main():
 
         # link to model: sentence pred method
         self.modelMain.SENT_PRED_METHOD = self.sentence_pred_PREDICTION_TASK
+        self.modelMain.prediction_approach_SENTENCE_PREDICTION = self.prediction_approach_SENTENCE_PREDICTION
         if self.sentence_pred_PREDICTION_TASK == 'SENTENCE_BM25OKAPI':
             option = 'BM25OKAPI'
             self.modelMain.load_bm25_sentence(option, self.k1_SENTENCE_BM25OKAPI, self.b_SENTENCE_BM25OKAPI, epsilon=self.epsilon_SENTENCE_BM25OKAPI)
@@ -239,6 +233,17 @@ class Controller_main():
             self.modelMain.load_gpt2_sentence(option=self.sentence_pred_PREDICTION_TASK, model=self.model_SENTENCE_GPT2, method=method, max_length=self.max_length_SENTENCE_GPT2_TOP_P, seed=self.seed_SENTENCE_GPT2_TOP_P, top_k=self.top_k_SENTENCE_GPT2_TOP_P, top_p=self.top_p_SENTENCE_GPT2_TOP_P)
         elif self.sentence_pred_PREDICTION_TASK == 'SENTENCE_KWICKCHAT':
             option = 'KWICKCHAT'
+
+        # make the initial pred if there is entered text
+        if self.sentence_pred_PREDICTION_TASK == '':
+            self.viewKeypad.clear_placed_sentences()
+        else:
+            entry = self.viewEntry.entry.get()
+            if entry != '':
+                predictedSentence = self._make_sentence_prediction(entry)
+                self.viewKeypad.clear_placed_sentences()
+                self.viewKeypad.place_predicted_sentences(predSentence=predictedSentence) # TODO set different for KWickChat
+                self.viewMain.textBox.set(predictedSentence)
 
             
 
@@ -358,6 +363,8 @@ class Controller_main():
         return currentWord
 
     def _make_word_prediction(self, entry):
+        predictedWords = []
+        # if self.prediction_approach_SENTENCE_PREDICTION == 'Retrieval':
         predictedWords = self.modelMain.make_word_prediction(entry)
         self.viewKeypad.clear_placed_words()
         self.viewKeypad.place_predicted_words(self.currentPressedKey, predWords=predictedWords)

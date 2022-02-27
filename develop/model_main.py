@@ -13,6 +13,7 @@ class Model_main:
     sentencePredTest = ["Jingyi, I miss you", "How is your day?", "When can I see you?", "Let's dance."]
     
     sentence_pred_PREDICTION_TASK = ''
+    prediction_approach_SENTENCE_PREDICTION = ''
     BOOL_ENTRY_BY_KEYWORDS = False
     WORD_PRED_METHOD = '' # exact task option
     SENT_PRED_METHOD = '' # exact task option
@@ -201,22 +202,30 @@ class Model_main:
 
     def make_sentence_prediction(self, entry):
         """ link to controller_main """
-        # TODO add sentence generation and sentence retrieval options.
         predSentences = []
-        
-        if self.SENT_PRED_METHOD == 'SENTENCE_BM25OKAPI':
-            predSentences = self.bm25Sentence.retrieve_sentences(entry)
-        elif self.SENT_PRED_METHOD == 'SENTENCE_BM25L':
-            predSentences = self.bm25Sentence.retrieve_sentences(entry)
-        elif self.SENT_PRED_METHOD == 'SENTENCE_BM25PLUS':
-            predSentences = self.bm25Sentence.retrieve_sentences(entry)
-        elif self.SENT_PRED_METHOD == 'SENTENCE_SEMANTIC_SIMILARITY':
-            predSentences = self.semanticSenRetriSentence.retrieve_sentences(entry)
+        if self.prediction_approach_SENTENCE_PREDICTION == 'Retrieval':
+            # retrieve sentence every time the entry is updated. 
+            if self.SENT_PRED_METHOD == 'SENTENCE_BM25OKAPI':
+                predSentences = self.bm25Sentence.retrieve_sentences(entry)
+            elif self.SENT_PRED_METHOD == 'SENTENCE_BM25L':
+                predSentences = self.bm25Sentence.retrieve_sentences(entry)
+            elif self.SENT_PRED_METHOD == 'SENTENCE_BM25PLUS':
+                predSentences = self.bm25Sentence.retrieve_sentences(entry)
+            elif self.SENT_PRED_METHOD == 'SENTENCE_SEMANTIC_SIMILARITY':
+                predSentences = self.semanticSenRetriSentence.retrieve_sentences(entry)
+        elif self.prediction_approach_SENTENCE_PREDICTION == 'Generation':
+            # generate sentence every time a word is typed. 
+            if entry != '':
+                if entry[-1] == ' ':
+                    if 'SENTENCE_GPT2' in self.SENT_PRED_METHOD: # multiple GPT2 methods
+                        predSentences = self.gpt2Sentence.generate_sentences(entry)
+                    elif self.SENT_PRED_METHOD == 'SENTENCE_KWICKCHAT':
+                        predSentences = self.kwickchatSentence.generate_sentences(entry)
 
 
         predSetencesInNum = self._get_required_num_of_pred(predSentences, self.sentencePredNum)
         
-        print(f"pred method: {self.SENT_PRED_METHOD}, pred words: {predSetencesInNum}")
+        print(f"pred method: {self.SENT_PRED_METHOD}, pred sentence: {predSetencesInNum}")
         
         return predSetencesInNum
 
