@@ -7,22 +7,37 @@ import re
 class Model_Roberta:
     
 
-    def __init__(self):
-        self.type = 'roberta-base'
+    def __init__(self, option, model):
+        self.OPTION = option
+        print(f"Word pred with {self.OPTION}, model: {model}")
+        if "WORD" in self.OPTION:
+            self.MODEL = model #'roberta-base'
+            self.load_roberta()
         
 
         # self.tokenizer = RobertaTokenizer.from_pretrained('roberta-base')
         # self.model = RobertaForMaskedLM.from_pretrained('roberta-base')
+        # ,, , , , "Please input..."
         
     def load_roberta(self):
-        if self.type == 'roberta-base':
-            self.unmasker = pipelines.pipeline('fill-mask', model='roberta-base')
-        elif self.type == 'roberta-large':
-            self.unmasker = pipelines.pipeline('fill-mask', model='roberta-large')
-        elif self.type == 'xlm-roberta-base':
-            self.unmasker = pipelines.pipeline('fill-mask', model='xlm-roberta-base')
+        if self.MODEL == 'distilroberta-base' or self.MODEL == 'roberta-base' or self.MODEL == 'roberta-large' or self.MODEL == 'xlm-roberta-base' or self.MODEL == 'xlm-roberta-large':
+            self.unmasker = pipelines.pipeline('fill-mask', model=self.MODEL)
         else: 
+            # TODO check input model is valid
             self.unmasker = pipelines.pipeline('fill-mask', model='roberta-base')
+
+
+        # if self.MODEL == 'roberta-base':
+        #     self.unmasker = pipelines.pipeline('fill-mask', model='roberta-base')
+        # elif self.MODEL == 'roberta-large':
+        #     self.unmasker = pipelines.pipeline('fill-mask', model='roberta-large')
+        # elif self.MODEL == 'xlm-roberta-base':
+        #     self.unmasker = pipelines.pipeline('fill-mask', model='xlm-roberta-base')
+        # elif self.MODEL == 'distilroberta-base':
+        #     self.unmasker = pipelines.pipeline('fill-mask', model='roberta-base')
+
+        # else: 
+        #     self.unmasker = pipelines.pipeline('fill-mask', model='roberta-base')
 
     # def predict_next_few_words(self, sent, num):
 
