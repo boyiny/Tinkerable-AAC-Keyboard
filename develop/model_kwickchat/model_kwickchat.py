@@ -16,8 +16,26 @@ from model_kwickchat.model_utils import download_pretrained_model
 class Model_Kwickchat:
     PERSONA_NUM = 3
 
-    def __init__(self):
-        pass
+    MAX_LENGTH = 20
+    MIN_LENGTH = 1
+    SEED = 0
+    TEMPERATURE = 0.7
+    TOP_K = 0
+    TOP_P = 0.9
+    NUM_OF_HISTORY_EXCHANGES = 3
+    PERSONA = ''
+
+    def __init__(self, max_length, min_length, seed, temperature, top_k, top_p, num_of_history_exchanges, persona):
+        self.MAX_LENGTH = max_length
+        self.MIN_LENGTH = min_length
+        self.SEED = seed
+        self.TEMPERATURE = temperature
+        self.TOP_K = top_k
+        self.TOP_P = top_p
+        self.NUM_OF_HISTORY_EXCHANGES = num_of_history_exchanges
+        self.PERSONA = persona
+
+        self._setup_kwickchat()
 
     def _top_filtering(self, logits, top_k=0., top_p=0.9, threshold=-float('Inf'), filter_value=-float('Inf')):
         """ Filter a distribution of logits using top-k, top-p (nucleus) and/or threshold filtering
@@ -205,12 +223,12 @@ class Model_Kwickchat:
         parser.add_argument("--device", type=str, default="cpu" if torch.cuda.is_available() else "cpu", help="Device (cuda or cpu)")
 
         parser.add_argument("--no_sample", action='store_true', help="Set to use greedy decoding instead of sampling")
-        parser.add_argument("--max_length", type=int, default=20, help="Maximum length of the output utterances")
-        parser.add_argument("--min_length", type=int, default=1, help="Minimum length of the output utterances")
-        parser.add_argument("--seed", type=int, default=0, help="Seed")
-        parser.add_argument("--temperature", type=float, default=0.7, help="Sampling softmax temperature")
-        parser.add_argument("--top_k", type=int, default=0, help="Filter top-k tokens before sampling (<=0: no filtering)")
-        parser.add_argument("--top_p", type=float, default=0.9, help="Nucleus filtering (top-p) before sampling (<=0.0: no filtering)")
+        parser.add_argument("--max_length", type=int, default=self.MAX_LENGTH, help="Maximum length of the output utterances")
+        parser.add_argument("--min_length", type=int, default=self.MIN_LENGTH, help="Minimum length of the output utterances")
+        parser.add_argument("--seed", type=int, default=self.SEED, help="Seed")
+        parser.add_argument("--temperature", type=float, default=self.TEMPERATURE, help="Sampling softmax temperature")
+        parser.add_argument("--top_k", type=int, default=self.TOP_K, help="Filter top-k tokens before sampling (<=0: no filtering)")
+        parser.add_argument("--top_p", type=float, default=self.TOP_P, help="Nucleus filtering (top-p) before sampling (<=0.0: no filtering)")
         parser.add_argument("--num_suggestions", type=int, default=4,
                             help="Number of sentence suggestions")
         self.args = parser.parse_args()
@@ -273,9 +291,9 @@ class Model_Kwickchat:
 
         return out_text_list
 
-    def adjust_history_size(self, history, numOfExchanges):
-        self.args.max_history = numOfExchanges
-        newHistory = history[-(2*numOfExchanges+1):]
+    def adjust_history_size(self, history):
+        self.args.max_history = self.NUM_OF_HISTORY_EXCHANGES
+        newHistory = history[-(2*self.NUM_OF_HISTORY_EXCHANGES+1):]
 
         return newHistory
 
@@ -306,7 +324,7 @@ if __name__ == "__main__":
         userInput = input("Edit your input: ")
         history.append(userInput)
 
-        history = kwickChat.adjust_history_size(history, 2)
+        history = kwickChat.adjust_history_size(history)
         print(f"History size: {len(history)}")
 
 

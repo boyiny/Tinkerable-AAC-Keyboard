@@ -26,7 +26,7 @@ class View_text_box:
         self.controller = controller
         self.entry = tk.Entry(rootFrame, textvariable=rootFrame.textBox, font=('Calibri', 18))
         self.entry.place(height=50, width=1100, x=20, y=10)
-        
+
 
    
 

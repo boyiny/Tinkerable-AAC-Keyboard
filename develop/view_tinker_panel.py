@@ -383,6 +383,8 @@ class View_tinker:
             # Assign task
             self.SENTENCE_PRED_TASK = "SENTENCE_BM25OKAPI"
             self.BOOL_SENTENCE_TINKERED = True
+
+
         elif self.senRetriTextMethod.get() == "BM25L":
             # row 6
             ttk.Label(frame, text="      k1").grid(sticky="E", column=0, row=6)
@@ -601,6 +603,7 @@ class View_tinker:
             # Assign task
             self.SENTENCE_PRED_TASK = "SENTENCE_GPT2_GREEDY"
             self.BOOL_SENTENCE_TINKERED = True
+
 
         elif self.senGpt2Approach.get() == "Beam search":
             # row 7
@@ -856,13 +859,13 @@ class View_tinker:
         if personaNum >= self.lastPersonaNum:
             for i in range(personaNum):
                 ttk.Label(frame, text="Input persona").grid(sticky="E", column=0, row=rowNum+i)
-                senKWPersona = ttk.Entry(frame, width=21)
+                senKWPersona = tk.Entry(frame, width=21)
                 senKWPersona.grid(sticky="W", column=1, row=rowNum+i)
                 self.senKWPersonaList.append(senKWPersona)
         else:
             for i in range(personaNum):
                 ttk.Label(frame, text="Input persona").grid(sticky="E", column=0, row=rowNum+i)
-                senKWPersona = ttk.Entry(frame, width=21)
+                senKWPersona = tk.Entry(frame, width=21)
                 senKWPersona.grid(sticky="W", column=1, row=rowNum+i)
                 self.senKWPersonaList.append(senKWPersona)
             for i in range(self.lastPersonaNum - personaNum):
@@ -873,6 +876,7 @@ class View_tinker:
         # Assign task
         self.SENTENCE_PRED_TASK = "SENTENCE_KWICKCHAT"
         self.BOOL_SENTENCE_TINKERED = True
+
 
     def _sen_pred_approach_combobox(self, event, frame):
         
