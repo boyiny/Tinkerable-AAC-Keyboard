@@ -1,7 +1,9 @@
 from pyexpat import model
 from model_main import Model_main
-from view_main import View_main, View_menu, View_entry, View_keypad
+from view_main import View_main, View_menu, View_text_box, View_keypad
 from view_tinker_panel import View_tinker
+from view_text_entry import View_text_edit
+
 import configparser 
 import os
 
@@ -12,9 +14,10 @@ class Controller_main():
         self.modelMain = Model_main()
         self.viewMain = View_main(self)
         
-        self.viewEntry = View_entry(self, self.viewMain)
+        self.viewEntry = View_text_box(self, self.viewMain)
         self.viewKeypad = View_keypad(self, self.viewMain, self.viewEntry)
         self.viewMenu = View_menu(self, self.viewMain)
+        self.viewTextEdit = View_text_edit()
 
         self.currentPressedKey = ""
         
@@ -199,9 +202,11 @@ class Controller_main():
         # TODO add the actual features for view and model
         if self.sentence_entry_approach_SENTENCE_PREDICTION == 'Keywords':
             self.viewKeypad.BOOL_ENTRY_BY_KEYWORDS = True
+            self.viewTextEdit.BOOL_ENTRY_BY_KEYWORDS = True
             self.modelMain.BOOL_ENTRY_BY_KEYWORDS = True
         elif self.sentence_entry_approach_SENTENCE_PREDICTION == 'Left to right':
             self.viewKeypad.BOOL_ENTRY_BY_KEYWORDS = False
+            self.viewTextEdit.BOOL_ENTRY_BY_KEYWORDS = False
             self.modelMain.BOOL_ENTRY_BY_KEYWORDS = False
 
         # link to model: sentence pred method
@@ -263,7 +268,7 @@ class Controller_main():
 
     def on_key_button_click(self, caption): # , boolWordPred, boolSenPred
         self.currentPressedKey = caption
-        text = self.modelMain.edit_text_letter(caption) 
+        text = self.viewTextEdit.edit_text_letter(caption) 
         self.viewMain.textBox.set(text)
 
         predWords = []
@@ -318,7 +323,7 @@ class Controller_main():
             
     def on_predicted_word_button_click(self, entry):
         """ Present selected pred word on textbox """
-        predictedWord = self.modelMain.edit_text_word(entry)
+        predictedWord = self.viewTextEdit.edit_text_word(entry)
         self.viewMain.textBox.set(predictedWord)
 
         # """ Update the word prediction when operate the menu during the usage """
@@ -337,21 +342,21 @@ class Controller_main():
         
 
     def on_predicted_sentence_button_click(self, entry):
-        predictedSentence = self.modelMain.edit_text_sentence(entry)
-        print(f"In controller_main: on_predicted_sentence_button_click()")
-        self._set_sentence_pred_place()
+        """ Present selected pred sentence on textbox """
+        predictedSentence = self.viewTextEdit.edit_text_sentence(entry)
+        # self._set_sentence_pred_place(predictedSentence)
         self.viewMain.textBox.set(predictedSentence)
         
 
     """ On button click above """
 
     """ Word and Sentence Prediction Below """
-    # done
-    def set_word_pred_num(self, num):
-        self.viewKeypad.WORD_PRED_NUM = self.modelMain.set_word_pred_num(num)
-    # done
-    def set_sentence_pred_num(self, num):
-        self.viewKeypad.SENT_PRED_NUM = self.modelMain.set_sentence_pred_num(num)
+    # # done
+    # def set_word_pred_num(self, num):
+    #     self.viewKeypad.WORD_PRED_NUM = self.modelMain.set_word_pred_num(num)
+    # # done
+    # def set_sentence_pred_num(self, num):
+    #     self.viewKeypad.SENT_PRED_NUM = self.modelMain.set_sentence_pred_num(num)
 
         
 
@@ -485,7 +490,7 @@ class Controller_main():
 
 
 
-    def _set_sentence_pred_place(self):
+    def _set_sentence_pred_place(self, predictedSentence):
         """ For menu setting """
         
         entry = self.viewEntry.entry.get()

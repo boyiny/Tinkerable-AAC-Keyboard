@@ -24,6 +24,13 @@ class Model_Semantic_Sentence_Retrieval:
             
         self.corpus = self.corpus
     
+    def _filter(self, sentences, query):
+        # to remove the results that do not start with the query - make it as an option for keywords input and conventional left to right input
+        results = []
+        for sen in sentences:
+            if sen.startswith(query):
+                results.append(sen)
+        return results
 
     def retrieve_sentences(self, query):
         numSentences = 100
@@ -44,19 +51,19 @@ class Model_Semantic_Sentence_Retrieval:
         
         return results
 
-    def add_to_corpus(self, newSentences):
-        # global corpus
-        # global corpus_embeddings
+    # def add_to_corpus(self, newSentences):
+    #     # global corpus
+    #     # global corpus_embeddings
         
-        # Check if the entered sentences are already present in the corpus
-        newSentences = [sentence for sentence in newSentences if sentence not in self.corpus]
+    #     # Check if the entered sentences are already present in the corpus
+    #     newSentences = [sentence for sentence in newSentences if sentence not in self.corpus]
         
-        if len(newSentences)>0:
-            # adding the new sentences to the corpus
-            corpus = self.corpus + newSentences 
-            # getting the embeddings of new sentences
-            newSentencesEmbedding = self.model.encode(newSentences, convert_to_tensor=True)
-            corpusEmbeddings = torch.cat([self.corpusEmbeddings, newSentencesEmbedding.reshape(newSentencesEmbedding.shape[0],newSentencesEmbedding.shape[1])], dim=0)
+    #     if len(newSentences)>0:
+    #         # adding the new sentences to the corpus
+    #         corpus = self.corpus + newSentences 
+    #         # getting the embeddings of new sentences
+    #         newSentencesEmbedding = self.model.encode(newSentences, convert_to_tensor=True)
+    #         corpusEmbeddings = torch.cat([self.corpusEmbeddings, newSentencesEmbedding.reshape(newSentencesEmbedding.shape[0],newSentencesEmbedding.shape[1])], dim=0)
 
 if __name__ == '__main__':
     modelSenPred = Model_Semantic_Sentence_Retrieval()

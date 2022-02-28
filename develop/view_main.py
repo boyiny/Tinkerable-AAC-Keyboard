@@ -4,6 +4,7 @@ import tkinter as tk
 from tkinter import ttk
 from typing import Sized
 
+from view_text_entry import View_text_edit
 from view_tinker_panel import View_tinker
 
 
@@ -19,7 +20,7 @@ class View_main(tk.Tk):
         self.geometry("1500x1000")
         self.textBox = tk.StringVar()
 
-class View_entry:
+class View_text_box:
 
     def __init__(self, controller, rootFrame): # textBox
         self.controller = controller
@@ -199,10 +200,10 @@ class View_keypad:
     def _make_sentence_prediction_button(self, frame, predSentence, previousY):
         command = (lambda button=predSentence: self.controller.on_predicted_sentence_button_click(button))
 
-        predSentenceBtn = tk.Button(frame, text=predSentence, command=command, pady=5, bg='#C0C0C0', fg='black', font=('Calibri', 22))
-
+        predSentenceBtn = tk.Button(frame, text=predSentence, command=command, wraplength=350, justify='left', pady=5, bg='#C0C0C0', fg='black', font=('Calibri', 22))
         x = self.PRED_SENT_INIT_LOC_X
         y = self.PRED_SENT_INIT_LOC_Y + previousY
+        print(f"In view_main, _make_sentence_prediction_button: predSentence = {predSentence}")
 
         predSentenceBtn.place(x=x, y=y)
         previousY = previousY + predSentenceBtn.winfo_reqheight() + self.PRED_SENT_COL_GAP
@@ -214,7 +215,7 @@ class View_keypad:
 
     def place_predicted_sentences(self, predSentence):
         previousY = 0
-        print(f"predSentence: {predSentence}, lenth: {len(predSentence)}")
+        print(f"In view_main, predSentence button: {predSentence}, lenth: {len(predSentence)}")
         if len(predSentence) < self.SENT_PRED_NUM:
             for sentence in predSentence: 
                 predictedSentenceBtn, previousY = self._make_sentence_prediction_button(frame=self.keypadFrame, predSentence=sentence, previousY=previousY)
