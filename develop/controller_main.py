@@ -238,6 +238,8 @@ class Controller_main():
             self.modelMain.load_gpt2_sentence(option=self.sentence_pred_PREDICTION_TASK, model=self.model_SENTENCE_GPT2, method=method, max_length=self.max_length_SENTENCE_GPT2_TOP_P, seed=self.seed_SENTENCE_GPT2_TOP_P, top_k=self.top_k_SENTENCE_GPT2_TOP_P, top_p=self.top_p_SENTENCE_GPT2_TOP_P)
         elif self.sentence_pred_PREDICTION_TASK == 'SENTENCE_KWICKCHAT':
             option = 'KWICKCHAT'
+            self.modelMain.load_kwickchat_sentence(option=self.sentence_pred_PREDICTION_TASK, max_length=self.max_length_SENTENCE_KWICKCHAT, min_length=self.min_length_SENTENCE_KWICKCHAT, seed=self.seed_SENTENCE_KWICKCHAT, temperature=self.temperature_SENTENCE_KWICKCHAT, top_k=self.top_k_SENTENCE_KWICKCHAT, top_p=self.top_p_SENTENCE_KWICKCHAT, num_of_history_exchanges=self.num_of_history_SENTENCE_KWICKCHAT, persona=self.persona_SENTENCE_KWICKCHAT)
+            self._conversation_partner_input_kwickchat()
 
         # make the initial pred if there is entered text
         if self.sentence_pred_PREDICTION_TASK == '':
@@ -250,7 +252,13 @@ class Controller_main():
                 self.viewKeypad.place_predicted_sentences(predSentence=predictedSentence) # TODO set different for KWickChat
                 self.viewMain.textBox.set(predictedSentence)
 
-            
+    
+    def _conversation_partner_input_kwickchat(self):
+        # view: pop up a new dialogue window
+        # press button to recognise speech, or type text directly.
+        # add sentence to historyKwickchat. 
+        partnerInput = self.modelMain.conversation_partner_input_kwickchat()
+        self.viewTextEdit.conversation_partner_input_kwickchat(partnerInput)
 
 
     def assign_task(self):

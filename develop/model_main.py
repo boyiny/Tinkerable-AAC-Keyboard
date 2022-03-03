@@ -6,6 +6,7 @@ from model_gpt2 import Model_Gpt2
 from model_roberta import Model_Roberta
 from model_semantic_sentence_retrieval import Model_Semantic_Sentence_Retrieval
 from model_kwickchat.model_kwickchat import Model_Kwickchat
+from model_speech_recognition import Model_speech_recognition
 
 
 class Model_main:
@@ -20,17 +21,12 @@ class Model_main:
 
     SENT_ENTRY_APPROACH = 'Left to right' 
     
-    
+    historyKwickchat = []    
 
     # Don't change
     wordPredNum = 4 
     sentencePredNum = 4
     
-    boolBm25 = False
-    boolRoberta = False
-    boolGpt2 = False
-    
-    boolSemantic = False
     
 
     def __init__(self):
@@ -163,8 +159,20 @@ class Model_main:
     def load_gpt2_sentence(self, option, model=None, seed=None, method=None, max_length=None, no_repeat_ngram_size=None, num_of_beams=None, top_k=None, top_p=None):
         self.gpt2Sentence = Model_Gpt2(option, model, seed, method, max_length, no_repeat_ngram_size, num_of_beams, top_k, top_p)
 
-    def load_kwickchat_sentence(self):
-        self.kwickchatSentence = Model_Kwickchat()
+    def load_kwickchat_sentence(self, option, max_length, min_length, seed, temperature, top_k, top_p, num_of_history_exchanges, persona):
+        self.kwickchatSentence = Model_Kwickchat(option, max_length, min_length, seed, temperature, top_k, top_p, num_of_history_exchanges, persona)
+        self.partnerSpeech = Model_speech_recognition()
+
+    def conversation_partner_input_kwickchat(self):
+        partnerInput = self.partnerSpeech.partnerSpeechInputRecognition()
+        self.historyKwickchat.append(partnerInput)
+
+        return partnerInput
+    
+    def user_input_kwickchat(self, userInput):
+        # when "Speak" button is clicked in KwickChat mode
+        self.historyKwickchat.append(userInput)
+
 
     def make_word_prediction(self, entry):
         """ link to controller_main """
@@ -220,7 +228,8 @@ class Model_main:
                     if 'SENTENCE_GPT2' in self.SENT_PRED_METHOD: # multiple GPT2 methods
                         predSentences = self.gpt2Sentence.generate_sentences(entry)
                     elif self.SENT_PRED_METHOD == 'SENTENCE_KWICKCHAT':
-                        predSentences = self.kwickchatSentence.generate_sentences(entry)
+                        predSentences = self.kwickchatSentence.generate_sentences(self.historyKwickchat, entry)
+        
 
 
         predSetencesInNum = self._get_required_num_of_pred(predSentences, self.sentencePredNum)

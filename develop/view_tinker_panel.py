@@ -207,8 +207,8 @@ class View_tinker:
 
         
 
-        self._word_pred_panel(tabWordPredFrame)
-        self._sentence_prediction_panel(tabSenPredFrame)
+        self._word_pred_panel(self.root, tabWordPredFrame)
+        self._sentence_prediction_panel(self.root, tabSenPredFrame)
          
         
                     
@@ -310,7 +310,7 @@ class View_tinker:
             self.WORD_PRED_TASK = "WORD_ROBERTA"
             self.BOOL_WORD_TINKERED = True
 
-    def _word_pred_panel(self, frame):
+    def _word_pred_panel(self, root, frame):
         # row 0
         ttk.Label(frame, text ="Word Prediction", font=('Helvetica',13,'bold')).grid(sticky="E", column=0, row=0)
 
@@ -973,7 +973,7 @@ class View_tinker:
             ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=16)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=16)
 
-    def _sentence_prediction_panel(self, frame):
+    def _sentence_prediction_panel(self, root, frame):
         # row 0
         ttk.Label(frame, text ="Sentence Prediction", font=('Helvetica',13,'bold')).grid(sticky="E", column = 0, row = 0)
 

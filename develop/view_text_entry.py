@@ -1,4 +1,6 @@
 from os import system
+import tkinter as tk
+from tkinter import ttk
 
 class View_text_edit:
     
@@ -84,3 +86,27 @@ class View_text_edit:
                 self.entry = self.entry[0].upper() + self.entry[1:] + " "
 
         return self.entry
+
+
+    def conversation_partner_input_kwickchat(self, recgnisedSpeech):
+        self.root = tk.Tk()
+        self.root.title("Speaking partner")
+
+        baseFrame = ttk.Frame(self.root)
+        baseFrame.pack(padx=5, pady=5)
+        
+        rs = tk.StringVar(baseFrame, recgnisedSpeech)
+        partnerInput = tk.Entry(baseFrame, width=50, textvariable=rs, font='Calibri 18')
+        partnerInput.pack(padx=5, pady=15, expand=True)
+
+        cancelBtn = ttk.Button(baseFrame, text="Cancel", command=None)
+        cancelBtn.pack(padx=5, pady=15, side=tk.RIGHT)
+
+        confirmBtn = ttk.Button(baseFrame, text="Confirm", command=None)
+        confirmBtn.pack(padx=5, pady=15, side=tk.RIGHT)
+
+        self.root.mainloop() 
+
+if __name__ == '__main__':
+    view = View_text_edit()
+    view.conversation_partner_input_kwickchat("How are you")
