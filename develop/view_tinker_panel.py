@@ -178,6 +178,11 @@ class View_tinker:
         self.BOOL_WORD_TINKERED = False
         self.BOOL_SENTENCE_TINKERED = False
 
+        if self.SENTENCE_PRED_TASK == 'SENTENCE_KWICKCHAT':
+            self.controller.pop_up_conv_partner_window_kwickchat()
+
+            
+
         
         
 

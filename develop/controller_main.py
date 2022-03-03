@@ -17,7 +17,7 @@ class Controller_main():
         self.viewEntry = View_text_box(self, self.viewMain)
         self.viewKeypad = View_keypad(self, self.viewMain, self.viewEntry)
         self.viewMenu = View_menu(self, self.viewMain)
-        self.viewTextEdit = View_text_edit()
+        self.viewTextEdit = View_text_edit(self)
 
         self.currentPressedKey = ""
         
@@ -144,6 +144,10 @@ class Controller_main():
 
         self.assign_task()
 
+        # if self.sentence_pred_PREDICTION_TASK == 'SENTENCE_KWICKCHAT':
+        #     self.conversation_partner_input_kwickchat()
+            
+
 
     """ Tinker Panel responses below """
 
@@ -239,7 +243,7 @@ class Controller_main():
         elif self.sentence_pred_PREDICTION_TASK == 'SENTENCE_KWICKCHAT':
             option = 'KWICKCHAT'
             self.modelMain.load_kwickchat_sentence(option=self.sentence_pred_PREDICTION_TASK, max_length=self.max_length_SENTENCE_KWICKCHAT, min_length=self.min_length_SENTENCE_KWICKCHAT, seed=self.seed_SENTENCE_KWICKCHAT, temperature=self.temperature_SENTENCE_KWICKCHAT, top_k=self.top_k_SENTENCE_KWICKCHAT, top_p=self.top_p_SENTENCE_KWICKCHAT, num_of_history_exchanges=self.num_of_history_SENTENCE_KWICKCHAT, persona=self.persona_SENTENCE_KWICKCHAT)
-            self._conversation_partner_input_kwickchat()
+            
 
         # make the initial pred if there is entered text
         if self.sentence_pred_PREDICTION_TASK == '':
@@ -252,21 +256,35 @@ class Controller_main():
                 self.viewKeypad.place_predicted_sentences(predSentence=predictedSentence) # TODO set different for KWickChat
                 self.viewMain.textBox.set(predictedSentence)
 
-    
-    def _conversation_partner_input_kwickchat(self):
-        # view: pop up a new dialogue window
-        # press button to recognise speech, or type text directly.
-        # add sentence to historyKwickchat. 
-        partnerInput = self.modelMain.conversation_partner_input_kwickchat()
-        self.viewTextEdit.conversation_partner_input_kwickchat(partnerInput)
-
-
     def assign_task(self):
         self._word_prediction_settings()
         self._sentence_prediction_settings()
-    
 
     """ Tinker Panel responses above """
+    
+    """ KwickChat interaction below """
+
+    def pop_up_conv_partner_window_kwickchat(self):
+        # view: pop up a new dialogue window
+        # press button to recognise speech, or type text directly.
+        # add sentence to historyKwickchat. 
+        self.viewTextEdit.pop_up_conv_partner_window_kwickchat()
+        
+    def recognize_speech(self):
+        partnerInput = self.modelMain.conv_partner_speech_recognition_kwickchat()
+        self.viewTextEdit.show_conversation_partner_input_kwickchat(partnerInput)
+        
+    def add_conv_partner_input_to_history(self, editedPartnerInput):
+        self.modelMain.add_conv_partner_input_to_history(editedPartnerInput)
+
+    def add_user_input_to_history(self, editedUserInput):
+        # when 'Speak' btn is clicked
+        self.modelMain.add_user_input_to_history(editedUserInput)
+
+    
+    """ KwickChat interaction above """
+
+   
 
         
 
@@ -278,6 +296,7 @@ class Controller_main():
         self.currentPressedKey = caption
         text = self.viewTextEdit.edit_text_letter(caption) 
         self.viewMain.textBox.set(text)
+
 
         predWords = []
 
@@ -327,6 +346,12 @@ class Controller_main():
 
             else:
                 self.viewKeypad.clear_placed_sentences()
+        
+        # Collcet user input as conversation history
+        if self.sentence_pred_PREDICTION_TASK == 'SENTENCE_KWICKCHAT':
+            if caption == 'Speak':
+                self.add_user_input_to_history(entry)
+                self.pop_up_conv_partner_window_kwickchat()
         
             
     def on_predicted_word_button_click(self, entry):

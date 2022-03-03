@@ -10,10 +10,10 @@ import torch
 import torch.nn.functional as F
 
 from transformers import OpenAIGPTLMHeadModel, OpenAIGPTTokenizer, GPT2LMHeadModel, GPT2Tokenizer
-# from model_kwickchat.model_utils import SPECIAL_TOKENS, build_input_from_segments, add_special_tokens_
-# from model_kwickchat.model_utils import download_pretrained_model
-from model_utils import SPECIAL_TOKENS, build_input_from_segments, add_special_tokens_
-from model_utils import download_pretrained_model
+from model_kwickchat.model_utils import SPECIAL_TOKENS, build_input_from_segments, add_special_tokens_
+from model_kwickchat.model_utils import download_pretrained_model
+# from model_utils import SPECIAL_TOKENS, build_input_from_segments, add_special_tokens_
+# from model_utils import download_pretrained_model
 
 class Model_Kwickchat:
     PERSONA_NUM = 3
@@ -216,6 +216,7 @@ class Model_Kwickchat:
 
     def _setup_kwickchat(self):
         rootDir = os.path.realpath(os.path.join(os.path.dirname(__file__), '../Model/KwickChat'))
+        print(f"KwickChat model path: {rootDir}")
         parser = ArgumentParser()
         parser.add_argument("--dataset_path", type=str, default="", help="Path or url of the dataset. If empty download from S3.")
         parser.add_argument("--dataset_cache", type=str, default='./dataset_cache', help="Path or url of the dataset cache")
@@ -313,7 +314,8 @@ if __name__ == "__main__":
     top_p = 0.9
     num_of_history_exchanges = 3
     persona = ['student', 'phd', 'hci']
-    kwickChat = Model_Kwickchat(max_length, min_length, seed, temperature, top_k, top_p, num_of_history_exchanges, persona)
+    option = 'SENTENCE_KWICKCHAT'
+    kwickChat = Model_Kwickchat(option, max_length, min_length, seed, temperature, top_k, top_p, num_of_history_exchanges, persona)
     # kwickChat.run()
     # kwickChat._setup_kwickchat()
     

@@ -10,7 +10,7 @@ class Model_speech_recognition:
         with sr.Microphone() as source:
             print("Say something!")
             self.audio = self.r.listen(source)
-
+        result = ''
         try:
             # for testing purposes, we're just using the default API key
             # to use another API key, use `r.recognize_google(audio, key="GOOGLE_SPEECH_RECOGNITION_API_KEY")`
@@ -19,11 +19,14 @@ class Model_speech_recognition:
             print("Google Speech Recognition thinks you said " + result)
         except sr.UnknownValueError:
             print("Google Speech Recognition could not understand audio")
+            result = "Google Speech Recognition could not understand audio"
         except sr.RequestError as e:
             print("Could not request results from Google Speech Recognition service; {0}".format(e))
+            result = "Could not request results from Google Speech Recognition service; {0}".format(e)
 
         return result
 
 if __name__ == '__main__':
     speechRecognition = Model_speech_recognition()
     speechRecognition.partnerSpeechInputRecognition()
+    
