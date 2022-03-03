@@ -6,6 +6,7 @@ from model_gpt2 import Model_Gpt2
 from model_roberta import Model_Roberta
 from model_semantic_sentence_retrieval import Model_Semantic_Sentence_Retrieval
 from model_kwickchat.model_kwickchat import Model_Kwickchat
+from model_speech_recognition import Model_speech_recognition
 
 
 class Model_main:
@@ -20,17 +21,12 @@ class Model_main:
 
     SENT_ENTRY_APPROACH = 'Left to right' 
     
-    
+    historyKwickchat = []    
 
     # Don't change
     wordPredNum = 4 
     sentencePredNum = 4
     
-    boolBm25 = False
-    boolRoberta = False
-    boolGpt2 = False
-    
-    boolSemantic = False
     
 
     def __init__(self):
@@ -40,81 +36,8 @@ class Model_main:
         
        
 
-    """ Textbox below"""
+ 
 
-    def edit_text_letter(self, caption):
-        if caption == "<-":
-            self.previousEntry = self.entry
-            self.entry = self.entry[:-1]
-        elif caption == "Space":
-            self.entry = self.entry + ' '
-        elif caption == "Tab":
-            self.entry = self.entry + '    '
-        elif caption == "Speak":
-            system(f'say {self.entry}')
-        elif caption == "Clear All":
-            self.entry = ''
-            self.previousEntry = ''
-        else:
-            """ Caption is a letter """
-            if self.entry == "":
-                """ Blank textbox """
-                self.entry = self.entry + caption.upper()
-                    # self.entry = self.entry + caption[0].upper() + caption[1:]
-            else:
-                """ Textbox has content """
-                if caption == "," or caption == "." or caption == "?" or caption == "!":
-                    if self.entry[-1] == " ":
-                        self.entry = self.entry[0:-1] + caption
-                    else:
-                        self.entry = self.entry + caption
-                else:
-                    self.entry = self.entry + caption
-
-        return self.entry
-
-
-    def edit_text_word(self, caption):
-        """ Caption is a word prediction """
-        if caption[0] == "'":
-            self.entry = self.entry + caption
-        else:
-            if self.entry == "":
-                """ Blank textbox """
-                self.entry = self.entry + caption[0].upper() + caption[1:]
-            else:
-                """ Textbox has content """
-                if self.entry[-1] == " ":
-                    """ A word is finished """
-                    self.entry = self.entry + caption
-                else:
-                    """ A word is not finished """
-                    wordList = self.entry.split()
-                    lastWord = wordList[-1]
-                    indexOfLastWord = self.entry.rfind(lastWord) 
-                    self.entry = self.entry[0:indexOfLastWord] + caption
-        
-        return self.entry
-
-    def edit_text_sentence(self, caption):
-        """ Caption is a sentence prediction """
-        if self.entry == "":
-            """ Blank textbox """
-            self.entry = self.entry + caption[0].upper() + caption[1:]
-        elif " " not in self.entry:
-            self.entry = caption[0].upper() + caption[1:]
-        else:
-            """ Textbox has content """
-            # entryWordList = self.entry.split()
-            captionWordList = caption.split()
-            captionFirstWord = captionWordList[0]
-            indexOfFirstWordOfCaptionInEntry = self.entry.lower().rfind(captionFirstWord)
-            self.entry = self.entry[0:indexOfFirstWordOfCaptionInEntry] + caption
-            self.entry = self.entry[0].upper() + self.entry[1:] + " "
-
-        return self.entry
-
-    """ Textbox above"""
     """ Word abd sentence prediction below """
 
     def set_drag(self, boolDrag):
@@ -163,8 +86,21 @@ class Model_main:
     def load_gpt2_sentence(self, option, model=None, seed=None, method=None, max_length=None, no_repeat_ngram_size=None, num_of_beams=None, top_k=None, top_p=None):
         self.gpt2Sentence = Model_Gpt2(option, model, seed, method, max_length, no_repeat_ngram_size, num_of_beams, top_k, top_p)
 
-    def load_kwickchat_sentence(self):
-        self.kwickchatSentence = Model_Kwickchat()
+    def load_kwickchat_sentence(self, option, max_length, min_length, seed, temperature, top_k, top_p, num_of_history_exchanges, persona):
+        self.kwickchatSentence = Model_Kwickchat(option, max_length, min_length, seed, temperature, top_k, top_p, num_of_history_exchanges, persona)
+        self.partnerSpeech = Model_speech_recognition()
+
+    def conv_partner_speech_recognition_kwickchat(self):
+        partnerInput = self.partnerSpeech.partnerSpeechInputRecognition()
+        return partnerInput
+
+    def add_conv_partner_input_to_history(self, partnerInput):
+        self.historyKwickchat.append(partnerInput)
+    
+    def add_user_input_to_history(self, userInput):
+        # when "Speak" button is clicked in KwickChat mode
+        self.historyKwickchat.append(userInput)
+
 
     def make_word_prediction(self, entry):
         """ link to controller_main """
@@ -220,7 +156,9 @@ class Model_main:
                     if 'SENTENCE_GPT2' in self.SENT_PRED_METHOD: # multiple GPT2 methods
                         predSentences = self.gpt2Sentence.generate_sentences(entry)
                     elif self.SENT_PRED_METHOD == 'SENTENCE_KWICKCHAT':
-                        predSentences = self.kwickchatSentence.generate_sentences(entry)
+                        self.historyKwickchat = self.kwickchatSentence.adjust_history_size(self.historyKwickchat)
+                        predSentences = self.kwickchatSentence.generate_sentences(self.historyKwickchat, entry)
+        
 
 
         predSetencesInNum = self._get_required_num_of_pred(predSentences, self.sentencePredNum)

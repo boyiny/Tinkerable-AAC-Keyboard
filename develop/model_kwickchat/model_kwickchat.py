@@ -12,10 +12,13 @@ import torch.nn.functional as F
 from transformers import OpenAIGPTLMHeadModel, OpenAIGPTTokenizer, GPT2LMHeadModel, GPT2Tokenizer
 from model_kwickchat.model_utils import SPECIAL_TOKENS, build_input_from_segments, add_special_tokens_
 from model_kwickchat.model_utils import download_pretrained_model
+# from model_utils import SPECIAL_TOKENS, build_input_from_segments, add_special_tokens_
+# from model_utils import download_pretrained_model
 
 class Model_Kwickchat:
     PERSONA_NUM = 3
 
+    OPTION = ''
     MAX_LENGTH = 20
     MIN_LENGTH = 1
     SEED = 0
@@ -25,7 +28,8 @@ class Model_Kwickchat:
     NUM_OF_HISTORY_EXCHANGES = 3
     PERSONA = ''
 
-    def __init__(self, max_length, min_length, seed, temperature, top_k, top_p, num_of_history_exchanges, persona):
+    def __init__(self, option, max_length, min_length, seed, temperature, top_k, top_p, num_of_history_exchanges, persona):
+        self.OPTION = option
         self.MAX_LENGTH = max_length
         self.MIN_LENGTH = min_length
         self.SEED = seed
@@ -36,6 +40,7 @@ class Model_Kwickchat:
         self.PERSONA = persona
 
         self._setup_kwickchat()
+        self._set_personas()
 
     def _top_filtering(self, logits, top_k=0., top_p=0.9, threshold=-float('Inf'), filter_value=-float('Inf')):
         """ Filter a distribution of logits using top-k, top-p (nucleus) and/or threshold filtering
@@ -211,6 +216,7 @@ class Model_Kwickchat:
 
     def _setup_kwickchat(self):
         rootDir = os.path.realpath(os.path.join(os.path.dirname(__file__), '../Model/KwickChat'))
+        print(f"KwickChat model path: {rootDir}")
         parser = ArgumentParser()
         parser.add_argument("--dataset_path", type=str, default="", help="Path or url of the dataset. If empty download from S3.")
         parser.add_argument("--dataset_cache", type=str, default='./dataset_cache', help="Path or url of the dataset cache")
@@ -256,9 +262,9 @@ class Model_Kwickchat:
         self.model.to(self.args.device)
         add_special_tokens_(self.model, self.tokenizer)
 
-    def set_personas(self, personas):
+    def _set_personas(self):
         self.personality = []
-        for persona in personas:
+        for persona in self.PERSONA:
             self.personality.append(self.tokenizer.encode(persona))
 
 
@@ -270,8 +276,8 @@ class Model_Kwickchat:
 
         
         key_phrase=[self.tokenizer.encode(keyWords)]
-        print(encodedHistory)
-        print(key_phrase)
+        # print(encodedHistory)
+        # print(key_phrase)
         # break
 
         out_idx_list = []
@@ -300,16 +306,25 @@ class Model_Kwickchat:
     
 
 if __name__ == "__main__":
-    kwickChat = Model_Kwickchat()
+    max_length = 21
+    min_length = 1
+    seed = 0
+    temperature = 0.7
+    top_k = 0
+    top_p = 0.9
+    num_of_history_exchanges = 3
+    persona = ['student', 'phd', 'hci']
+    option = 'SENTENCE_KWICKCHAT'
+    kwickChat = Model_Kwickchat(option, max_length, min_length, seed, temperature, top_k, top_p, num_of_history_exchanges, persona)
     # kwickChat.run()
-    kwickChat._setup_kwickchat()
+    # kwickChat._setup_kwickchat()
     
-    personas = []
-    for i in range(kwickChat.PERSONA_NUM):
-        persona = input(f"Input your persona {i}: ")
-        personas.append(persona)
+    # personas = []
+    # for i in range(kwickChat.PERSONA_NUM):
+    #     persona = input(f"Input your persona {i}: ")
+    #     personas.append(persona)
 
-    kwickChat.set_personas(personas)
+    # kwickChat._set_personas(persona)
     
     predSentences = []
     history = []
