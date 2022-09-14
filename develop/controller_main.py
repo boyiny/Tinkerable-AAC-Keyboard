@@ -556,6 +556,14 @@ class Controller_main():
 
     """ Set dragable keys above """
 
+    """ Set trace below """
+
+    def set_trace(self, boolTrace):
+        self.viewKeypad.BOOL_TRACE = self.modelMain.set_trace(boolTrace)
+        self.viewKeypad.record_pressed_button()
+
+    """ Set trace above """
+
 
 if __name__ == '__main__':
     keyboard = Controller_main()

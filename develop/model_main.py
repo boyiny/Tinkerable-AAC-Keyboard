@@ -42,6 +42,9 @@ class Model_main:
 
     def set_drag(self, boolDrag):
         return boolDrag
+    
+    def set_trace(self, boolTrace):
+        return boolTrace
 
     def set_bool_word_pred(self, bool):
         return bool
