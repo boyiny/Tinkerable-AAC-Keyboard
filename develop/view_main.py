@@ -82,6 +82,8 @@ class View_keypad:
 
     BOOL_ENTRY_BY_KEYWORDS = False
 
+    BOOL_TRACE = False
+
 
     keyList = [['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '<-'], 
         ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'Speak'], 
@@ -142,6 +144,18 @@ class View_keypad:
         # print(f'In record_button_position, buttonsAttributes: {self.buttonsAttributes}')
 
     """ General functions above """
+
+
+    """ trace typing below """
+    def record_pressed_button(self):
+        print("In view_main, record pressed button")
+        txt_path = './Develop/Dataset/typing_log.txt'
+        with open(txt_path, 'a') as f:
+            f.write("----------------Start a new log----------------\n")
+        
+
+    """ trace typing above """
+
 
     """ word prediction below """
 
@@ -391,3 +405,10 @@ class View_menu:
         tinkerMenu.add_command(label="Default Prediction Setting", command=donothing)
         tinkerMenu.add_command(label="Open Tinker Panel...", command=lambda:self.tinkerView.run())
 
+        traceAnalysisMenu = tk.Menu(menuBar)
+        menuBar.add_cascade(label="Trace Analysis", menu=traceAnalysisMenu)
+
+        traceTyping = tk.Menu(traceAnalysisMenu)
+        traceAnalysisMenu.add_cascade(label="Trace Typing", menu=traceTyping)
+        traceTyping.add_command(label="On", command=lambda:self.controller.set_trace(True))
+        traceTyping.add_command(label="Off", command=lambda:self.controller.set_trace(False))
