@@ -1,1 +1,4 @@
 ----------------Start a new log----------------
+----------------End the log----------------
+----------------Start a new log----------------
+tu<-That That is awful 

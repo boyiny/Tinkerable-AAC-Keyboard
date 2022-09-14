@@ -1,4 +1,5 @@
 from pyexpat import model
+from model_trace_analysis import Model_Trace_Analysis
 from model_main import Model_main
 from view_main import View_main, View_menu, View_text_box, View_keypad
 from view_tinker_panel import View_tinker
@@ -12,6 +13,7 @@ class Controller_main():
     
     def __init__(self):
         self.modelMain = Model_main()
+        self.modelTraceAnalysis = Model_Trace_Analysis()
         self.viewMain = View_main(self)
         
         self.viewEntry = View_text_box(self, self.viewMain)
@@ -21,6 +23,8 @@ class Controller_main():
 
         self.currentPressedKey = ""
         
+        self.boolTrace = False
+
         self.boolBm25 = False
         self.boolRoberta = False
         self.boolGpt2 = False
@@ -297,6 +301,8 @@ class Controller_main():
         text = self.viewTextEdit.edit_text_letter(caption) 
         self.viewMain.textBox.set(text)
 
+        if self.boolTrace == True:
+            self.modelTraceAnalysis.record_pressed_button(caption=caption)
 
         predWords = []
 
@@ -359,6 +365,9 @@ class Controller_main():
         predictedWord = self.viewTextEdit.edit_text_word(entry)
         self.viewMain.textBox.set(predictedWord)
 
+        if self.boolTrace == True:
+            self.modelTraceAnalysis.record_pressed_button(caption=predictedWord)
+
         # """ Update the word prediction when operate the menu during the usage """
         # word pred control
         if self.boolWordPredDisplay:
@@ -379,6 +388,9 @@ class Controller_main():
         predictedSentence = self.viewTextEdit.edit_text_sentence(entry)
         # self._set_sentence_pred_place(predictedSentence)
         self.viewMain.textBox.set(predictedSentence)
+
+        if self.boolTrace == True:
+            self.modelTraceAnalysis.record_pressed_button(caption=predictedSentence)
         
 
     """ On button click above """
@@ -559,8 +571,9 @@ class Controller_main():
     """ Set trace below """
 
     def set_trace(self, boolTrace):
-        self.viewKeypad.BOOL_TRACE = self.modelMain.set_trace(boolTrace)
-        self.viewKeypad.record_pressed_button()
+        # self.boolTrace = boolTrace
+        self.boolTrace = self.modelTraceAnalysis.set_trace(boolTrace)
+        # self.modelTraceAnalysis.record_pressed_button(caption)
 
     """ Set trace above """
 
