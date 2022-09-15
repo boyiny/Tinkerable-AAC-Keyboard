@@ -1,12 +1,13 @@
 import threading
 from os import system
-from model_fill_word import Fill_Word
+from model_fill_word import Model_Fill_Word
 from model_bm25 import Model_Bm25
 from model_gpt2 import Model_Gpt2
 from model_roberta import Model_Roberta
 from model_semantic_sentence_retrieval import Model_Semantic_Sentence_Retrieval
 from model_kwickchat.model_kwickchat import Model_Kwickchat
 from model_speech_recognition import Model_speech_recognition
+from model_trace_analysis import Model_Trace_Analysis
 
 
 class Model_main:
@@ -43,8 +44,9 @@ class Model_main:
     def set_drag(self, boolDrag):
         return boolDrag
     
-    def set_trace(self, boolTrace):
-        return boolTrace
+    # def set_trace(self, boolTrace):
+    #     self.trace_analysis = Model_Trace_Analysis(boolTrace)
+    #     return boolTrace
 
     def set_bool_word_pred(self, bool):
         return bool
@@ -67,7 +69,7 @@ class Model_main:
     """ Word prediction method below """
 
     def load_fill_word(self):
-        self.fillWord = Fill_Word()
+        self.fillWord = Model_Fill_Word()
 
 
     def load_bm25_word(self, option, k1, b, epsilon=None, delta=None):

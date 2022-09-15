@@ -3,7 +3,7 @@ import os
 import re
 
 
-class Fill_Word:
+class Model_Fill_Word:
     WORD_PRED_NUM = 10
 
     def __init__(self):

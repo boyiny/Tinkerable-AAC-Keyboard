@@ -146,15 +146,7 @@ class View_keypad:
     """ General functions above """
 
 
-    """ trace typing below """
-    def record_pressed_button(self):
-        print("In view_main, record pressed button")
-        txt_path = './Develop/Dataset/typing_log.txt'
-        with open(txt_path, 'a') as f:
-            f.write("----------------Start a new log----------------\n")
-        
-
-    """ trace typing above """
+    
 
 
     """ word prediction below """

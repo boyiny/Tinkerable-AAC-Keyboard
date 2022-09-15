@@ -128,6 +128,8 @@ class View_text_edit:
         self.partnerInput.config(textvariable=rs)
         self.root.update()
 
+
+
         
 
 if __name__ == '__main__':
