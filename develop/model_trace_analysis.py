@@ -1,6 +1,5 @@
 from data_types import Word_importance
-import os
-import re
+from datetime import datetime
 
 class Model_Trace_Analysis:
     def __init__(self):
@@ -24,8 +23,9 @@ class Model_Trace_Analysis:
 
     """ trace typing below """
     def record_pressed_button(self, caption):
+        currentTime = datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')[:-3]
         self.f = open(self.txt_path, 'a')
-        self.f.write(caption)
+        self.f.write(currentTime + ' >> ' + caption+'\n')
         self.f.close()
         
         

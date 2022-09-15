@@ -302,7 +302,7 @@ class Controller_main():
         self.viewMain.textBox.set(text)
 
         if self.boolTrace == True:
-            self.modelTraceAnalysis.record_pressed_button(caption=caption)
+            self.modelTraceAnalysis.record_pressed_button(caption= 'letter: '+caption)
 
         predWords = []
 
@@ -366,7 +366,7 @@ class Controller_main():
         self.viewMain.textBox.set(predictedWord)
 
         if self.boolTrace == True:
-            self.modelTraceAnalysis.record_pressed_button(caption=predictedWord)
+            self.modelTraceAnalysis.record_pressed_button(caption='word: ' + entry)
 
         # """ Update the word prediction when operate the menu during the usage """
         # word pred control
@@ -390,7 +390,7 @@ class Controller_main():
         self.viewMain.textBox.set(predictedSentence)
 
         if self.boolTrace == True:
-            self.modelTraceAnalysis.record_pressed_button(caption=predictedSentence)
+            self.modelTraceAnalysis.record_pressed_button(caption='sentence: ' + entry)
         
 
     """ On button click above """
