@@ -1,4 +1,5 @@
 from pyexpat import model
+from view_trace_analysis import View_trace_analysis
 from model_trace_analysis import Model_Trace_Analysis
 from model_main import Model_main
 from view_main import View_main, View_menu, View_text_box, View_keypad
@@ -14,14 +15,19 @@ class Controller_main():
     def __init__(self):
         self.modelMain = Model_main()
         self.modelTraceAnalysis = Model_Trace_Analysis()
+        
         self.viewMain = View_main(self)
         
         self.viewEntry = View_text_box(self, self.viewMain)
         self.viewKeypad = View_keypad(self, self.viewMain, self.viewEntry)
         self.viewMenu = View_menu(self, self.viewMain)
         self.viewTextEdit = View_text_edit(self)
+        self.viewTraceAnalysis = View_trace_analysis(self)
+
+        self.traceLogFile = ""
 
         self.currentPressedKey = ""
+        self.sentence_pred_PREDICTION_TASK = ""
         
         self.boolTrace = False
 
@@ -576,6 +582,14 @@ class Controller_main():
         # self.modelTraceAnalysis.record_pressed_button(caption)
 
     """ Set trace above """
+
+    """ Set trace analysis below """
+
+    def run_trace_analyse(self):
+        # traceLogFile = self.viewTraceAnalysis.filePath
+        self.modelTraceAnalysis.run_trace_analyse(self.traceLogFile)
+
+    """ Set trace analysis above """
 
 
 if __name__ == '__main__':

@@ -6,6 +6,7 @@ from typing import Sized
 
 from view_text_entry import View_text_edit
 from view_tinker_panel import View_tinker
+from view_trace_analysis import View_trace_analysis
 
 
 class View_main(tk.Tk):
@@ -369,6 +370,7 @@ class View_menu:
         self.controller = controller
         self._make_menu()
         self.tinkerView = View_tinker(self.controller)
+        self.traceView = View_trace_analysis(self.controller)
 
     def _make_menu(self):
         def donothing():
@@ -397,6 +399,7 @@ class View_menu:
         tinkerMenu.add_command(label="Default Prediction Setting", command=donothing)
         tinkerMenu.add_command(label="Open Tinker Panel...", command=lambda:self.tinkerView.run())
 
+
         traceAnalysisMenu = tk.Menu(menuBar)
         menuBar.add_cascade(label="Trace Analysis", menu=traceAnalysisMenu)
 
@@ -404,3 +407,5 @@ class View_menu:
         traceAnalysisMenu.add_cascade(label="Trace Typing", menu=traceTyping)
         traceTyping.add_command(label="On", command=lambda:self.controller.set_trace(True))
         traceTyping.add_command(label="Off", command=lambda:self.controller.set_trace(False))
+
+        traceAnalysisMenu.add_command(label="Open Trace Analysis Panel...", command=lambda:self.traceView.run())
