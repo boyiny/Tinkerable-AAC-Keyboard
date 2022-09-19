@@ -10,13 +10,15 @@ from soupsieve import select
 
 class View_trace_analysis:
 
-    def __init__(self):
-        pass
+    def __init__(self, controller):
+        self.controller = controller
+        self.filePath = "1"
     
     def _browse_files(self):
-        filePath = filedialog.askopenfilename(initialdir="/",title="Select a File", filetypes=(("Text files", "*.txt"),))
-        fileName = Path(filePath).stem
-        print(fileName)
+        self.filePath = filedialog.askopenfilename(initialdir="/",title="Select a File", filetypes=(("Text files", "*.txt"),))
+        fileName = Path(self.filePath).stem
+        self.controller.traceLogFile = self.filePath
+        print(self.filePath)
         self.filePathLabel = tk.Label(self.baseFrame, width=21, text=fileName).grid(sticky="E", column=0, row=0)
 
     def _close(self):
@@ -34,7 +36,7 @@ class View_trace_analysis:
         self.filePathLabel = tk.Label(self.baseFrame, width=21, text=filePath).grid(sticky="E", column=0, row=0)
         selectFileBtn = ttk.Button(self.baseFrame, text="Open...", command=self._browse_files).grid(sticky="W",column=1, row=0)
 
-        cancelBtn = ttk.Button(self.baseFrame, text="Analyse", command=self._close).grid(sticky="W", column=0, row=1)
+        cancelBtn = ttk.Button(self.baseFrame, text="Analyse", command=self.controller.run_trace_analyse).grid(sticky="W", column=0, row=1)
         confirmBtn = ttk.Button(self.baseFrame, text="Cancel", command=self._close).grid(sticky="W", column=1, row=1)
 
         self.root.mainloop()

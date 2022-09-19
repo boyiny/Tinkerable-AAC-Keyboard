@@ -370,7 +370,7 @@ class View_menu:
         self.controller = controller
         self._make_menu()
         self.tinkerView = View_tinker(self.controller)
-        self.traceView = View_trace_analysis()
+        self.traceView = View_trace_analysis(self.controller)
 
     def _make_menu(self):
         def donothing():
