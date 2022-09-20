@@ -24,10 +24,10 @@ class Model_Trace_Analysis:
         return boolTrace
 
     """ trace typing below """
-    def record_pressed_button(self, caption):
+    def record_pressed_button(self, caption, wordPred, senPred):
         currentTime = datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
         self.f = open(self.txt_path, 'a')
-        self.f.write(currentTime + ' >> ' + caption+'\n')
+        self.f.write(currentTime + ' >> ' + caption + ', word pred: '+ '|'.join(wordPred) + ', sentence pred: '+ '|'.join(senPred)+ '\n')
         self.f.close()
     """ trace typing above """
 
@@ -39,16 +39,26 @@ class Model_Trace_Analysis:
         # time = re.search(r'\d{2}:\d{2}:\d{2}.d{3}', line)
         dateTimeObj = datetime.strptime(dateTime.group(0), '%Y-%m-%d %H:%M:%S.%f')
         
-        inputType = line[line.find('>> ')+3:line.rfind(': ')]
-        input = line[line.rfind(': ')+2:line.rfind('\n')]
+        keyType = line[line.find('>> ')+3 : line[line.find('>> ')+3:].find(': ')+line.find('>> ')+3]
+        print(line.find('>> '))
+        print(line[line.find('>> ')+3:].find(': '))
+
+        key = line[line.find(keyType)+len(keyType)+2 : line.find(', word pred: ')]
+        wordPred = line[line.find(', word pred: ')+len(', word pred: ') : line.find(', sentence pred: ')]
+        senPred = line[line.find(', sentence pred: ')+len(', sentence pred: ') : line.find('\n')]
+
+        wordPredList = wordPred.split('|')
+        senPredList = senPred.split('|')
 
         logDict = { 'date': dateTimeObj.date(), 
                     'hour': dateTimeObj.hour, 
                     'minute': dateTimeObj.minute, 
-                    'second': dateTimeObj.second, 
-                    'microsecond': dateTimeObj.microsecond,
-                    'type': inputType, 
-                    'input': input}
+                    'second': float(dateTimeObj.second+dateTimeObj.microsecond/1000000.0), 
+                    # 'microsecond': dateTimeObj.microsecond,
+                    'keyType': keyType, 
+                    'keyValue': key,
+                    'wordPred': wordPredList,
+                    'sentencePred': senPredList}
 
         return logDict
     """ Extract data from a line above """
