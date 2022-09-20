@@ -1,23 +1,8 @@
 ----------------Start a new log----------------
-2022-09-19 15:50:07.998 >> letter: i
-2022-09-19 15:50:14.242 >> letter: Space
-2022-09-19 15:50:15.816 >> letter: a
-2022-09-19 15:50:17.122 >> word: am 
-2022-09-19 15:50:19.957 >> sentence: i am tired
-2022-09-19 15:50:24.314 >> letter: Speak
-2022-09-19 15:50:34.310 >> letter: i
-2022-09-19 15:50:36.650 >> letter: Space
-2022-09-19 15:50:37.641 >> letter: w
-2022-09-19 15:50:38.811 >> letter: a
-2022-09-19 15:50:40.578 >> word: want 
-2022-09-19 15:50:47.822 >> letter: t
-2022-09-19 15:50:48.980 >> word: to 
-2022-09-19 15:50:50.781 >> letter: s
-2022-09-19 15:50:52.491 >> letter: l
-2022-09-19 15:50:53.976 >> word: sleep 
-2022-09-19 15:50:57.211 >> letter: Speak
-2022-09-19 15:51:08.330 >> letter: g
-2022-09-19 15:51:10.580 >> word: Good 
-2022-09-19 15:51:12.335 >> sentence: good night
-2022-09-19 15:51:14.552 >> letter: Speak
+2022-09-20 14:46:35.181960 >> key: h, word pred: How|Have|Hello|Hi, sentence pred: how|how much|have|hello
+2022-09-20 14:46:36.258449 >> word: Have , word pred: fun|good|you|a, sentence pred: have fun|have good day|have you seen this|have a great week
+2022-09-20 14:46:39.647732 >> key: y, word pred: you|your|yet|yeah, sentence pred: have you seen this|have you been busy
+2022-09-20 14:46:40.573023 >> word: you , word pred: seen|been|watched, sentence pred: have you seen this|have you been busy
+2022-09-20 14:46:42.646831 >> sentence: Have you seen this , word pred: , sentence pred: 
+2022-09-20 14:46:45.358070 >> key: Speak, word pred: you|I|to|the, sentence pred: 
 ----------------End the log----------------

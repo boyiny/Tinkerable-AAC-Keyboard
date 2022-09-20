@@ -307,10 +307,10 @@ class Controller_main():
         text = self.viewTextEdit.edit_text_letter(caption) 
         self.viewMain.textBox.set(text)
 
-        if self.boolTrace == True:
-            self.modelTraceAnalysis.record_pressed_button(caption= 'letter: '+caption)
+        
 
         predWords = []
+        predSentences = []
 
         entry = self.viewEntry.entry.get()
         if entry == "":
@@ -324,7 +324,7 @@ class Controller_main():
                 # set sentence pred display
 
                 # TODO set different cases, get predicted word
-                self._make_sentence_prediction_with_pred_words(entry, predWords)
+                predSentences = self._make_sentence_prediction_with_pred_words(entry, predWords)
             else:
                 self.viewKeypad.clear_placed_sentences()
 
@@ -338,8 +338,8 @@ class Controller_main():
                 self.viewKeypad.clear_placed_words()
             if  self.boolSentencePredDisplay:
                 # set sentence pred display
-                print(f"In controller_main, key_button_click, current entry is: '{entry}'")
-                self._make_sentence_prediction(entry)
+                # print(f"In controller_main, key_button_click, current entry is: '{entry}'")
+                predSentences = self._make_sentence_prediction(entry)
             else:
                 self.viewKeypad.clear_placed_sentences()
 
@@ -354,7 +354,7 @@ class Controller_main():
             if  self.boolSentencePredDisplay:
                 # set sentence pred display
 
-                self._make_sentence_prediction_with_pred_words(entry, predWords)
+                predSentences = self._make_sentence_prediction_with_pred_words(entry, predWords)
 
             else:
                 self.viewKeypad.clear_placed_sentences()
@@ -364,6 +364,10 @@ class Controller_main():
             if caption == 'Speak':
                 self.add_user_input_to_history(entry)
                 self.pop_up_conv_partner_window_kwickchat()
+
+        # Trace record
+        if self.boolTrace == True:
+            self.modelTraceAnalysis.record_pressed_button(caption='key: '+caption, wordPred=predWords, senPred=predSentences)
         
             
     def on_predicted_word_button_click(self, entry):
@@ -371,22 +375,25 @@ class Controller_main():
         predictedWord = self.viewTextEdit.edit_text_word(entry)
         self.viewMain.textBox.set(predictedWord)
 
-        if self.boolTrace == True:
-            self.modelTraceAnalysis.record_pressed_button(caption='word: ' + entry)
+        predWords = []
+        predSentences = []
 
         # """ Update the word prediction when operate the menu during the usage """
         # word pred control
         if self.boolWordPredDisplay:
-            self._set_word_pred_place(self.boolWordPredOnPressedKey)
+            predWords = self._set_word_pred_place(self.boolWordPredOnPressedKey)
         else:
             self.viewKeypad.clear_placed_words()
 
         # sentence pred control
         if self.boolSentencePredDisplay:
-
-            self._make_sentence_prediction(self.viewEntry.entry.get())
+            predSentences = self._make_sentence_prediction(self.viewEntry.entry.get())
         else:
             self.viewKeypad.clear_placed_sentences()
+        
+        # Trace record
+        if self.boolTrace == True:
+            self.modelTraceAnalysis.record_pressed_button(caption='word: '+entry, wordPred=predWords, senPred=predSentences)
         
 
     def on_predicted_sentence_button_click(self, entry):
@@ -395,8 +402,20 @@ class Controller_main():
         # self._set_sentence_pred_place(predictedSentence)
         self.viewMain.textBox.set(predictedSentence)
 
+        # word pred control
+        if self.boolWordPredDisplay:
+            predWords = self._set_word_pred_place(self.boolWordPredOnPressedKey)
+        else:
+            self.viewKeypad.clear_placed_words()
+
+        # sentence pred control
+        if self.boolSentencePredDisplay:
+            predSentences = self._make_sentence_prediction(self.viewEntry.entry.get())
+        else:
+            self.viewKeypad.clear_placed_sentences()
+
         if self.boolTrace == True:
-            self.modelTraceAnalysis.record_pressed_button(caption='sentence: ' + entry)
+            self.modelTraceAnalysis.record_pressed_button(caption='sentence: '+predictedSentence, wordPred=predWords, senPred=predSentences)
         
 
     """ On button click above """
@@ -412,11 +431,11 @@ class Controller_main():
         
 
     def _make_word_fill(self, entry): 
-        currentWord = self.modelMain.make_initail_word_and_word_fill(entry)
-        self.currentFilledWords = currentWord
+        currentWords = self.modelMain.make_initail_word_and_word_fill(entry)
+        self.currentFilledWords = currentWords
         self.viewKeypad.clear_placed_words()
-        self.viewKeypad.place_predicted_words(self.currentPressedKey, predWords=currentWord)
-        return currentWord
+        self.viewKeypad.place_predicted_words(self.currentPressedKey, predWords=currentWords)
+        return currentWords
 
     def _make_word_prediction(self, entry):
         predictedWords = []
@@ -519,6 +538,7 @@ class Controller_main():
         """ self.boolWordPredDisplay is True """
         self.modelMain.load_fill_word()
 
+        predWords = []
         # self.boolWordPredOnPressedKey = boolWordPlaceOnLastPressedKey
         
         # self.viewKeypad.BOOL_WORD_PRED_PRESSED_KEY = self.modelMain.set_word_pred_on_last_pressed_key(self.boolWordPredOnPressedKey)
@@ -531,13 +551,15 @@ class Controller_main():
         entry = self.viewEntry.entry.get()
         if entry == "":
             """ First word """
-            self._make_word_fill(entry)
+            predWords = self._make_word_fill(entry)
         elif entry[-1] == " ":
             """ Finished a word """
-            self._make_word_prediction(entry)
+            predWords = self._make_word_prediction(entry)
         else:
             """ Typing a word """
-            self._make_word_fill(entry)
+            predWords = self._make_word_fill(entry)
+
+        return predWords
 
 
 
@@ -559,9 +581,7 @@ class Controller_main():
         if self.boolSentencePredDisplay:
             self.viewKeypad.place_predicted_sentences(predSentence=predictedSentence)
 
-       
 
-    
     """ Word and Sentence Prediction Above """
 
 

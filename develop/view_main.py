@@ -210,7 +210,7 @@ class View_keypad:
         predSentenceBtn = tk.Button(frame, text=predSentence, command=command, wraplength=350, justify='left', pady=5, bg='#C0C0C0', fg='black', font=('Calibri', 22))
         x = self.PRED_SENT_INIT_LOC_X
         y = self.PRED_SENT_INIT_LOC_Y + previousY
-        print(f"In view_main, _make_sentence_prediction_button: predSentence = {predSentence}")
+        # print(f"In view_main, _make_sentence_prediction_button: predSentence = {predSentence}")
 
         predSentenceBtn.place(x=x, y=y)
         previousY = previousY + predSentenceBtn.winfo_reqheight() + self.PRED_SENT_COL_GAP
