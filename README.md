@@ -13,4 +13,4 @@
 9. Wait until the user interface pops up
 
 To cite this project: 
-Yang, B., & Shen, J. (2023). Tinkerable AAC Keyboard [Dataset]. https://doi.org/10.17863/CAM.91650
+Yang, B., Shen, J., & Kristensson, P. O. (2023). Tinkerable AAC Keyboard [Dataset]. https://doi.org/10.17863/CAM.91650
