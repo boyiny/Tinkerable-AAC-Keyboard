@@ -1,6 +1,7 @@
 /Develop/Model/
 /Develop/__pycache__
 /Develop/Dataset
+/Develop/Model
 .DS_Store
 .gitattributes
 .gitignore
