@@ -1,5 +1,4 @@
 import imp
-from os import pread
 import tkinter as tk
 from tkinter import ttk
 from typing import Sized

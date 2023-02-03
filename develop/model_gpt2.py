@@ -1,4 +1,3 @@
-from os import pread
 from symtable import Symbol
 from unittest.util import _MAX_LENGTH
 from soupsieve import match
