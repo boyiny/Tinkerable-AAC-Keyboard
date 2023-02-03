@@ -1,8 +1,0 @@
-----------------Start a new log----------------
-2022-09-20 14:46:35.181960 >> key: h, word pred: How|Have|Hello|Hi, sentence pred: how|how much|have|hello
-2022-09-20 14:46:36.258449 >> word: Have , word pred: fun|good|you|a, sentence pred: have fun|have good day|have you seen this|have a great week
-2022-09-20 14:46:39.647732 >> key: y, word pred: you|your|yet|yeah, sentence pred: have you seen this|have you been busy
-2022-09-20 14:46:40.573023 >> word: you , word pred: seen|been|watched, sentence pred: have you seen this|have you been busy
-2022-09-20 14:46:42.646831 >> sentence: Have you seen this , word pred: , sentence pred: 
-2022-09-20 14:46:45.358070 >> key: Speak, word pred: you|I|to|the, sentence pred: 
-----------------End the log----------------

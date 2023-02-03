@@ -367,7 +367,7 @@ class Controller_main():
 
         # Trace record
         if self.boolTrace == True:
-            self.modelTraceAnalysis.record_pressed_button(caption='key: '+caption, wordPred=predWords, senPred=predSentences)
+            self.modelTraceAnalysis.record_pressed_button(caption='key: '+caption, wordPred=predWords, senPred=predSentences, currentSen=entry)
         
             
     def on_predicted_word_button_click(self, entry):
@@ -393,7 +393,7 @@ class Controller_main():
         
         # Trace record
         if self.boolTrace == True:
-            self.modelTraceAnalysis.record_pressed_button(caption='word: '+entry, wordPred=predWords, senPred=predSentences)
+            self.modelTraceAnalysis.record_pressed_button(caption='word: '+entry, wordPred=predWords, senPred=predSentences, currentSen=entry)
         
 
     def on_predicted_sentence_button_click(self, entry):
@@ -415,7 +415,7 @@ class Controller_main():
             self.viewKeypad.clear_placed_sentences()
 
         if self.boolTrace == True:
-            self.modelTraceAnalysis.record_pressed_button(caption='sentence: '+predictedSentence, wordPred=predWords, senPred=predSentences)
+            self.modelTraceAnalysis.record_pressed_button(caption='sentence: '+predictedSentence, wordPred=predWords, senPred=predSentences, currentSen=entry)
         
 
     """ On button click above """
@@ -496,8 +496,12 @@ class Controller_main():
                     """ ideal, all have pred -> 1,1,2,3 """
                     predictedSentences.append(predSenTemp3[0])
                 else:
-                    """ temp3 == 0 -> 1,1,2,4 """
-                    predictedSentences.append(predSenTemp4[0])
+                    if len(predSenTemp4) >= 1:
+                        """ temp3 == 0 && temp4 == 1 -> 1,1,2,4 """
+                        predictedSentences.append(predSenTemp4[0])
+                    else:
+                        """ temp3 == 0 && temp4 == 0 -> 1,1,2 """
+                        pass
             else:
                 """ temp2 == 0 """
                 if len(predSenTemp3) >= 1:
@@ -607,7 +611,8 @@ class Controller_main():
 
     def run_trace_analyse(self):
         # traceLogFile = self.viewTraceAnalysis.filePath
-        self.modelTraceAnalysis.run_trace_analyse(self.traceLogFile)
+        T_interrupt_threshold = 5.0
+        self.modelTraceAnalysis.run_trace_analyse(self.traceLogFile, T_interrupt_threshold)
 
     """ Set trace analysis above """
 
