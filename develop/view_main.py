@@ -134,7 +134,7 @@ class View_keypad:
         return currentBtnAttr
 
     def record_button_position(self):
-        shiftCompensationX = 5 # by calculating the shift for each shift when click On/Off of Dragable function
+        shiftCompensationX = 6 # 5 by calculating the shift for each shift when click On/Off of Dragable function
         shiftCompensationY = 118
 
         for button in self.buttons:
@@ -390,7 +390,8 @@ class View_menu:
         uiControlMenu.add_cascade(label="Move Elements", menu=moveElementMenu)
         moveElementMenu.add_command(label="On", command=lambda:self.controller.set_drag(True))
         moveElementMenu.add_command(label="Off", command=lambda:self.controller.set_drag(False))
-        moveElementMenu.add_command(label="Window Size", command=donothing)
+        moveElementMenu.add_command(label="Save the Current Layout", command=donothing)
+        moveElementMenu.add_command(label="Load Previous Layout", command=donothing)
 
         tinkerMenu = tk.Menu(menuBar)
         menuBar.add_cascade(label="Tinker", menu=tinkerMenu)

@@ -19,7 +19,7 @@ class Model_Bm25:
     delta_BM25PLUS = 1.0
 
     def __init__(self, option, k1, b, epsilon=None, delta=None, boolEntryByKeywords=None):
-        print(f"In model_bm25, option = {option}, boolEntryByKeywords = {boolEntryByKeywords} k1 = {k1}, b = {b}, epsilon = {epsilon}, delta = {delta}.")
+        # print(f"In model_bm25, option = {option}, boolEntryByKeywords = {boolEntryByKeywords} k1 = {k1}, b = {b}, epsilon = {epsilon}, delta = {delta}.")
         if option != None:
             self.BM25_OPTION = option
             self.BOOL_ENTRY_BY_KEYWORDS = boolEntryByKeywords
@@ -75,7 +75,7 @@ class Model_Bm25:
 
 
     def predict_words(self, query):
-        print(f"In bm25, word, current entry is: '{query}'")
+        # print(f"In bm25, word, current entry is: '{query}'")
         predSentences = []
         query = query.lower()
         # print(f"query is: \'{self.query}\'")
@@ -104,7 +104,7 @@ class Model_Bm25:
         return predWords
 
     def retrieve_sentences(self, query):
-        print(f"In bm25, sentence, current entry is: '{query}'")
+        # print(f"In bm25, sentence, current entry is: '{query}'")
         query = query.lower()
         predSentences = []
 
