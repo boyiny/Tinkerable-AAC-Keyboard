@@ -598,6 +598,19 @@ class Controller_main():
 
     """ Set dragable keys above """
 
+
+    """ Save current keyboard layout below """
+    def save_current_keyboard_layout(self):
+        self.viewKeypad.write_button_position()
+        # TODO: pop up a window says the layout has been recorded
+        # self.viewKeypad.
+    """ Save current keyboard layout above """
+
+
+    """ Load previous keyboard layout below """
+
+    """ Load previous keyboard layout above """
+
     """ Set trace below """
 
     def set_trace(self, boolTrace):

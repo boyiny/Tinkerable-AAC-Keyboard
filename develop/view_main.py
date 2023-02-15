@@ -6,6 +6,7 @@ from view_text_entry import View_text_edit
 from view_tinker_panel import View_tinker
 from view_trace_analysis import View_trace_analysis
 
+import time
 
 class View_main(tk.Tk):
     
@@ -134,13 +135,37 @@ class View_keypad:
         return currentBtnAttr
 
     def record_button_position(self):
-        shiftCompensationX = 6 # 5 by calculating the shift for each shift when click On/Off of Dragable function
-        shiftCompensationY = 118
+        shiftCompensationX = 0 #  by calculating the shift for each shift when click On/Off of Dragable function
+        shiftCompensationY = 103 # (0, 103) is the shift compensation for Dell XPS, full screen 
 
         for button in self.buttons:
             self.buttonsAttributes.append([button.winfo_name(), button.winfo_rootx()-shiftCompensationX, button.winfo_rooty()-shiftCompensationY, button.winfo_width(), button.winfo_height()])
+            # self.buttonsAttributes.append([button.winfo_name(), button.winfo_rootx(), button.winfo_rooty(), button.winfo_width(), button.winfo_height()])
+            
+    
+    def write_button_position(self):
 
-        # print(f'In record_button_position, buttonsAttributes: {self.buttonsAttributes}')
+        timestr = time.strftime("%Y%m%d_%H%M%S")
+        fileName = "./Dataset/key_layout_"+str(timestr)+".txt"
+        f = open(fileName, "w")
+        for button in self.buttons:
+            indexKeyList = int(button.winfo_name())
+            caption = ""
+            if indexKeyList < 11:
+                caption = self.keyList[0][indexKeyList]
+            elif indexKeyList < 21: 
+                caption = self.keyList[1][indexKeyList-11]
+            elif indexKeyList < 31: 
+                caption = self.keyList[2][indexKeyList-21]
+            else: 
+                caption = self.keyList[3][indexKeyList-31]
+
+            key = "index: " + str(indexKeyList) + ", caption: " + caption + ", placeX: " + str(button.winfo_rootx()) + ", placeY: " + str(button.winfo_rooty()) + ", sizeX: " + str(button.winfo_width()) + ", sizeY: " + str(button.winfo_height()) + "\n"
+            f.write(key)
+        f.close()
+        print("saved keyboard layout")
+
+    # def pop_up_layout_saved_notification(self):caption, , , , , index
 
     """ General functions above """
 
@@ -390,7 +415,7 @@ class View_menu:
         uiControlMenu.add_cascade(label="Move Elements", menu=moveElementMenu)
         moveElementMenu.add_command(label="On", command=lambda:self.controller.set_drag(True))
         moveElementMenu.add_command(label="Off", command=lambda:self.controller.set_drag(False))
-        moveElementMenu.add_command(label="Save the Current Layout", command=donothing)
+        moveElementMenu.add_command(label="Save the Current Layout", command=lambda:self.controller.save_current_keyboard_layout())
         moveElementMenu.add_command(label="Load Previous Layout", command=donothing)
 
         tinkerMenu = tk.Menu(menuBar)
