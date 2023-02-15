@@ -602,13 +602,13 @@ class Controller_main():
     """ Save current keyboard layout below """
     def save_current_keyboard_layout(self):
         self.viewKeypad.write_button_position()
-        # TODO: pop up a window says the layout has been recorded
-        # self.viewKeypad.
+        self.viewKeypad.pop_up_layout_saved_notification()
     """ Save current keyboard layout above """
 
 
     """ Load previous keyboard layout below """
-
+    def load_previous_keyboard_layout(self):
+        self.viewKeypad.browse_button_position_files()
     """ Load previous keyboard layout above """
 
     """ Set trace below """
