@@ -1,0 +1,11 @@
+----------------Start a new log----------------
+2023-02-17 10:50:28.349264 >> key: i, word pred: is|i|it|in, sentence pred: , current sentence: I i
+2023-02-17 10:50:36.854808 >> word: i , word pred: , sentence pred: i'm well. how about you?|i am well. what do you do?|i'm well, how about you?|i am well. what do you do?, current sentence: i 
+2023-02-17 10:50:39.740351 >> key: Clear All, word pred: you|i|to|the, sentence pred: , current sentence: 
+2023-02-17 10:50:46.886681 >> word: I , word pred: wish|think|hope|mean, sentence pred: i'm a student|i work on computers, what about you?|i'm well, how about you?|i am well. what do you do?, current sentence: I 
+2023-02-17 10:50:50.265167 >> key: d, word pred: do|dont|did|day, sentence pred: , current sentence: I d
+2023-02-17 10:50:56.313876 >> word: dont , word pred: know|celebrate|think|like, sentence pred: i dont work|i work full time, i just don't have time|i do not do anything i'm a student|i don't work i'm a student, current sentence: dont 
+2023-02-17 10:50:58.328833 >> key: k, word pred: know|keys|kitchen|knew, sentence pred: , current sentence: I dont k
+2023-02-17 10:51:06.325969 >> word: know , word pred: why|any|what|how, sentence pred: i dont know|i don't know. i don't know.|i do not know, i'm a student|i don't know, i do not know, current sentence: know 
+2023-02-17 10:51:10.346712 >> sentence: I dont know, word pred: know|known, sentence pred: , current sentence: i dont know
+----------------End the log----------------

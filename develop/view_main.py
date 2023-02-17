@@ -153,7 +153,7 @@ class View_keypad:
     def write_button_position(self):
 
         timestr = time.strftime("%Y%m%d_%H%M%S")
-        fileName = "./Dataset/key_layout_"+str(timestr)+".txt"
+        fileName = "./ui_setting/key_layout_"+str(timestr)+".txt"
         f = open(fileName, "w")
         for button in self.buttons:
             indexKeyList = int(button.winfo_name())
@@ -444,8 +444,8 @@ class View_menu:
 
         fileMenu = tk.Menu(menuBar)
         menuBar.add_cascade(label="File", menu=fileMenu)
-        fileMenu.add_command(label="Save Current Settings", command=donothing)
-        fileMenu.add_command(label="Load Previous Settings...", command=donothing)
+        fileMenu.add_command(label="Save Current Prediction Settings", command=lambda:self.controller.save_current_prediction_settings())
+        fileMenu.add_command(label="Load Previous Prediction Settings...", command=lambda:self.controller.load_previous_prediction_settings())
 
 
         uiControlMenu = tk.Menu(menuBar)
@@ -460,7 +460,7 @@ class View_menu:
 
         tinkerMenu = tk.Menu(menuBar)
         menuBar.add_cascade(label="Tinker", menu=tinkerMenu)
-        tinkerMenu.add_command(label="Default Prediction Setting", command=donothing)
+        tinkerMenu.add_command(label="Default Prediction Setting", command=lambda:self.tinkerView.default_setting())
         tinkerMenu.add_command(label="Open Tinker Panel...", command=lambda:self.tinkerView.run())
 
 

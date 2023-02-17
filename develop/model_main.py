@@ -11,8 +11,6 @@ from model_trace_analysis import Model_Trace_Analysis
 
 
 class Model_main:
-    wordPredTest = ['hey', 'hello', 'have', 'has', 'happy', 'happen']
-    sentencePredTest = ["I miss you", "How is your day?", "When can I see you?", "Let's dance."]
     
     sentence_pred_PREDICTION_TASK = ''
     prediction_approach_SENTENCE_PREDICTION = ''
@@ -27,6 +25,7 @@ class Model_main:
     # Don't change
     wordPredNum = 4 
     sentencePredNum = 4
+    
     
     
 
