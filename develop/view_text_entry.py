@@ -1,6 +1,8 @@
 from os import system
 import tkinter as tk
 from tkinter import ttk
+import pyttsx3
+
 
 class View_text_edit:
     
@@ -11,6 +13,7 @@ class View_text_edit:
         self.entry = ''
         self.prediction = ''
         self.controller = controller
+        self.speakEngine = pyttsx3.init()
 
     def edit_text_letter(self, caption):
         if caption == "<-":
@@ -21,7 +24,10 @@ class View_text_edit:
         elif caption == "Tab":
             self.entry = self.entry + '    '
         elif caption == "Speak":
-            system(f'say {self.entry}')
+            # system(f'say {self.entry}')
+            self.speakEngine.say(self.entry)
+            self.speakEngine.runAndWait()
+            self.speakEngine.stop()
             self.entry = ''
         elif caption == "Clear All":
             self.entry = ''

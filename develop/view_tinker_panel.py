@@ -2,6 +2,7 @@ from cProfile import label
 from os import stat
 import tkinter as tk
 from tkinter import BOTTOM, ttk
+from tkinter import filedialog
 
 from click import command
 from gevent import config
@@ -9,6 +10,9 @@ from sympy import per
 
 import configparser 
 import os
+import time
+import shutil
+import ctypes
 
 
 class View_tinker:
@@ -181,7 +185,49 @@ class View_tinker:
         if self.SENTENCE_PRED_TASK == 'SENTENCE_KWICKCHAT':
             self.controller.pop_up_conv_partner_window_kwickchat()
 
-            
+    def save_setting(self):
+        timestr = time.strftime("%Y%m%d_%H%M%S")
+        tinkerFileName = "./prediction_setting/tinker_"+str(timestr)+".ini"
+        # copy current .ini file
+        shutil.copyfile('tinker.ini', tinkerFileName)
+
+    def load_setting(self):
+        saved_file = filedialog.askopenfilename(initialdir="/",title="Select a File", filetypes=(("Configuration files", "*.ini"),))
+        shutil.copyfile(saved_file, 'tinker.ini')
+        self.file = os.path.realpath(os.path.join(os.path.dirname(__file__), 'tinker.ini'))
+        self.config = configparser.ConfigParser()
+        self.config.read(self.file)
+        self.config.sections()
+        self.controller.get_tinker_data()
+
+        if self.controller.sentence_pred_PREDICTION_TASK == 'SENTENCE_KWICKCHAT':
+            self.controller.pop_up_conv_partner_window_kwickchat()
+        
+    def pop_up_prediction_settings_saved_notification(self):
+        ctypes.windll.user32.MessageBoxW(0, "Current prediction settings have been saved.", "Info", 0)
+
+    def default_setting(self):
+        self.config.set('PREDICTION_TASK', 'word_pred', "WORD_BM25OKAPI")
+        self.config.set('WORD_PREDICTION', 'max_pred_num', "4")
+        self.config.set('WORD_PREDICTION', 'display_location', "Fixed")
+        self.config.set('WORD_PREDICTION', 'method', "BM25Okapi")
+        self.config.set('WORD_BM25OKAPI', 'k1', str(self.K1_BM25OKAPI))
+        self.config.set('WORD_BM25OKAPI', 'b', str(self.B_BM25OKAPI))
+        self.config.set('WORD_BM25OKAPI', 'epsilon', str(self.EPSILON_BM25OKAPI))
+
+        self.config.set('PREDICTION_TASK', 'sentence_pred', "SENTENCE_BM25OKAPI")
+        self.config.set('SENTENCE_PREDICTION', 'max_pred_num', "4")
+        self.config.set('SENTENCE_PREDICTION', 'sentence_entry_approach', "Left to right")
+        self.config.set('SENTENCE_PREDICTION', 'prediction_approach', "Retrieval")
+        self.config.set('SENTENCE_RETRIEVAL', 'similarity', "Text")
+        self.config.set('SENTENCE_TEXT_SIMILARITY', 'retri_method', "SENTENCE_BM25OKAPI")
+        self.config.set('SENTENCE_BM25OKAPI', 'k1', str(self.K1_BM25OKAPI))
+        self.config.set('SENTENCE_BM25OKAPI', 'b', str(self.B_BM25OKAPI))
+        self.config.set('SENTENCE_BM25OKAPI', 'epsilon', str(self.EPSILON_BM25OKAPI))
+
+        self.config.write(open(self.file,'w'))
+        self.controller.get_tinker_data()
+
 
         
         

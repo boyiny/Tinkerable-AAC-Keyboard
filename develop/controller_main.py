@@ -22,6 +22,7 @@ class Controller_main():
         self.viewKeypad = View_keypad(self, self.viewMain, self.viewEntry)
         self.viewMenu = View_menu(self, self.viewMain)
         self.viewTextEdit = View_text_edit(self)
+        self.viewTinker = View_tinker(self)
         self.viewTraceAnalysis = View_trace_analysis(self)
 
         self.traceLogFile = ""
@@ -598,6 +599,18 @@ class Controller_main():
 
     """ Set dragable keys above """
 
+    """ Save current prediction settings below """
+    def save_current_prediction_settings(self):
+        self.viewTinker.save_setting()
+        self.viewTinker.pop_up_prediction_settings_saved_notification()
+    """ Save current prediction settings above """
+
+
+    """ Load previous prediction settings below """
+    def load_previous_prediction_settings(self):
+        self.viewTinker.load_setting()
+    """ Load previous prediction settings above """
+
 
     """ Save current keyboard layout below """
     def save_current_keyboard_layout(self):
@@ -610,6 +623,8 @@ class Controller_main():
     def load_previous_keyboard_layout(self):
         self.viewKeypad.browse_button_position_files()
     """ Load previous keyboard layout above """
+
+
 
     """ Set trace below """
 

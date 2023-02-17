@@ -31,7 +31,11 @@ class View_text_box:
     def __init__(self, controller, rootFrame): # textBox
         self.controller = controller
         self.entry = tk.Entry(rootFrame, textvariable=rootFrame.textBox, font=('Calibri', 18))
+        self.entry.config(state="disabled")
+        self.entry.config(disabledbackground="white")
+        self.entry.config(disabledforeground="black")
         self.entry.place(height=50, width=1100, x=20, y=10)
+        
 
 
    
@@ -131,7 +135,6 @@ class View_keypad:
     def _get_current_button_attribute(self, caption):
         self.record_button_position()
         index = self._get_index_in_keyList(caption)
-        # print(f'index = {index}, \ncurrentBtnAttr = {self.buttonsAttributes}')
         if index < len(self.buttonsAttributes):
             currentBtnAttr = self.buttonsAttributes[index]
         else:
@@ -145,14 +148,12 @@ class View_keypad:
         shiftCompensationY = 103 # (0, 103) is the shift compensation for Dell XPS, full screen 
 
         for button in self.buttons:
-            self.buttonsAttributes.append([button.winfo_name(), button.winfo_rootx()-shiftCompensationX, button.winfo_rooty()-shiftCompensationY, button.winfo_width(), button.winfo_height()])
-            # self.buttonsAttributes.append([button.winfo_name(), button.winfo_rootx(), button.winfo_rooty(), button.winfo_width(), button.winfo_height()])
-            
+            self.buttonsAttributes.append([button.winfo_name(), button.winfo_rootx()-shiftCompensationX, button.winfo_rooty()-shiftCompensationY, button.winfo_width(), button.winfo_height()])            
     
     def write_button_position(self):
 
         timestr = time.strftime("%Y%m%d_%H%M%S")
-        fileName = "./Dataset/key_layout_"+str(timestr)+".txt"
+        fileName = "./ui_setting/key_layout_"+str(timestr)+".txt"
         f = open(fileName, "w")
         for button in self.buttons:
             indexKeyList = int(button.winfo_name())
@@ -216,7 +217,6 @@ class View_keypad:
     """ word prediction below """
 
     def _make_word_prediction_button(self, frame, predWord, currentBtnPlaceX, currentBtnPlaceY, previousX):
-        # command = (lambda button=predWord: self.controller.on_key_button_click(button+' '))
         command = (lambda button=predWord: self.controller.on_predicted_word_button_click(button+' '))
         x = 0
         y = 0
@@ -444,8 +444,8 @@ class View_menu:
 
         fileMenu = tk.Menu(menuBar)
         menuBar.add_cascade(label="File", menu=fileMenu)
-        fileMenu.add_command(label="Save Current Settings", command=donothing)
-        fileMenu.add_command(label="Load Previous Settings...", command=donothing)
+        fileMenu.add_command(label="Save Current Prediction Settings", command=lambda:self.controller.save_current_prediction_settings())
+        fileMenu.add_command(label="Load Previous Prediction Settings...", command=lambda:self.controller.load_previous_prediction_settings())
 
 
         uiControlMenu = tk.Menu(menuBar)
@@ -460,7 +460,7 @@ class View_menu:
 
         tinkerMenu = tk.Menu(menuBar)
         menuBar.add_cascade(label="Tinker", menu=tinkerMenu)
-        tinkerMenu.add_command(label="Default Prediction Setting", command=donothing)
+        tinkerMenu.add_command(label="Default Prediction Setting", command=lambda:self.tinkerView.default_setting())
         tinkerMenu.add_command(label="Open Tinker Panel...", command=lambda:self.tinkerView.run())
 
 
