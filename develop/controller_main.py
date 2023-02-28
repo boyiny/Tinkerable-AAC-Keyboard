@@ -30,7 +30,7 @@ class Controller_main():
         self.currentPressedKey = ""
         self.sentence_pred_PREDICTION_TASK = ""
         
-        self.boolTrace = False
+        self.boolTrace = False # set to True for experiment mode 
 
         self.boolBm25 = False
         self.boolRoberta = False
@@ -49,13 +49,16 @@ class Controller_main():
         self.config.read(self.file)
         self.config.sections()
         
-        
+        self._experiment_mode()
+
     def main(self):
         self.viewMain.mainloop()
 
 
-
-    
+    def _experiment_mode(self):
+        self.boolTrace = True
+        self.set_auto_trace()
+        
 
     def get_tinker_data(self):
         self.file = os.path.realpath(os.path.join(os.path.dirname(__file__), 'tinker.ini'))
@@ -634,6 +637,9 @@ class Controller_main():
         # self.modelTraceAnalysis.record_pressed_button(caption)
 
     """ Set trace above """
+
+    def set_auto_trace(self):
+        self.boolTrace = self.modelTraceAnalysis.set_trace(True)
 
     """ Set trace analysis below """
 

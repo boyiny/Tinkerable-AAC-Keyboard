@@ -9,3 +9,6 @@
 2023-02-17 10:51:06.325969 >> word: know , word pred: why|any|what|how, sentence pred: i dont know|i don't know. i don't know.|i do not know, i'm a student|i don't know, i do not know, current sentence: know 
 2023-02-17 10:51:10.346712 >> sentence: I dont know, word pred: know|known, sentence pred: , current sentence: i dont know
 ----------------End the log----------------
+----------------Start a new log----------------
+2023-02-24 16:10:03.968928 >> key: u, word pred: up|use|ur|understand, sentence pred: , current sentence: Research at aac. u
+2023-02-24 16:10:48.033953 >> word: up , word pred: , sentence pred: i work in research at aac.|research at aac.|i do research for aac.|research at aac., current sentence: up 

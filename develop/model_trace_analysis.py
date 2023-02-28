@@ -2,13 +2,15 @@ from datetime import datetime
 import re
 import string
 import pandas as pd
+import time
 
 from sympy import li
 
 class Model_Trace_Analysis:
     def __init__(self):
-        self.txt_path = './Dataset/typing_log.txt'
-        self.result_path = './Dataset/human_factor_analysis.xlsx'
+        timestr = time.strftime("%Y%m%d_%H%M%S")
+        self.txt_path = './analysis/klm_bei_record/typing_log_'+str(timestr)+'.txt'
+        self.result_path = './analysis/klm_bei_record/human_factor_analysis_'+str(timestr)+'.xlsx'
         self.f = open(self.txt_path, 'a+')
         print("trace analysis initialisation")
         
