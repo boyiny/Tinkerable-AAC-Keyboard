@@ -6,3 +6,22 @@
 2022-09-20 14:46:42.646831 >> sentence: Have you seen this , word pred: , sentence pred: 
 2022-09-20 14:46:45.358070 >> key: Speak, word pred: you|I|to|the, sentence pred: 
 ----------------End the log----------------
+----------------Start a new log----------------
+2023-01-31 12:56:27.506004 >> key: x, word pred: , sentence pred: 
+2023-01-31 12:56:31.580046 >> key: Speak, word pred: , sentence pred: 
+2023-01-31 12:56:34.077333 >> key: s, word pred: , sentence pred: 
+2023-01-31 12:56:35.562908 >> key: <-, word pred: , sentence pred: 
+2023-01-31 12:56:35.696124 >> key: <-, word pred: , sentence pred: 
+2023-01-31 12:58:12.082568 >> key: g, word pred: Good|Give|Get|Great, sentence pred: 
+2023-01-31 12:58:12.764600 >> key: r, word pred: Great, sentence pred: 
+2023-01-31 12:58:13.197814 >> key: e, word pred: Great, sentence pred: 
+2023-01-31 12:58:13.915451 >> key: a, word pred: Great, sentence pred: 
+2023-01-31 12:58:14.465768 >> key: t, word pred: Great, sentence pred: 
+2023-01-31 12:58:17.238697 >> key: Space, word pred: to|and|of|the, sentence pred: 
+2023-01-31 12:58:25.976805 >> key: i, word pred: is|i|it|in, sentence pred: 
+2023-01-31 12:58:27.057272 >> key: Space, word pred: think|have|m|like, sentence pred: 
+2023-01-31 12:58:27.828270 >> key: h, word pred: have|help|how|here, sentence pred: 
+2023-01-31 12:58:28.779183 >> key: a, word pred: have|happy|had|hair, sentence pred: 
+2023-01-31 12:58:29.329218 >> key: v, word pred: have|having|havent, sentence pred: 
+2023-01-31 12:58:29.962849 >> key: e, word pred: have|havent, sentence pred: 
+2023-01-31 12:58:34.623264 >> key: Space, word pred: a|to|no|been, sentence pred: 

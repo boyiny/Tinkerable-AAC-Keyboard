@@ -21,7 +21,7 @@ class View_text_edit:
         elif caption == "Tab":
             self.entry = self.entry + '    '
         elif caption == "Speak":
-            system(f'say {self.entry}')
+            # system(f'say {self.entry}')
             self.entry = ''
         elif caption == "Clear All":
             self.entry = ''

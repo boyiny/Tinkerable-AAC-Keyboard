@@ -14,7 +14,7 @@ import os
 class View_tinker:
     WORD_PRED_NUM = [1,2,3,4]
     WORD_DISP_LOC = ["Fixed", "Above last pressed key"]
-    WORD_PRED_METHOD = ["BM25Okapi", "BM25L", "BM25Plus", "GPT-2", "RoBERTa"]
+    WORD_PRED_METHOD = ["BM25Okapi", "BM25L", "BM25Plus", "GPT-2", "RoBERTa","GPT"]
     
     K1_BM25OKAPI = 1.5
     B_BM25OKAPI = 0.75
@@ -30,6 +30,7 @@ class View_tinker:
 
     MODEL_GPT2 = ["distilgpt2", "gpt2", "gpt2-medium", "gpt2-large", "gpt2-xl", "Please input..."]
 
+
     MODEL_ROBERTA = ["distilroberta-base","roberta-base", "roberta-large", "xlm-roberta-base", "xlm-roberta-large", "Please input..."]
     
 
@@ -39,7 +40,7 @@ class View_tinker:
     SEN_SIMILARITY = ["Text", "Semantics"]
     SEN_RETRI_TEXT_METHOD = ["BM25Okapi", "BM25L", "BM25Plus"]
     SEN_RETRI_SEMAN_MODEL = ["all-mpnet-base-v2", "multi-qa-mpnet-base-dot-v1", "all-distilroberta-v1", "all-MiniLM-L12-v2", "multi-qa-distilbert-cos-v1", "all-MiniLM-L6-v2", "multi-qa-MiniLM-L6-cos-v1", "paraphrase-multilingual-mpnet-base-v2", "paraphrase-albert-small-v2", "paraphrase-multilingual-MiniLM-L12-v2", "paraphrase-MiniLM-L3-v2", "distiluse-base-multilingual-cased-v1", "distiluse-base-multilingual-cased-v2", "Please input..."]
-    SEN_GEN_METHOD = ["KWickChat", "GPT-2"]
+    SEN_GEN_METHOD = ["KWickChat", "GPT-2","GPT"]
     SEN_KW_HISTORY_NUM = 3
     SEN_KW_PERSONA_NUM = 3
     SEN_GPT2_APPROACH = ["Greedy search", "Beam search", "Top-k sampling", "Top-p sampling"]
@@ -148,6 +149,12 @@ class View_tinker:
                     self.config.set('SENTENCE_GPT2_TOP_P', 'seed', self.seed_senGpt2TopP.get())
                     self.config.set('SENTENCE_GPT2_TOP_P', 'top_k', self.topK_senGpt2TopP.get())
                     self.config.set('SENTENCE_GPT2_TOP_P', 'top_p', self.topP_senGpt2TopP.get())
+            # elif self.senGenMethod.get() == "GPT":
+                # personaList = []
+                # for p in self.senKWPersonaList:
+                #     personaList.append(p.get())
+                # personas = "|".join(personaList)
+                # self.config.set('SENTENCE_KWICKCHAT', 'persona', personas) # it is a list
             elif self.senGenMethod.get() == "KWickChat":
                 self.config.set('SENTENCE_KWICKCHAT', 'max_length', self.senKWMaxLength.get())
                 self.config.set('SENTENCE_KWICKCHAT', 'min_length', self.senKWMinLength.get())
@@ -179,6 +186,8 @@ class View_tinker:
         self.BOOL_SENTENCE_TINKERED = False
 
         if self.SENTENCE_PRED_TASK == 'SENTENCE_KWICKCHAT':
+            self.controller.pop_up_conv_partner_window_kwickchat()
+        if self.SENTENCE_PRED_TASK == 'SENTENCE_GPT':
             self.controller.pop_up_conv_partner_window_kwickchat()
 
             
@@ -298,6 +307,16 @@ class View_tinker:
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=6)
             # Assign task
             self.WORD_PRED_TASK = "WORD_GPT2"
+            self.BOOL_WORD_TINKERED = True
+        elif self.wordPredMethod.get() == "GPT":
+            # row 5
+            ttk.Label(frame, text="", width=8, padding=5).grid(sticky="E", column=0, row=5)
+            ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=5)
+            #  row 6
+            ttk.Label(frame, text="", width=8, padding=5).grid(sticky="E", column=0, row=6)
+            ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=6)
+            # Assign task
+            self.WORD_PRED_TASK = "WORD_GPT"
             self.BOOL_WORD_TINKERED = True
         elif self.wordPredMethod.get() == "RoBERTa":
             # row 4
@@ -854,8 +873,24 @@ class View_tinker:
             # row 16
             ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=16)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=16)
-            
-            
+        elif self.senGenMethod.get() == "GPT":
+            # row 2
+            self.senEntryApproach.current(1)
+            self.senEntryApproach.state(["disabled"])
+            # row 13
+            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=13)
+            ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=13)
+            # row 14
+            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=14)
+            ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=14)
+            # row 15
+            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=15)
+            ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=15)
+            # row 16
+            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=16)
+            ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=16)
+            self.SENTENCE_PRED_TASK = "SENTENCE_GPT"
+            self.BOOL_SENTENCE_TINKERED = True
 
     def _create_persona(self, frame, personaNum):
         # row 13 - X

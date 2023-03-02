@@ -3,6 +3,7 @@ from os import system
 from model_fill_word import Model_Fill_Word
 from model_bm25 import Model_Bm25
 from model_gpt2 import Model_Gpt2
+from model_gpt import Model_Gpt
 from model_roberta import Model_Roberta
 from model_semantic_sentence_retrieval import Model_Semantic_Sentence_Retrieval
 from model_kwickchat.model_kwickchat import Model_Kwickchat
@@ -78,6 +79,11 @@ class Model_main:
     def load_gpt2_word(self, option, model=None, seed=None, method=None, max_length=None, no_repeat_ngram_size=None, num_of_beams=None, top_k=None, top_p=None):
         self.gpt2Word = Model_Gpt2(option, model, seed, method, max_length, no_repeat_ngram_size, num_of_beams, top_k, top_p)
 
+
+    def load_gpt_word(self, option):
+        self.gptWord = Model_Gpt(option)
+
+
     def load_roberta_word(self, option, model):
         self.roberta = Model_Roberta(option, model)
 
@@ -90,6 +96,9 @@ class Model_main:
     
     def load_gpt2_sentence(self, option, model=None, seed=None, method=None, max_length=None, no_repeat_ngram_size=None, num_of_beams=None, top_k=None, top_p=None):
         self.gpt2Sentence = Model_Gpt2(option, model, seed, method, max_length, no_repeat_ngram_size, num_of_beams, top_k, top_p)
+
+    def load_gpt_sentence(self, option):
+        self.gptSentence = Model_Gpt(option)
 
     def load_kwickchat_sentence(self, option, max_length, min_length, seed, temperature, top_k, top_p, num_of_history_exchanges, persona):
         self.kwickchatSentence = Model_Kwickchat(option, max_length, min_length, seed, temperature, top_k, top_p, num_of_history_exchanges, persona)
@@ -114,6 +123,8 @@ class Model_main:
             predWords = self.bm25Word.predict_words(entry)
         elif 'WORD_GPT2' in self.WORD_PRED_METHOD:
             predWords = self.gpt2Word.predict_words(entry)
+        elif 'WORD_GPT' in self.WORD_PRED_METHOD:
+            predWords = self.gptWord.predict_words(entry)
         elif 'WORD_ROBERTA' in self.WORD_PRED_METHOD:
             predWords = self.roberta.predict_words(entry)
 
@@ -160,6 +171,12 @@ class Model_main:
                 if entry[-1] == ' ':
                     if 'SENTENCE_GPT2' in self.SENT_PRED_METHOD: # multiple GPT2 methods
                         predSentences = self.gpt2Sentence.generate_sentences(entry)
+                    elif self.SENT_PRED_METHOD == 'SENTENCE_GPT': # multiple GPT methods
+                        self.historyKwickchat = self.gptSentence.adjust_history_size(self.historyKwickchat)
+                        print("********** history **********")
+                        print(self.historyKwickchat)
+                        print("********** history **********")
+                        predSentences = self.gptSentence.generate_sentences(self.historyKwickchat[-1], entry)
                     elif self.SENT_PRED_METHOD == 'SENTENCE_KWICKCHAT':
                         self.historyKwickchat = self.kwickchatSentence.adjust_history_size(self.historyKwickchat)
                         predSentences = self.kwickchatSentence.generate_sentences(self.historyKwickchat, entry)

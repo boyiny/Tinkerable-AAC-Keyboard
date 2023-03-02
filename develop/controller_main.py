@@ -125,6 +125,7 @@ class Controller_main():
         self.model_SENTENCE_GPT2                                = str(self.config['SENTENCE_GPT2']['model'])
         self.method_SENTENCE_GPT2                               = str(self.config['SENTENCE_GPT2']['method'])
 
+
         self.max_length_SENTENCE_GPT2_GREEDY                = int(self.config['SENTENCE_GPT2_GREEDY']['max_length'])
         self.no_repeat_n_gram_size_SENTENCE_GPT2_GREEDY     = int(self.config['SENTENCE_GPT2_GREEDY']['no_repeat_n_gram_size'])
 
@@ -201,6 +202,8 @@ class Controller_main():
             self.modelMain.load_bm25_word(option, self.k1_WORD_BM25PLUS, self.b_WORD_BM25PLUS, delta=self.delta_WORD_BM25PLUS)
         elif self.word_pred_PREDICTION_TASK == "WORD_GPT2":
             self.modelMain.load_gpt2_word(option=self.word_pred_PREDICTION_TASK, model=self.model_WORD_GPT2, seed=self.seed_WORD_GPT2)
+        elif self.word_pred_PREDICTION_TASK == "WORD_GPT":
+            self.modelMain.load_gpt_word(option=self.word_pred_PREDICTION_TASK)
         elif self.word_pred_PREDICTION_TASK == "WORD_ROBERTA":
             self.modelMain.load_roberta_word(option=self.word_pred_PREDICTION_TASK, model=self.model_WORD_ROBERTA)
 
@@ -250,21 +253,25 @@ class Controller_main():
         elif self.sentence_pred_PREDICTION_TASK == 'SENTENCE_GPT2_TOP_P':
             method = 'GPT2_TOP_P'
             self.modelMain.load_gpt2_sentence(option=self.sentence_pred_PREDICTION_TASK, model=self.model_SENTENCE_GPT2, method=method, max_length=self.max_length_SENTENCE_GPT2_TOP_P, seed=self.seed_SENTENCE_GPT2_TOP_P, top_k=self.top_k_SENTENCE_GPT2_TOP_P, top_p=self.top_p_SENTENCE_GPT2_TOP_P)
+        elif self.sentence_pred_PREDICTION_TASK == 'SENTENCE_GPT':
+            print("SENTENCE_GPT")
+            option = 'GPT'
+            self.modelMain.load_gpt_sentence(option=self.sentence_pred_PREDICTION_TASK)
         elif self.sentence_pred_PREDICTION_TASK == 'SENTENCE_KWICKCHAT':
             option = 'KWICKCHAT'
             self.modelMain.load_kwickchat_sentence(option=self.sentence_pred_PREDICTION_TASK, max_length=self.max_length_SENTENCE_KWICKCHAT, min_length=self.min_length_SENTENCE_KWICKCHAT, seed=self.seed_SENTENCE_KWICKCHAT, temperature=self.temperature_SENTENCE_KWICKCHAT, top_k=self.top_k_SENTENCE_KWICKCHAT, top_p=self.top_p_SENTENCE_KWICKCHAT, num_of_history_exchanges=self.num_of_history_SENTENCE_KWICKCHAT, persona=self.persona_SENTENCE_KWICKCHAT)
             
 
         # make the initial pred if there is entered text
-        if self.sentence_pred_PREDICTION_TASK == '':
-            self.viewKeypad.clear_placed_sentences()
-        else:
-            entry = self.viewEntry.entry.get()
-            if entry != '':
-                predictedSentence = self._make_sentence_prediction(entry)
-                self.viewKeypad.clear_placed_sentences()
-                self.viewKeypad.place_predicted_sentences(predSentence=predictedSentence) # TODO set different for KWickChat
-                self.viewMain.textBox.set(predictedSentence)
+        # if self.sentence_pred_PREDICTION_TASK == '':
+        #     self.viewKeypad.clear_placed_sentences()
+        # else:
+        #     entry = self.viewEload_gpt2_sentencentry.entry.get()
+        #     if entry != '':
+        #         predictedSentence = self._make_sentence_prediction(entry)
+        #         self.viewKeypad.clear_placed_sentences()
+        #         self.viewKeypad.place_predicted_sentences(predSentence=predictedSentence) # TODO set different for KWickChat
+        #         self.viewMain.textBox.set(predictedSentence)
 
     def assign_task(self):
         self._word_prediction_settings()
@@ -360,6 +367,11 @@ class Controller_main():
                 self.viewKeypad.clear_placed_sentences()
         
         # Collcet user input as conversation history
+        if self.sentence_pred_PREDICTION_TASK == 'SENTENCE_GPT':
+            if caption == 'Speak':
+                self.add_user_input_to_history(entry)
+                self.pop_up_conv_partner_window_kwickchat()
+
         if self.sentence_pred_PREDICTION_TASK == 'SENTENCE_KWICKCHAT':
             if caption == 'Speak':
                 self.add_user_input_to_history(entry)
