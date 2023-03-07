@@ -64,6 +64,7 @@ class Controller_main():
     def _experiment_mode(self):
         self.boolTrace = True
         self.set_auto_trace()
+        self.auto_load_the_latest_prediction_settings()
         
 
     def get_tinker_data(self):
@@ -186,7 +187,8 @@ class Controller_main():
                 """ Finished a word """
                 self._make_word_prediction(entry)
                 """ Log the word level text entry """
-                self.modelLogData.record_word_level_input(entry)
+                self.modelLogData.record_word_level_input(wordPredAlgo=self.word_pred_PREDICTION_TASK, sentencePredAlgo=self.sentence_pred_PREDICTION_TASK, sentenceEntryApproach=self.sentence_entry_approach_SENTENCE_PREDICTION, currentSen = entry)
+
             else:
                 """ Typing a word """
                 self._make_word_fill(entry)
@@ -348,7 +350,8 @@ class Controller_main():
                 # self._make_word_fill(entry)
                 predWords = self._make_word_prediction(entry)
                 """ Log the word level text entry """
-                self.modelLogData.record_word_level_input(entry)
+                self.modelLogData.record_word_level_input(wordPredAlgo=self.word_pred_PREDICTION_TASK, sentencePredAlgo=self.sentence_pred_PREDICTION_TASK, sentenceEntryApproach=self.sentence_entry_approach_SENTENCE_PREDICTION, currentSen = entry)
+
             else:
                 self.viewKeypad.clear_placed_words()
             if  self.boolSentencePredDisplay:
@@ -627,6 +630,10 @@ class Controller_main():
     def load_previous_prediction_settings(self):
         self.viewTinker.load_setting()
     """ Load previous prediction settings above """
+
+    """ Auto load the latest prediction settings """
+    def auto_load_the_latest_prediction_settings(self):
+        self.viewTinker.auto_load_the_latest_setting()
 
 
     """ Save current keyboard layout below """

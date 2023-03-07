@@ -13,6 +13,7 @@ import os
 import time
 import shutil
 import ctypes
+import glob
 
 
 class View_tinker:
@@ -203,7 +204,25 @@ class View_tinker:
         if self.controller.sentence_pred_PREDICTION_TASK == 'SENTENCE_KWICKCHAT':
             self.controller.pop_up_conv_partner_window_kwickchat()
             # self.controller.modelLogData.record_conversation_partner_input()
-        
+
+    def auto_load_the_latest_setting(self):   
+        # If no previous setting (i.e. folder is empty), load a basic one
+        if not os.listdir('./analysis/prediction_setting/'):
+            self.file = os.path.realpath(os.path.join(os.path.dirname(__file__), 'tinker.ini'))
+            self.config = configparser.ConfigParser()
+            self.config.read(self.file)
+            self.config.sections()
+            self.controller.get_tinker_data()
+        # else, load the last one
+        else:
+            fileList = glob.glob('./analysis/prediction_setting/*.ini')
+            latestFile = max(fileList, key=os.path.getctime)
+            self.config = configparser.ConfigParser()
+            self.config.read(latestFile)
+            self.config.sections()
+            self.controller.get_tinker_data()
+            
+
     def pop_up_prediction_settings_saved_notification(self):
         ctypes.windll.user32.MessageBoxW(0, "Current prediction settings have been saved.", "Info", 0)
 
