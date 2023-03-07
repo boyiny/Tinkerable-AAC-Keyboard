@@ -153,7 +153,7 @@ class View_keypad:
     def write_button_position(self):
 
         timestr = time.strftime("%Y%m%d_%H%M%S")
-        fileName = "./ui_setting/key_layout_"+str(timestr)+".txt"
+        fileName = "./analysis/ui_setting/key_layout_"+str(timestr)+".txt"
         f = open(fileName, "w")
         for button in self.buttons:
             indexKeyList = int(button.winfo_name())
@@ -434,6 +434,7 @@ class View_menu:
         self._make_menu()
         self.tinkerView = View_tinker(self.controller)
         self.traceView = View_trace_analysis(self.controller)
+
 
     def _make_menu(self):
         def donothing():

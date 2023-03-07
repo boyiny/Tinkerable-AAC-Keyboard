@@ -1,10 +1,13 @@
 from pyexpat import model
 from view_trace_analysis import View_trace_analysis
 from model_trace_analysis import Model_Trace_Analysis
+from model_log_data import Model_Log_Data
 from model_main import Model_main
 from view_main import View_main, View_menu, View_text_box, View_keypad
 from view_tinker_panel import View_tinker
 from view_text_entry import View_text_edit
+
+import pyttsx3
 
 import configparser 
 import os
@@ -15,6 +18,7 @@ class Controller_main():
     def __init__(self):
         self.modelMain = Model_main()
         self.modelTraceAnalysis = Model_Trace_Analysis()
+        self.modelLogData = Model_Log_Data()
         
         self.viewMain = View_main(self)
         
@@ -25,12 +29,14 @@ class Controller_main():
         self.viewTinker = View_tinker(self)
         self.viewTraceAnalysis = View_trace_analysis(self)
 
+        self.speakEngine = pyttsx3.init()
+
         self.traceLogFile = ""
 
         self.currentPressedKey = ""
         self.sentence_pred_PREDICTION_TASK = ""
         
-        self.boolTrace = False
+        self.boolTrace = False # set to True for experiment mode 
 
         self.boolBm25 = False
         self.boolRoberta = False
@@ -49,13 +55,16 @@ class Controller_main():
         self.config.read(self.file)
         self.config.sections()
         
-        
+        self._experiment_mode()
+
     def main(self):
         self.viewMain.mainloop()
 
 
-
-    
+    def _experiment_mode(self):
+        self.boolTrace = True
+        self.set_auto_trace()
+        
 
     def get_tinker_data(self):
         self.file = os.path.realpath(os.path.join(os.path.dirname(__file__), 'tinker.ini'))
@@ -176,6 +185,8 @@ class Controller_main():
             elif entry[-1] == " ":
                 """ Finished a word """
                 self._make_word_prediction(entry)
+                """ Log the word level text entry """
+                self.modelLogData.record_word_level_input(entry)
             else:
                 """ Typing a word """
                 self._make_word_fill(entry)
@@ -291,6 +302,7 @@ class Controller_main():
     def add_user_input_to_history(self, editedUserInput):
         # when 'Speak' btn is clicked
         self.modelMain.add_user_input_to_history(editedUserInput)
+        # self.modelLogData.record_conversation_partner_input(editedUserInput)
 
     
     """ KwickChat interaction above """
@@ -335,6 +347,8 @@ class Controller_main():
                 # set fill initial word  
                 # self._make_word_fill(entry)
                 predWords = self._make_word_prediction(entry)
+                """ Log the word level text entry """
+                self.modelLogData.record_word_level_input(entry)
             else:
                 self.viewKeypad.clear_placed_words()
             if  self.boolSentencePredDisplay:
@@ -365,6 +379,7 @@ class Controller_main():
             if caption == 'Speak':
                 self.add_user_input_to_history(entry)
                 self.pop_up_conv_partner_window_kwickchat()
+                # self.modelLogData.recored_sentence_level_input(wordPredAlgo=self.word_pred_PREDICTION_TASK, sentencePredAlgo=self.sentence_pred_PREDICTION_TASK, finishedSen=entry)
 
         # Trace record
         if self.boolTrace == True:
@@ -560,6 +575,8 @@ class Controller_main():
         elif entry[-1] == " ":
             """ Finished a word """
             predWords = self._make_word_prediction(entry)
+            """ Log the word level text entry """
+            self.modelLogData.record_word_level_input(wordPredAlgo=self.word_pred_PREDICTION_TASK, sentencePredAlgo=self.sentence_pred_PREDICTION_TASK, sentenceEntryApproach=self.sentence_entry_approach_SENTENCE_PREDICTION, currentSen = entry)
         else:
             """ Typing a word """
             predWords = self._make_word_fill(entry)
@@ -635,6 +652,9 @@ class Controller_main():
 
     """ Set trace above """
 
+    def set_auto_trace(self):
+        self.boolTrace = self.modelTraceAnalysis.set_trace(True)
+
     """ Set trace analysis below """
 
     def run_trace_analyse(self):
@@ -644,6 +664,15 @@ class Controller_main():
 
     """ Set trace analysis above """
 
+    """ Speak below """
+    # a sentence is finished
+    def speak_text(self, text):
+        self.modelLogData.record_word_level_input(wordPredAlgo=self.word_pred_PREDICTION_TASK, sentencePredAlgo=self.sentence_pred_PREDICTION_TASK, sentenceEntryApproach=self.sentence_entry_approach_SENTENCE_PREDICTION, currentSen = text)
+        self.modelLogData.record_sentence_level_input(wordPredAlgo=self.word_pred_PREDICTION_TASK, sentencePredAlgo=self.sentence_pred_PREDICTION_TASK, sentenceEntryApproach=self.sentence_entry_approach_SENTENCE_PREDICTION, finishedSen=text)
+        self.speakEngine.say(text)
+        self.speakEngine.runAndWait()
+        self.speakEngine.stop()
+    """ Speak above """
 
 if __name__ == '__main__':
     keyboard = Controller_main()

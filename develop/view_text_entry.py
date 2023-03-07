@@ -1,7 +1,6 @@
 from os import system
 import tkinter as tk
 from tkinter import ttk
-import pyttsx3
 
 
 class View_text_edit:
@@ -13,7 +12,6 @@ class View_text_edit:
         self.entry = ''
         self.prediction = ''
         self.controller = controller
-        self.speakEngine = pyttsx3.init()
 
     def edit_text_letter(self, caption):
         if caption == "<-":
@@ -25,9 +23,7 @@ class View_text_edit:
             self.entry = self.entry + '    '
         elif caption == "Speak":
             # system(f'say {self.entry}')
-            self.speakEngine.say(self.entry)
-            self.speakEngine.runAndWait()
-            self.speakEngine.stop()
+            self.controller.speak_text(self.entry)
             self.entry = ''
         elif caption == "Clear All":
             self.entry = ''
@@ -100,6 +96,7 @@ class View_text_edit:
 
     def _confirm(self):
         print(f"partnerInput is {self.partnerInput.get()}")
+        self.controller.modelLogData.record_conversation_partner_input(self.partnerInput.get())
         self.controller.add_conv_partner_input_to_history(self.partnerInput.get())
         self.root.destroy()
 
