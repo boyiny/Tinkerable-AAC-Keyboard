@@ -1,8 +1,14 @@
 import time
 from datetime import datetime
+from pathlib import Path
 
 class Model_Log_Data:
     def __init__(self) -> None:
+        Path('./analysis/klm_bei_record/').mkdir(parents=True, exist_ok=True)
+        Path('./analysis/text_entry_record/').mkdir(parents=True, exist_ok=True)
+        Path('./analysis/prediction_setting/').mkdir(parents=True, exist_ok=True)   
+        Path('./analysis/ui_setting/').mkdir(parents=True, exist_ok=True)
+        Path('./analysis/test/').mkdir(parents=True, exist_ok=True)
         timestr = time.strftime("%Y%m%d_%H%M%S")
         self.word_level_record_path = './analysis/text_entry_record/word_level_record_'+str(timestr)+'.txt'
         self.sentence_level_record_path = './analysis/text_entry_record/sentence_level_record_'+str(timestr)+'.txt'
