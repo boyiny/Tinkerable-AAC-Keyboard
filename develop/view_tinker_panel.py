@@ -187,7 +187,7 @@ class View_tinker:
 
     def save_setting(self):
         timestr = time.strftime("%Y%m%d_%H%M%S")
-        tinkerFileName = "./prediction_setting/tinker_"+str(timestr)+".ini"
+        tinkerFileName = "./analysis/prediction_setting/tinker_"+str(timestr)+".ini"
         # copy current .ini file
         shutil.copyfile('tinker.ini', tinkerFileName)
 
@@ -202,6 +202,7 @@ class View_tinker:
 
         if self.controller.sentence_pred_PREDICTION_TASK == 'SENTENCE_KWICKCHAT':
             self.controller.pop_up_conv_partner_window_kwickchat()
+            # self.controller.modelLogData.record_conversation_partner_input()
         
     def pop_up_prediction_settings_saved_notification(self):
         ctypes.windll.user32.MessageBoxW(0, "Current prediction settings have been saved.", "Info", 0)
