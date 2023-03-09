@@ -13,6 +13,7 @@ import configparser
 import os
 
 
+
 class Controller_main():
     
     def __init__(self):
@@ -35,6 +36,8 @@ class Controller_main():
 
         self.currentPressedKey = ""
         self.sentence_pred_PREDICTION_TASK = ""
+
+        self.boolDrag = False
         
         self.boolTrace = False # set to True for experiment mode 
 
@@ -64,6 +67,8 @@ class Controller_main():
     def _experiment_mode(self):
         self.boolTrace = True
         self.set_auto_trace()
+        self.auto_load_the_latest_prediction_settings()
+        self.auto_load_the_latest_ui_settings()
         
 
     def get_tinker_data(self):
@@ -186,7 +191,8 @@ class Controller_main():
                 """ Finished a word """
                 self._make_word_prediction(entry)
                 """ Log the word level text entry """
-                self.modelLogData.record_word_level_input(entry)
+                self.modelLogData.record_word_level_input(wordPredAlgo=self.word_pred_PREDICTION_TASK, sentencePredAlgo=self.sentence_pred_PREDICTION_TASK, sentenceEntryApproach=self.sentence_entry_approach_SENTENCE_PREDICTION, currentSen = entry)
+
             else:
                 """ Typing a word """
                 self._make_word_fill(entry)
@@ -316,9 +322,12 @@ class Controller_main():
 
 
     def on_key_button_click(self, caption): # , boolWordPred, boolSenPred
-        self.currentPressedKey = caption
-        text = self.viewTextEdit.edit_text_letter(caption) 
-        self.viewMain.textBox.set(text)
+        if self.boolDrag: 
+            pass
+        else:
+            self.currentPressedKey = caption
+            text = self.viewTextEdit.edit_text_letter(caption) 
+            self.viewMain.textBox.set(text)
 
         
 
@@ -348,7 +357,8 @@ class Controller_main():
                 # self._make_word_fill(entry)
                 predWords = self._make_word_prediction(entry)
                 """ Log the word level text entry """
-                self.modelLogData.record_word_level_input(entry)
+                self.modelLogData.record_word_level_input(wordPredAlgo=self.word_pred_PREDICTION_TASK, sentencePredAlgo=self.sentence_pred_PREDICTION_TASK, sentenceEntryApproach=self.sentence_entry_approach_SENTENCE_PREDICTION, currentSen = entry)
+
             else:
                 self.viewKeypad.clear_placed_words()
             if  self.boolSentencePredDisplay:
@@ -610,9 +620,18 @@ class Controller_main():
     """ Set dragable keys below """
     
     def set_drag(self, boolDrag):
+        self.boolDrag = boolDrag
+        if boolDrag == True:
+            # disable text entry
+            pass
+        else:
+            # enable text entry and save positions
+            self.save_current_keyboard_layout()
         self.viewKeypad.KEY_DRAGABLE = self.modelMain.set_drag(boolDrag)
         self.viewKeypad.record_button_position()
         self.viewKeypad.refresh(self, self.viewMain, self.viewEntry)
+        
+
 
     """ Set dragable keys above """
 
@@ -628,6 +647,16 @@ class Controller_main():
         self.viewTinker.load_setting()
     """ Load previous prediction settings above """
 
+    """ Auto load the latest prediction settings below """
+    def auto_load_the_latest_prediction_settings(self):
+        self.viewTinker.auto_load_the_latest_setting()
+    """ Auto load the latest prediction settings above """
+
+    """ Load default layout below """
+    def load_default_layout(self):
+        self.viewKeypad.make_letterpad()
+
+
 
     """ Save current keyboard layout below """
     def save_current_keyboard_layout(self):
@@ -640,6 +669,10 @@ class Controller_main():
     def load_previous_keyboard_layout(self):
         self.viewKeypad.browse_button_position_files()
     """ Load previous keyboard layout above """
+
+    """ Auto load previous keyboard layout below """
+    def auto_load_the_latest_ui_settings(self):
+        self.viewKeypad.auto_load_the_latest_button_position()
 
 
 
