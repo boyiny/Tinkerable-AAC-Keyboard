@@ -146,7 +146,7 @@ class View_keypad:
     def record_button_position(self):
         shiftCompensationX = 0 #  by calculating the shift for each shift when click On/Off of Dragable function
         shiftCompensationY = 103 # (0, 103) is the shift compensation for Dell XPS, full screen 
-
+        self.buttonsAttributes = []
         for button in self.buttons:
             self.buttonsAttributes.append([button.winfo_name(), button.winfo_rootx()-shiftCompensationX, button.winfo_rooty()-shiftCompensationY, button.winfo_width(), button.winfo_height()])            
     
@@ -196,6 +196,7 @@ class View_keypad:
             sizeX = line[line.find("sizeX: ")+len("sizeX: ") : line.find(", sizeY")]
             sizeY = line[line.find("sizeY: ")+len("sizeY: ") : line.find("\n")]
             self.buttons.append(self._make_button(self.keypadFrame, caption, int(placeX)-shiftCompensationX, int(placeY)-shiftCompensationY, sizeX, sizeY, index))
+            # self.buttons.append(self._make_button(self.keypadFrame, caption, int(placeX), int(placeY), sizeX, sizeY, index))
 
         # call self._refresh()
 
@@ -456,8 +457,10 @@ class View_menu:
         uiControlMenu.add_cascade(label="Move Elements", menu=moveElementMenu)
         moveElementMenu.add_command(label="On", command=lambda:self.controller.set_drag(True))
         moveElementMenu.add_command(label="Off", command=lambda:self.controller.set_drag(False))
-        moveElementMenu.add_command(label="Save the Current Layout", command=lambda:self.controller.save_current_keyboard_layout())
-        moveElementMenu.add_command(label="Load Previous Layout...", command=lambda:self.controller.load_previous_keyboard_layout())
+
+        # uiControlMenu.add_command(label="Change the Button Size", command=lambda:self.controller.set_btn_size())
+        uiControlMenu.add_command(label="Save the Current Layout", command=lambda:self.controller.save_current_keyboard_layout())
+        uiControlMenu.add_command(label="Load Previous Layout...", command=lambda:self.controller.load_previous_keyboard_layout())
 
         tinkerMenu = tk.Menu(menuBar)
         menuBar.add_cascade(label="Tinker", menu=tinkerMenu)
