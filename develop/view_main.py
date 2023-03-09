@@ -4,6 +4,8 @@ from typing import Sized
 
 import time
 import ctypes
+import glob
+import os
 
 from tkinter import filedialog
 from pathlib import Path
@@ -14,16 +16,17 @@ from view_trace_analysis import View_trace_analysis
 
 
 
-class View_main(tk.Tk):
+class View_main(tk.Tk): 
     
     PAD = 10
 
     def __init__(self, controller):
-        super().__init__()
+        super().__init__() 
         self.controller = controller
         self.title("Tinkerable Keyboard")
         self.resizable()
-        self.geometry("1500x1000")
+        # self.geometry("1500x1000")
+        self.state('zoomed')
         self.textBox = tk.StringVar()
 
 class View_text_box:
@@ -110,7 +113,7 @@ class View_keypad:
         self.textBox = rootFrame.textBox
         
         if len(self.buttons) == 0:
-            self._make_letterpad()
+            self.make_letterpad()
         else:
             self._refresh_letterpad()
 
@@ -175,7 +178,15 @@ class View_keypad:
     def pop_up_layout_saved_notification(self):
         ctypes.windll.user32.MessageBoxW(0, "Current keypad layout has been saved.", "Info", 0)
 
-
+    def auto_load_the_latest_button_position(self):
+        if not os.listdir('./analysis/ui_setting/'):
+            # If no previous setting (i.e. folder is empty), load the default one
+            self.make_letterpad()
+        else:
+            # If there are previous settings (i.e. folder is not empty), load the latest one
+            fileList = glob.glob('./analysis/ui_setting/*.txt')
+            latestFile = max(fileList, key=os.path.getctime)
+            self._load_button_position(latestFile)
 
     def _load_button_position(self, filePath):
         # print("load button position")
@@ -340,7 +351,7 @@ class View_keypad:
 
     
 
-    def _make_letterpad(self):
+    def make_letterpad(self):
         
         keyIndex = 0
 
@@ -459,6 +470,7 @@ class View_menu:
         moveElementMenu.add_command(label="Off", command=lambda:self.controller.set_drag(False))
 
         # uiControlMenu.add_command(label="Change the Button Size", command=lambda:self.controller.set_btn_size())
+        uiControlMenu.add_command(label="Default Layout", command=lambda:self.controller.load_default_layout())
         uiControlMenu.add_command(label="Save the Current Layout", command=lambda:self.controller.save_current_keyboard_layout())
         uiControlMenu.add_command(label="Load Previous Layout...", command=lambda:self.controller.load_previous_keyboard_layout())
 
