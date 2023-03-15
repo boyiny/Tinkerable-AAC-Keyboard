@@ -3,6 +3,7 @@ from os import stat
 import tkinter as tk
 from tkinter import BOTTOM, ttk
 from tkinter import filedialog
+import tkinter.font as tkFont
 
 from click import command
 from gevent import config
@@ -14,6 +15,8 @@ import time
 import shutil
 import ctypes
 import glob
+
+
 
 
 class View_tinker:
@@ -71,6 +74,8 @@ class View_tinker:
     BOOL_SENTENCE_TINKERED = False
 
     def __init__(self, controller):
+        # self.comboboxStyle = ttk.Style()
+        # self.comboboxStyle.configure('W.TCombobox', arrowsize = 20)
 
 
         self.controller = controller
@@ -257,25 +262,49 @@ class View_tinker:
         self.root = tk.Tk()
         self.root.title("Tinker Panel")
 
+        bigFont = tkFont.Font(family='Arial', size=20)
+        self.root.option_add("*Font", bigFont)
+
         baseFrame = ttk.Frame(self.root)
         baseFrame.pack(padx=5, pady=5)
+        
+        # style = ttk.Style()
+        # style.configure('TNotebook.Tab', font=("Arial", 50))
 
         tabControl = ttk.Notebook(baseFrame)
         
-        tabWordPredFrame = ttk.Frame(tabControl)
-        tabSenPredFrame = ttk.Frame(tabControl)
         
-        tabControl.add(tabWordPredFrame, text ='Word Prediction')
-        tabControl.add(tabSenPredFrame, text ='Sentence Prediction')
-        tabControl.pack(expand = 1, fill ="both")
+        tabWordPredFrame = ttk.Frame(tabControl)
+        # tabWordPredFrame.option_add("*Font", bigFont)
+        tabSenPredFrame = ttk.Frame(tabControl)
+        # tabSenPredFrame.option_add("*Font", bigFont)
+        
+        
+        tabControl.add(tabWordPredFrame)
+        tabControl.add(tabSenPredFrame)
+
+        tabControl.tab(0, text ='      Word Prediction      ')
+        tabControl.tab(1, text ='      Sentence Prediction      ')
+
+        tabControl.pack(expand = True, fill ="both")
+        
+        # self.tabWordPredFrame = tabWordPredFrame
+        # self.tabSenPredFrame = tabSenPredFrame
+
+
+        
+        
 
 
         cancelBtn = ttk.Button(baseFrame, text="Cancel", command=self._close)
-        cancelBtn.pack(padx=5, pady=5, side=tk.RIGHT)
+        cancelBtn.pack(ipadx=10, ipady=10, side=tk.RIGHT)
 
-        confirmBtn = ttk.Button(baseFrame, text="Confirm", command=self._save)
-        confirmBtn.pack(padx=5, pady=5, side=tk.RIGHT)
+        confirmBtn = ttk.Button(baseFrame, text="Confirm", command=self._save) # style="Big.TButton",
+        confirmBtn.pack(ipadx=10, ipady=10, side=tk.RIGHT)
 
+        # print(style.theme_names())
+        # print(style.layout('TButton'))
+        # style.configure('big.TButton', font=('Arial', 25))
         
 
         self._word_pred_panel(self.root, tabWordPredFrame)
@@ -288,7 +317,8 @@ class View_tinker:
         self.root.mainloop() 
 
     def _word_pred_method_combobox(self, event, frame):
-
+        # bigFont = tkFont.Font(family='Arial', size=20)
+        # frame.option_add("*TCombobox*Listbox*Font", bigFont)
 
         # row 4 - 6
         if self.wordPredMethod.get() == "BM25Okapi":
@@ -351,7 +381,7 @@ class View_tinker:
         elif self.wordPredMethod.get() == "GPT-2":
             # row 4
             ttk.Label(frame, text="Model").grid(sticky="E", column=0, row=4)
-            self.modelGpt2_wordPred = ttk.Combobox(frame, values=self.MODEL_GPT2)
+            self.modelGpt2_wordPred = ttk.Combobox(frame, values=self.MODEL_GPT2) 
             self.modelGpt2_wordPred.current(1)
             self.modelGpt2_wordPred.grid(sticky="W", column=1, row=4)
             # row 5
@@ -383,7 +413,7 @@ class View_tinker:
 
     def _word_pred_panel(self, root, frame):
         # row 0
-        ttk.Label(frame, text ="Word Prediction", font=('Helvetica',13,'bold')).grid(sticky="E", column=0, row=0)
+        ttk.Label(frame, text ="Word Prediction", font=('bold')).grid(sticky="E", column=0, row=0)
 
         # row 1
         ttk.Label(frame, text ="Max Prediction Number").grid(sticky="E", column=0, row=1)
@@ -427,29 +457,29 @@ class View_tinker:
             self.epsilonBM25Okapi_senRetri = tk.Entry(frame, width=21, textvariable=epsilonBM25OkapiString_senRetri)
             self.epsilonBM25Okapi_senRetri.grid(sticky="W", column=1, row=8)
             # row 9
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=9)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=9)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=9)
             # row 10
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=10)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=10)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=10)
             # row 11
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=11)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=11)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=11)
             # row 12
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=12)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=12)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=12)
             ttk.Label(frame, text="", width=5, padding=5).grid(sticky="W", column=2, row=12)
             # row 13
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=13)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=13)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=13)
             # row 14
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=14)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=14)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=14)
             # row 15
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=15)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=15)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=15)
             # row 16
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=16)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=16)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=16)
             # Assign task
             self.SENTENCE_PRED_TASK = "SENTENCE_BM25OKAPI"
@@ -473,29 +503,29 @@ class View_tinker:
             self.deltaBm25L_senRetri = tk.Entry(frame, width=21, textvariable=deltaBm25LString_senRetri)
             self.deltaBm25L_senRetri.grid(sticky="W", column=1, row=8)
             # row 9
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=9)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=9)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=9)
             # row 10
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=10)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=10)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=10)
             # row 11
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=11)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=11)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=11)
             # row 12
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=12)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=12)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=12)
             ttk.Label(frame, text="", width=5, padding=5).grid(sticky="W", column=2, row=12)
             # row 13
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=13)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=13)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=13)
             # row 14
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=14)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=14)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=14)
             # row 15
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=15)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=15)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=15)
             # row 16
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=16)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=16)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=16)
             # Assign task
             self.SENTENCE_PRED_TASK = "SENTENCE_BM25L"
@@ -517,29 +547,29 @@ class View_tinker:
             self.deltaBm25Plus_senRetri = tk.Entry(frame, width=21, textvariable=deltaBm25PlusString_senRetri)
             self.deltaBm25Plus_senRetri.grid(sticky="W", column=1, row=8)
             # row 9
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=9)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=9)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=9)
             # row 10
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=10)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=10)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=10)
             # row 11
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=11)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=11)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=11)
             # row 12
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=12)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=12)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=12)
             ttk.Label(frame, text="", width=5, padding=5).grid(sticky="W", column=2, row=12)
             # row 13
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=13)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=13)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=13)
             # row 14
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=14)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=14)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=14)
             # row 15
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=15)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=15)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=15)
             # row 16
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=16)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=16)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=16)
             # Assign task
             self.SENTENCE_PRED_TASK = "SENTENCE_BM25PLUS"
@@ -555,38 +585,38 @@ class View_tinker:
             # self.senRetriTextMethod.current(0)
             self.senRetriTextMethod.bind("<<ComboboxSelected>>", lambda event: self._sen_retrieval_text_method_combobox(event, frame))
             # row 6
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=6)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=6)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=6)
             # row 7
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=7)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=7)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=7)
             # row 8
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=8)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=8)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=8)
              # row 9
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=9)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=9)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=9)
             # row 10
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=10)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=10)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=10)
             # row 11
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=11)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=11)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=11)
             # row 12
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=12)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=12)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=12)
             ttk.Label(frame, text="", width=5, padding=5).grid(sticky="W", column=2, row=12)
             # row 13
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=13)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=13)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=13)
             # row 14
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=14)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=14)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=14)
             # row 15
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=15)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=15)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=15)
             # row 16
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=16)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=16)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=16)
         elif self.senSimilarity.get() == "Semantics":
             # row 5
@@ -595,38 +625,38 @@ class View_tinker:
             self.senRetriSemanticsModel.grid(sticky="E", column=1, row=5)
             # self.senRetriSemanticsModel.current(0)
             # row 6
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=6)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=6)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=6)
             # row 7
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=7)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=7)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=7)
             # row 8
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=8)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=8)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=8)
             # row 9
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=9)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=9)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=9)
             # row 10
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=10)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=10)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=10)
             # row 11
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=11)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=11)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=11)
             # row 12
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=12)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=12)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=12)
             ttk.Label(frame, text="", width=5, padding=5).grid(sticky="W", column=2, row=12)
             # row 13
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=13)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=13)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=13)
             # row 14
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=14)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=14)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=14)
             # row 15
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=15)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=15)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=15)
             # row 16
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=16)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=16)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=16)
             # Assign task
             self.SENTENCE_PRED_TASK = "SENTENCE_SEMANTIC_SIMILARITY"
@@ -646,29 +676,29 @@ class View_tinker:
             self.noRepeatNGramSize_senGpt2Greedy = tk.Entry(frame, width=21, textvariable=noRepeatNGramSizeString_senGpt2Greedy)
             self.noRepeatNGramSize_senGpt2Greedy.grid(sticky="W", column=1, row=8)
             # row 9
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=9)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=9)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=9)
             # row 10
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=10)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=10)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=10)
             # row 11
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=11)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=11)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=11)
             # row 12
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=12)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=12)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=12)
             ttk.Label(frame, text="", width=5, padding=5).grid(sticky="W", column=2, row=12)
             # row 13
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=13)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=13)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=13)
             # row 14
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=14)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=14)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=14)
             # row 15
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=15)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=15)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=15)
             # row 16
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=16)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=16)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=16)
 
             # Assign task
@@ -693,26 +723,26 @@ class View_tinker:
             self.numOfBeams_senGpt2Beam = tk.Entry(frame, width=21, textvariable=numOfBeamsString_senGpt2Beam)
             self.numOfBeams_senGpt2Beam.grid(sticky="W", column=1, row=9)
              # row 10
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=10)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=10)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=10)
             # row 11
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=11)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=11)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=11)
             # row 12
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=12)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=12)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=12)
             ttk.Label(frame, text="", width=5, padding=5).grid(sticky="W", column=2, row=12)
             # row 13
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=13)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=13)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=13)
             # row 14
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=14)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=14)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=14)
             # row 15
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=15)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=15)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=15)
             # row 16
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=16)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=16)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=16)
             
             # Assign task
@@ -736,26 +766,26 @@ class View_tinker:
             self.topK_senGpt2TopK = tk.Entry(frame, width=21, textvariable=topKString_senGpt2TopK)
             self.topK_senGpt2TopK.grid(sticky="W", column=1, row=9)
             # row 10
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=10)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=10)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=10)
             # row 11
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=11)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=11)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=11)
             # row 12
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=12)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=12)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=12)
             ttk.Label(frame, text="", width=5, padding=5).grid(sticky="W", column=2, row=12)
             # row 13
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=13)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=13)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=13)
             # row 14
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=14)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=14)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=14)
             # row 15
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=15)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=15)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=15)
             # row 16
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=16)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=16)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=16)
 
             # Assign task
@@ -784,23 +814,23 @@ class View_tinker:
             self.topP_senGpt2TopP = tk.Entry(frame, width=21, textvariable=topPString_senGpt2TopP)
             self.topP_senGpt2TopP.grid(sticky="W", column=1, row=10)
             # row 11
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=11)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=11)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=11)
             # row 12
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=12)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=12)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=12)
             ttk.Label(frame, text="", width=5, padding=5).grid(sticky="W", column=2, row=12)
             # row 13
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=13)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=13)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=13)
             # row 14
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=14)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=14)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=14)
             # row 15
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=15)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=15)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=15)
             # row 16
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=16)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=16)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=16)
             
             # Assign task
@@ -827,57 +857,57 @@ class View_tinker:
             # self.senGpt2Approach.current(0)
             self.senGpt2Approach.bind("<<ComboboxSelected>>", lambda event: self._sen_gpt2_approach_combobox(event, frame))
             
-            # ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=6)
+            # ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=6)
             # ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=6)
             # row 7
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=7)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=7)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=7)
             # row 8
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=8)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=8)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=8)
              # row 9
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=9)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=9)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=9)
             # row 10
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=10)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=10)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=10)
             # row 11
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=11)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=11)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=11)
             # row 12
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=12)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=12)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=12)
             ttk.Label(frame, text="", width=5, padding=5).grid(sticky="W", column=2, row=12)
             # row 13
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=13)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=13)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=13)
             # row 14
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=14)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=14)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=14)
             # row 15
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=15)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=15)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=15)
             # row 16
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=16)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=16)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=16)
         elif self.senGenMethod.get() == "KWickChat":
             # row 2
             self.senEntryApproach.current(1)
             self.senEntryApproach.state(["disabled"])
             # row 5
-            ttk.Label(frame, text="        max length").grid(sticky="E", column=0, row=5)
+            ttk.Label(frame, text="                   max length").grid(sticky="E", column=0, row=5)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=5)
             senKWMaxLenthString = tk.StringVar(frame, value=self.KW_MAX_LENGTH)
             self.senKWMaxLength = tk.Entry(frame, width=21, textvariable=senKWMaxLenthString)
             self.senKWMaxLength.grid(sticky="W", column=1, row=5)
             # row 6
-            ttk.Label(frame, text="        min length").grid(sticky="E", column=0, row=6)
+            ttk.Label(frame, text="                   min length").grid(sticky="E", column=0, row=6)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=6)
             senKWMinLenthString = tk.StringVar(frame, value=self.KW_MIN_LENGTH)
             self.senKWMinLength = tk.Entry(frame, width=21, textvariable=senKWMinLenthString)
             self.senKWMinLength.grid(sticky="W", column=1, row=6)
             # row 7
-            ttk.Label(frame, text="        seed").grid(sticky="E", column=0, row=7)
+            ttk.Label(frame, text="                   seed").grid(sticky="E", column=0, row=7)
             senKWSeedString = tk.StringVar(frame, value=self.KW_SEED)
             self.senKWSeed = tk.Entry(frame, width=21, textvariable=senKWSeedString)
             self.senKWSeed.grid(sticky="W", column=1, row=7)
@@ -909,16 +939,16 @@ class View_tinker:
             senKWPersonaNumBtn = tk.Button(frame, text="ok", command=lambda: self._create_persona(frame, int(self.senKWPersonaNum.get())))
             senKWPersonaNumBtn.grid(sticky="W", column=2, row=12)
             # row 13
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=13)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=13)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=13)
             # row 14
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=14)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=14)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=14)
             # row 15
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=15)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=15)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=15)
             # row 16
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=16)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=16)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=16)
             
             
@@ -940,7 +970,7 @@ class View_tinker:
                 senKWPersona.grid(sticky="W", column=1, row=rowNum+i)
                 self.senKWPersonaList.append(senKWPersona)
             for i in range(self.lastPersonaNum - personaNum):
-                ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=rowNum+personaNum+i)
+                ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=rowNum+personaNum+i)
                 ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=rowNum+personaNum+i)
         self.lastPersonaNum = personaNum
 
@@ -961,41 +991,41 @@ class View_tinker:
             # self.senSimilarity.current(0)
             self.senSimilarity.bind("<<ComboboxSelected>>", lambda event: self._sen_similarity_combobox(event, frame))
             # row 5
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=5)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=5)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=5)
             # row 6
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=6)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=6)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=6)
             # row 7
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=7)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=7)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=7)
             # row 8
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=8)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=8)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=8)
             # row 9
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=9)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=9)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=9)
             # row 10
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=10)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=10)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=10)
             # row 11
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=11)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=11)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=11)
             # row 12
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=12)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=12)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=12)
             ttk.Label(frame, text="", width=5, padding=5).grid(sticky="W", column=2, row=12)
             # row 13
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=13)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=13)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=13)
             # row 14
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=14)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=14)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=14)
             # row 15
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=15)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=15)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=15)
             # row 16
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=16)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=16)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=16)
         elif self.senPredApproach.get() == "Generation":
             # row 2
@@ -1007,46 +1037,46 @@ class View_tinker:
             # self.senGenMethod.current(1)
             self.senGenMethod.bind("<<ComboboxSelected>>", lambda event: self._sen_gen_method_combobox(event, frame))
             # row 5
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=5)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=5)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=5)
             # row 6
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=6)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=6)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=6)
             # row 7
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=7)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=7)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=7)
             # row 8
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=8)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=8)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=8)
              # row 9
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=9)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=9)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=9)
             # row 10
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=10)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=10)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=10)
             # row 11
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=11)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=11)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=11)
             # row 12
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=12)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=12)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=12)
             ttk.Label(frame, text="", width=5, padding=5).grid(sticky="W", column=2, row=12)
             # row 13
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=13)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=13)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=13)
             # row 14
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=14)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=14)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=14)
             # row 15
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=15)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=15)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=15)
             # row 16
-            ttk.Label(frame, text="", width=15, padding=5).grid(sticky="E", column=0, row=16)
+            ttk.Label(frame, text="", width=19, padding=5).grid(sticky="E", column=0, row=16)
             ttk.Label(frame, text="", width=21, padding=5).grid(sticky="W", column=1, row=16)
 
     def _sentence_prediction_panel(self, root, frame):
         # row 0
-        ttk.Label(frame, text ="Sentence Prediction", font=('Helvetica',13,'bold')).grid(sticky="E", column = 0, row = 0)
+        ttk.Label(frame, text ="Sentence Prediction", font=('bold')).grid(sticky="E", column = 0, row = 0)
 
         # row 1
         ttk.Label(frame, text ="Max Prediction Number").grid(sticky="E", column=0, row=1)
