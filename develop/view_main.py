@@ -28,6 +28,7 @@ class View_main(tk.Tk):
         # self.geometry("1500x1000")
         self.state('zoomed')
         self.textBox = tk.StringVar()
+        # self.option_add("*Font", ('Arial', 20))
 
 class View_text_box:
 
@@ -454,6 +455,7 @@ class View_menu:
 
         menuBar = tk.Menu(self.rootFrame)
         self.rootFrame.config(menu=menuBar)
+        
 
         # fileMenu = tk.Menu(menuBar)
         # menuBar.add_cascade(label="File", menu=fileMenu)
@@ -462,32 +464,32 @@ class View_menu:
 
 
         uiControlMenu = tk.Menu(menuBar)
-        menuBar.add_cascade(label="UI Control", menu=uiControlMenu)
+        menuBar.add_cascade(label="UI Control", menu=uiControlMenu, font=('Arial', 16))
 
         moveElementMenu = tk.Menu(uiControlMenu)
-        uiControlMenu.add_cascade(label="Move Elements", font= ('Arial', 20), menu=moveElementMenu)
-        moveElementMenu.add_command(label="On", font= ('Arial', 20), command=lambda:self.controller.set_drag(True))
-        moveElementMenu.add_command(label="Off", font= ('Arial', 20), command=lambda:self.controller.set_drag(False))
+        uiControlMenu.add_cascade(label="Move Elements", font= ('Arial', 16), menu=moveElementMenu)
+        moveElementMenu.add_command(label="On", font= ('Arial', 16), command=lambda:self.controller.set_drag(True))
+        moveElementMenu.add_command(label="Off", font= ('Arial', 16), command=lambda:self.controller.set_drag(False))
 
         # uiControlMenu.add_command(label="Change the Button Size", command=lambda:self.controller.set_btn_size())
-        uiControlMenu.add_command(label="Default Layout", font= ('Arial', 20), command=lambda:self.controller.load_default_layout())
-        uiControlMenu.add_command(label="Save the Current Layout", font= ('Arial', 20), command=lambda:self.controller.save_current_keyboard_layout())
-        uiControlMenu.add_command(label="Load Previous Layout...", font= ('Arial', 20), command=lambda:self.controller.load_previous_keyboard_layout())
+        uiControlMenu.add_command(label="Default Layout", font= ('Arial', 16), command=lambda:self.controller.load_default_layout())
+        uiControlMenu.add_command(label="Save the Current Layout", font= ('Arial', 16), command=lambda:self.controller.save_current_keyboard_layout())
+        uiControlMenu.add_command(label="Load Previous Layout...", font= ('Arial', 16), command=lambda:self.controller.load_previous_keyboard_layout())
 
         tinkerMenu = tk.Menu(menuBar)
-        menuBar.add_cascade(label="Tinker", menu=tinkerMenu)
-        tinkerMenu.add_command(label="Default Prediction Setting", font= ('Arial', 20), command=lambda:self.tinkerView.default_setting())
-        tinkerMenu.add_command(label="Open Tinker Panel...", font= ('Arial', 20), command=lambda:self.tinkerView.run())
-        tinkerMenu.add_command(label="Save Current Prediction Settings", font= ('Arial', 20), command=lambda:self.controller.save_current_prediction_settings())
-        tinkerMenu.add_command(label="Load Previous Prediction Settings...", font= ('Arial', 20), command=lambda:self.controller.load_previous_prediction_settings())
+        menuBar.add_cascade(label="Tinker", menu=tinkerMenu, font=('Arial', 16))
+        tinkerMenu.add_command(label="Default Prediction Setting", font= ('Arial', 16), command=lambda:self.tinkerView.default_setting())
+        tinkerMenu.add_command(label="Open Tinker Panel...", font= ('Arial', 16), command=lambda:self.tinkerView.run())
+        tinkerMenu.add_command(label="Save Current Prediction Settings", font= ('Arial', 16), command=lambda:self.controller.save_current_prediction_settings())
+        tinkerMenu.add_command(label="Load Previous Prediction Settings...", font= ('Arial', 16), command=lambda:self.controller.load_previous_prediction_settings())
 
 
         traceAnalysisMenu = tk.Menu(menuBar)
-        menuBar.add_cascade(label="Trace Analysis",  menu=traceAnalysisMenu)
+        menuBar.add_cascade(label="Trace Analysis",  menu=traceAnalysisMenu, font=('Arial', 16))
 
         traceTyping = tk.Menu(traceAnalysisMenu)
-        traceAnalysisMenu.add_cascade(label="Trace Typing", font= ('Arial', 20), menu=traceTyping)
-        traceTyping.add_command(label="On", font= ('Arial', 20), command=lambda:self.controller.set_trace(True))
-        traceTyping.add_command(label="Off", font= ('Arial', 20), command=lambda:self.controller.set_trace(False))
+        traceAnalysisMenu.add_cascade(label="Trace Typing", font= ('Arial', 16), menu=traceTyping)
+        traceTyping.add_command(label="On", font= ('Arial', 16), command=lambda:self.controller.set_trace(True))
+        traceTyping.add_command(label="Off", font= ('Arial', 16), command=lambda:self.controller.set_trace(False))
 
-        traceAnalysisMenu.add_command(label="Open Trace Analysis Panel...", font= ('Arial', 20), command=lambda:self.traceView.run())
+        traceAnalysisMenu.add_command(label="Open Trace Analysis Panel...", font= ('Arial', 16), command=lambda:self.traceView.run())

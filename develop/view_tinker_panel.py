@@ -262,14 +262,14 @@ class View_tinker:
         self.root = tk.Tk()
         self.root.title("Tinker Panel")
 
-        bigFont = tkFont.Font(family='Arial', size=30)
+        bigFont = tkFont.Font(family='Arial', size=20)
         self.root.option_add("*Font", bigFont)
 
         baseFrame = ttk.Frame(self.root)
         baseFrame.pack(padx=5, pady=5)
         
-        style = ttk.Style()
-        style.configure('TNotebook.Tab', font=("Arial", 50))
+        # style = ttk.Style()
+        # style.configure('TNotebook.Tab', font=("Arial", 50))
 
         tabControl = ttk.Notebook(baseFrame)
         
@@ -302,8 +302,8 @@ class View_tinker:
         confirmBtn = ttk.Button(baseFrame, text="Confirm", command=self._save) # style="Big.TButton",
         confirmBtn.pack(ipadx=10, ipady=10, side=tk.RIGHT)
 
-        print(style.theme_names())
-        print(style.layout('TButton'))
+        # print(style.theme_names())
+        # print(style.layout('TButton'))
         # style.configure('big.TButton', font=('Arial', 25))
         
 
