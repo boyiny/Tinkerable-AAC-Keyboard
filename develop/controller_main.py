@@ -3,7 +3,7 @@ from view_trace_analysis import View_trace_analysis
 from model_trace_analysis import Model_Trace_Analysis
 from model_log_data import Model_Log_Data
 from model_main import Model_main
-from view_main import View_main, View_menu, View_text_box, View_keypad
+from view_main import View_main, View_menu, View_text_box, View_keypad, View_logging_indicator
 from view_tinker_panel import View_tinker
 from view_text_entry import View_text_edit
 
@@ -29,6 +29,7 @@ class Controller_main():
         self.viewTextEdit = View_text_edit(self)
         self.viewTinker = View_tinker(self)
         self.viewTraceAnalysis = View_trace_analysis(self)
+        # self.viewLoggingIndicator = View_logging_indicator(self, self.viewMain)
 
         self.speakEngine = pyttsx3.init()
 

@@ -41,6 +41,16 @@ class View_text_box:
         self.entry.place(height=50, width=1100, x=20, y=10)
         
 
+class View_logging_indicator:
+    def __init__(self, controller, rootFrame):
+        self.loggingIndicatorFrame = tk.Frame(rootFrame, width=500, height=50)
+        self.loggingIndicatorFrame.place(x=0, y=930)
+        self.controller = controller
+        # print("The width of the window: ", rootFrame.winfo_width())
+        # print("The height of the window: ", rootFrame.winfo_height())
+        self.loggingIndicatorBtn = tk.Label(self.loggingIndicatorFrame, text="Logging typing", font=('Calibri', 18))
+        self.loggingIndicatorBtn.place(x=10, y=0)
+
 
    
 
@@ -107,8 +117,8 @@ class View_keypad:
     
 
     def __init__(self, controller, rootFrame, entry): 
-        self.keypadFrame = tk.Frame(rootFrame, width=1500, height=940)
-        self.keypadFrame.place(x=0, y=60)
+        self.keypadFrame = tk.Frame(rootFrame, width=1500, height=870)
+        self.keypadFrame.place(x=0, y=50)
         self.controller = controller
         self.entry = entry
         self.textBox = rootFrame.textBox
@@ -119,6 +129,8 @@ class View_keypad:
             self._refresh_letterpad()
 
     """ General functions below """
+
+    
 
     def _get_index_in_keyList(self, caption):
         index = 0
