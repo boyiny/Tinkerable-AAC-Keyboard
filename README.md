@@ -16,4 +16,4 @@ To cite this project:
 
 1. Boyin Yang and Per Ola Kristensson. 2023. A Demonstration of a Tinkerable Augmentative and Alternative Communication Keyboard. In Companion Proceedings of the 28th International Conference on Intelligent User Interfaces (IUI 23 Companion). Association for Computing Machinery, New York, NY, USA, 138–140. https://doi.org/10.1145/3581754.3584153
 
-2. Yang, Boyin, Junxiao Shen, and Per Ola Kristensson. 2023. “Tinkerable AAC Keyboard.” Apollo - University of Cambridge Repository. doi:10.17863/CAM.91650.
+2. Boyin Yang, Junxiao Shen, and Per Ola Kristensson. 2023. “Tinkerable AAC Keyboard.” Apollo - University of Cambridge Repository. doi:10.17863/CAM.91650.
